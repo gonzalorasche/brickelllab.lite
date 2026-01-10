@@ -1,0 +1,85 @@
+/* 1. RESET ANTI-BORDES CORREGIDO */
+html, body {
+    background-color: #0F1115 !important;
+    margin: 0;
+    padding: 0; // <--- CAMBIADO DE 10px A 0
+    overflow-x: hidden;
+}
+
+/* Aplicamos el padding de 20px a todas las cajas de contenido */
+.hero-container, 
+.nav-container, 
+.services-inner, 
+.footer-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 30px !important; // <--- Aire lateral consistente
+    padding-right: 30px !important;
+    box-sizing: border-box;
+}
+
+
+// Variables
+$bg-nav: #000000;
+$white: #ffffff;
+
+.sticky-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 45px; // Altura consistente
+    background: $bg-nav;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+
+    .nav-container {
+        width: 100%;
+        max-width: 1200px; // MISMO que el hero-container
+        margin: 0 auto;
+        /* Quitamos el padding lateral para que el logo toque el borde del grid */
+        padding: 0 20px; 
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        @media (max-width: 768px) {
+            padding: 0 15px; // Un poco más ajustado en mobile
+        }
+    }
+
+    .nav-logo {
+        display: flex;
+        align-items: center;
+        
+        a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            /* Si el logo sigue sobrando, podrías usar margin-left: -2px; */
+        }
+
+        img {
+            height: 24px; 
+            width: auto;
+            display: block;
+            filter: brightness(0) invert(1);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

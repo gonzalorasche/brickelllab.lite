@@ -1,0 +1,404 @@
+
+
+
+/* ============================================================
+   SECCIÓN TESTIMONIOS - BRICKELL LAB (SISTEMA FINAL CORREGIDO)
+   ============================================================ */
+
+$tech-yellow: #ffc107;
+$text-gray: #a1a1a1;
+
+.testimonials-section {
+    padding: 80px 0;
+    background-color: #000000;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+
+    .services-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+    }
+
+    .testimonial-title {
+        color: #fff;
+        font-size: clamp(26px, 5vw, 32px);
+        font-weight: 700;
+        margin-bottom: 50px;
+        letter-spacing: -1px;
+        text-align: left;
+    }
+
+    .testimonial-carousel {
+        width: 100%;
+        position: relative;
+        overflow: visible; 
+        padding: 20px 0;
+
+        @media (min-width: 1024px) {
+            padding: 40px 60px;
+            overflow: hidden; 
+        }
+    }
+
+    .testimonial-card {
+        min-height: 240px;
+        height: auto;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 4px;
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-sizing: border-box;
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+        /* MOBILE: Sin transformaciones */
+        opacity: 1;
+        transform: scale(1);
+
+        @media (min-width: 1024px) {
+            opacity: 0.15;
+            transform: scale(0.6); 
+            filter: blur(2px);
+            pointer-events: none;
+
+            &.swiper-slide-active {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+                border-color: rgba($tech-yellow, 0.4);
+                background-color: rgba(255, 255, 255, 0.05);
+                z-index: 10;
+                pointer-events: all;
+            }
+        }
+    }
+
+    .testimonial-text {
+        color: $text-gray;
+        font-size: 14px;
+        line-height: 1.6;
+        font-style: italic;
+        margin-bottom: 25px;
+    }
+
+    .testimonial-user {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .avatar-wrapper img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Contenedor de info para poner uno abajo del otro */
+        .user-info {
+            display: flex;
+            flex-direction: column; // Puesto abajo del nombre
+            gap: 2px;
+        }
+
+        .user-name {
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            line-height: 1.2;
+        }
+
+        .user-role {
+            color: $tech-yellow;
+            font-weight: 500;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    }
+
+    .swiper-slide-active .avatar-wrapper img {
+        filter: grayscale(0%);
+        border-color: $tech-yellow;
+    }
+
+    /* --- FLECHAS --- */
+    .lab-arrow {
+        color: $tech-yellow;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 20;
+        width: 40px;
+        height: 40px;
+        display: none; 
+
+        @media (min-width: 1024px) {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        &::after { font-size: 20px; font-weight: 900; }
+        &:hover { color: #fff; transform: translateY(-50%) scale(1.1); }
+    }
+
+    .swiper-button-prev { left: 10px; }
+    .swiper-button-next { right: 10px; }
+
+    /* --- PAGINACIÓN --- */
+    .swiper-pagination {
+        position: relative !important;
+        margin-top: 40px !important;
+        text-align: center !important;
+        bottom: 0 !important;
+
+        .swiper-pagination-bullet {
+            background: #333 !important;
+            opacity: 1 !important;
+            border-radius: 0 !important;
+            width: 6px;
+            height: 6px;
+            transition: 0.3s;
+
+            &-active {
+                background: $tech-yellow !important;
+                width: 25px !important;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.mobile-divider-tech {
+    display: none; // Oculto por defecto
+
+    @media (max-width: 768px) {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 150px; // Espacio entre secciones
+        background-color: #000000;
+        position: relative;
+        overflow: hidden;
+
+        .ping-container {
+            position: relative;
+            width: 40px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .ping-ball {
+            width: 8px;
+            height: 8px;
+            background-color: $tech-yellow;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 2;
+            box-shadow: 0 0 10px $tech-yellow;
+            animation: techBounce 2s infinite ease-in-out;
+        }
+
+        .ping-wave {
+            width: 20px;
+            height: 20px;
+            border: 1px solid $tech-yellow;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            opacity: 0;
+            animation: waveExpand 2s infinite ease-in-out;
+        }
+
+        .divider-label {
+            font-family: 'Courier New', monospace;
+            font-size: 8px;
+            color: rgba($tech-yellow, 0.5);
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+    }
+}
+
+// ANIMACIONES
+@keyframes techBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(40px); } // Baja hasta el "suelo"
+}
+
+@keyframes waveExpand {
+    0%, 45% { transform: scale(0.1); opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { transform: scale(3); opacity: 0; }
+}
+
+
+
+
+
+
+
+
+
+
+
+/* ============================================================
+   SECCIÓN CONTACTO - BRICKELL LAB (ULTRA MODERN)
+   ============================================================ */
+$bootstrap-warning: #ffc107; 
+
+.contact-section {
+    padding: 80px 0; // Un poco más compacto
+    background-color: #000000;
+
+    .services-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .contact-title {
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        font-size: 28px; // Más elegante al ser más chico
+        font-weight: 700;
+        margin-bottom: 40px;
+        letter-spacing: -0.5px;
+    }
+
+    .fs-form {
+        max-width: 600px; // Reducimos el ancho para que sea más estilizado
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px; // Más aire entre columnas
+            margin-bottom: 30px;
+
+            @media (max-width: 600px) {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    }
+
+    .fs-field {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 30px;
+        position: relative; // Para efectos de línea
+
+        .fs-label {
+            color: rgba(255, 255, 255, 0.4); // Gris tenue para no sobrecargar
+            font-family: 'Inter', sans-serif;
+            font-size: 10px; // Estilo micro-copy
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: color 0.3s ease;
+        }
+
+        .fs-input {
+            background-color: transparent; // Fuera el fondo gris pesado
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); // Solo línea inferior
+            border-radius: 0; // Recto es más técnico
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            padding: 10px 0; // Padding lateral 0 para alinear con la línea
+            transition: all 0.3s ease;
+            outline: none;
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.2);
+                font-weight: 300;
+            }
+
+            &:focus {
+                border-bottom-color: $bootstrap-warning;
+                // En lugar de sombra externa, iluminamos levemente la línea
+                box-shadow: 0 1px 0 $bootstrap-warning; 
+                
+                & + .fs-label {
+                    color: $bootstrap-warning;
+                }
+            }
+        }
+        
+        textarea.fs-input {
+            resize: none;
+            min-height: 80px;
+        }
+    }
+
+    .form-actions {
+        margin-top: 10px;
+
+        .btn-submit {
+            /* CLON BOOTSTRAP BTN-OUTLINE-WARNING (Compacto) */
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: $bootstrap-warning;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            background-color: transparent;
+            border: 1px solid $bootstrap-warning;
+            padding: 10px 30px; // Más chico
+            font-size: 11px;
+            border-radius: 4px;
+            transition: all 0.2s ease-in-out;
+
+            &:hover {
+                color: #000;
+                background-color: $bootstrap-warning;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba($bootstrap-warning, 0.2);
+            }
+
+            &:active {
+                transform: scale(0.95);
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

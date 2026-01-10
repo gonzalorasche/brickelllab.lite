@@ -1,0 +1,285 @@
+// Variables
+$bg-dark: #050505;
+$accent: #ffffff;
+$text-gray: #a1a1a1;
+$tech-yellow: #ffc107;
+$grid-color: rgba(255, 255, 255, 0.05);
+
+.hero-section {
+    width: 100%;
+    min-height: 100vh;
+    background-color: $bg-dark;
+    
+    // Patrón de grilla técnica
+    background-image: 
+        linear-gradient($grid-color 1px, transparent 1px),
+        linear-gradient(90deg, $grid-color 1px, transparent 1px);
+    background-size: 40px 40px;
+
+    padding-top: 100px; 
+    padding-bottom: 60px;
+    box-sizing: border-box;
+
+    .hero-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+        padding-left: 20px;
+        padding-right: 20px;
+
+        @media (max-width: 768px) {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    }
+
+    // --- ESTRUCTURA SPLIT ---
+    .hero-split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+        margin-bottom: 80px;
+
+        @media (max-width: 768px) {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            text-align: left; // CORREGIDO: Alineación a la izquierda
+        }
+    }
+
+    .hero-text {
+        @media (max-width: 768px) { order: 1; }
+
+        .lab-badge {
+            font-size: 10px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            color: $tech-yellow;
+            border: 1px solid rgba($tech-yellow, 0.3);
+            padding: 4px 8px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 30px;
+            color: $accent;
+            
+            @media (max-width: 768px) { 
+                font-size: 2.5rem; 
+                text-align: left; // Aseguramos título a la izquierda
+            }
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: $text-gray;
+            line-height: 1.6;
+            max-width: 90%;
+            margin-bottom: 32px;
+            
+            @media (max-width: 768px) { 
+                margin: 0 0 32px 0; // CORREGIDO: Quitamos el margin auto que centraba
+                text-align: left;    // Aseguramos párrafo a la izquierda
+            }
+        }
+
+        .btn-warning {
+            display: inline-block;
+            background: $tech-yellow; 
+            color: #000;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 1px;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 2px;
+            transition: 0.3s ease;
+
+            &:hover {
+                background: #000000;
+                color: $tech-yellow;
+                transform: translateY(-2px);
+
+                 &:active {
+                transform: scale(0.95);
+            }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@keyframes glowFlicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.hero-image {
+    @media (max-width: 768px) { 
+        order: 2; 
+        width: 100%; 
+        margin-top: 20px;
+    }
+    display: flex;
+    justify-content: center;
+    position: relative;
+    /* Evita que cualquier brillo se escape del contenedor */
+    overflow: hidden; 
+
+    .image-wrapper {
+        position: relative;
+        max-width: 100%;
+        display: inline-block;
+        z-index: 1;
+        /* Padding para que el resplandor tenga aire y no toque los bordes */
+        padding: 20px; 
+        
+        // EL DESTELLO SUTIL - SOLO NÚCLEO CENTRAL
+        &::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            
+            // MUCHO MÁS CHICO: Solo el corazón de la imagen
+            width: 60%; 
+            height: 60%;
+            
+            background: radial-gradient(
+                circle, 
+                rgba($tech-yellow, 0.25) 0%, // Un poco más de color en el centro
+                transparent 70%              // Muere mucho antes de llegar al borde
+            );
+            
+            filter: blur(35px); 
+            z-index: -1;
+            pointer-events: none;
+            animation: glowFlicker 5s infinite ease-in-out;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            filter: grayscale(10%) contrast(110%);
+            border-radius: 4px;
+            position: relative;
+            z-index: 2;
+            /* Quitamos el borde blanco para que no atrape luz innecesaria */
+            border: none; 
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// --- CARDS ---
+    .services-grid {
+        @media (max-width: 768px) { order: 3; }
+
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+
+        @media (max-width: 900px) { grid-template-columns: repeat(2, 1fr); }
+        @media (max-width: 600px) { grid-template-columns: 1fr; }
+
+        .tech-card {
+            background: #0a0a0a; // Color sólido (sustituye al transparente)
+            border: 1px solid rgba(255, 255, 255, 0.15); // Borde un poco más visible
+            padding: 24px;
+            border-radius: 4px;
+            position: relative;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+
+                .code {
+                    font-family: 'Courier New', monospace;
+                    font-size: 10px;
+                    color: $text-gray;
+                }
+
+                .indicator {
+                    width: 6px;
+                    height: 6px;
+                    background-color: #333;
+                    border-radius: 50%;
+                    transition: 0.3s ease;
+                }
+            }
+
+            h3 {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 10px;
+                color: $accent;
+            }
+
+            p {
+                font-size: 0.85rem;
+                color: $text-gray;
+                line-height: 1.5;
+            }
+
+            &:hover {
+                border-color: rgba($tech-yellow, 0.6); // Más intenso el borde al hover
+                transform: translateY(-5px);
+                background: #111; // Fondo sólido un poco más claro al hover
+
+                .indicator {
+                    background-color: $tech-yellow;
+                    box-shadow: 0 0 10px $tech-yellow;
+                }
+            }
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0; left: 0;
+                width: 12px; height: 12px;
+                border-top: 2px solid $tech-yellow; // Un toque más grueso para que destaque
+                border-left: 2px solid $tech-yellow;
+                opacity: 0;
+                transition: 0.3s;
+            }
+            &:hover::before { opacity: 1; }
+        }
+        }
