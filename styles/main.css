@@ -7,7 +7,6 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Aplicamos el padding de 20px a todas las cajas de contenido */
 .hero-container,
 .nav-container,
 .services-inner,
@@ -35,7 +34,6 @@ html, body {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  /* Quitamos el padding lateral para que el logo toque el borde del grid */
   padding: 0 20px;
   display: flex;
   justify-content: space-between;
@@ -54,13 +52,95 @@ html, body {
   display: flex;
   align-items: center;
   text-decoration: none;
-  /* Si el logo sigue sobrando, podrías usar margin-left: -2px; */
 }
 .sticky-nav .nav-logo img {
   height: 24px;
   width: auto;
   display: block;
   filter: brightness(0) invert(1);
+}
+
+/* El resto del código del #migration-alert queda igual al que ya tenías */
+#migration-alert {
+  position: fixed;
+  top: 55px;
+  left: 0;
+  width: 100%;
+  min-height: 45px;
+  background: rgba(10, 10, 10, 0.95);
+  color: #ffc107;
+  padding: 10px 15px;
+  z-index: 99999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 193, 7, 0.5);
+  -webkit-backdrop-filter: blur(12px);
+          backdrop-filter: blur(12px);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  box-sizing: border-box;
+}
+
+/* ... (mantené los estilos de .alert-content, .alert-icon y .close-alert que ya tenías) */
+.alert-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.alert-content p {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.alert-icon {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  animation: blink 1.5s step-end infinite;
+}
+
+.close-alert {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+/* --- AJUSTE PARA MOBILE --- */
+@media (max-width: 600px) {
+  #migration-alert {
+    top: 60px; /* Un poquito más de aire en mobile si tu nav cambia de tamaño */
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    padding: 8px 10px;
+  }
+  .alert-content strong {
+    display: block;
+  }
+}
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+/* Espacio extra en el body para que el cartel no tape el inicio del contenido */
+body {
+  padding-top: 100px; /* 55px del nav + 45px del alert */
 }
 
 .hero-section {
