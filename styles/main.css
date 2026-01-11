@@ -24,7 +24,7 @@ html, body {
   position: fixed;
   top: 0;
   width: 100%;
-  height: 45px;
+  height: 55px;
   background: #000000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
@@ -540,7 +540,7 @@ html, body {
   }
 }
 /* ============================================================
-   SECCIÓN CONTACTO - BRICKELL LAB (ULTRA MODERN)
+   SECCIÓN CONTACTO - BRICKELL LAB (ULTRA MODERN - READABLE)
    ============================================================ */
 .contact-section {
   padding: 80px 0;
@@ -581,7 +581,8 @@ html, body {
   position: relative;
 }
 .contact-section .fs-field .fs-label {
-  color: rgba(255, 255, 255, 0.4);
+  /* MEJORADO: Subí de 0.4 a 0.8 para que NOMBRE/EMAIL se lean claro */
+  color: rgba(255, 255, 255, 0.8);
   font-family: "Inter", sans-serif;
   font-size: 10px;
   font-weight: 700;
@@ -593,7 +594,8 @@ html, body {
 .contact-section .fs-field .fs-input {
   background-color: transparent;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  /* MEJORADO: Línea un poco más blanca para ver el límite */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 0;
   color: #fff;
   font-family: "Inter", sans-serif;
@@ -603,16 +605,19 @@ html, body {
   outline: none;
 }
 .contact-section .fs-field .fs-input::-moz-placeholder {
-  color: rgba(255, 255, 255, 0.2);
+  /* MEJORADO: Subí de 0.2 a 0.5 para que el ejemplo sea legible */
+  color: rgba(255, 255, 255, 0.5);
   font-weight: 300;
 }
 .contact-section .fs-field .fs-input::placeholder {
-  color: rgba(255, 255, 255, 0.2);
+  /* MEJORADO: Subí de 0.2 a 0.5 para que el ejemplo sea legible */
+  color: rgba(255, 255, 255, 0.5);
   font-weight: 300;
 }
 .contact-section .fs-field .fs-input:focus {
   border-bottom-color: #ffc107;
   box-shadow: 0 1px 0 #ffc107;
+  /* El label cambia a amarillo al escribir */
 }
 .contact-section .fs-field .fs-input:focus + .fs-label {
   color: #ffc107;
@@ -625,7 +630,6 @@ html, body {
   margin-top: 10px;
 }
 .contact-section .form-actions .btn-submit {
-  /* CLON BOOTSTRAP BTN-OUTLINE-WARNING (Compacto) */
   display: inline-block;
   font-family: "Inter", sans-serif;
   font-weight: 600;
@@ -651,12 +655,15 @@ html, body {
 }
 
 /* ============================================================
-   FOOTER - BRICKELL LAB (AJUSTADO)
+   FOOTER - BRICKELL LAB (SISTEMA_OPERATIVO_V.1.0)
    ============================================================ */
 .main-footer {
   background-color: #0a0a0a;
   padding: 60px 0 40px 0;
   font-family: "Inter", sans-serif;
+  /* Navegación - Solo Desktop */
+  /* Redes Sociales - Instagram */
+  /* Copyright y Legal */
 }
 .main-footer .services-inner {
   max-width: 1200px;
@@ -669,18 +676,29 @@ html, body {
 .main-footer .footer-top {
   margin-bottom: 40px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 @media (max-width: 768px) {
   .main-footer .footer-top {
-    text-align: left;
+    /* En mobile, logo a la izquierda e Instagram a la derecha */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 30px;
   }
 }
 .main-footer .footer-logo {
-  height: 35px;
+  height: 30px;
   width: auto;
   opacity: 0.9;
   margin-bottom: 30px;
+}
+@media (max-width: 768px) {
+  .main-footer .footer-logo {
+    margin-bottom: 0;
+  }
 }
 @media (max-width: 768px) {
   .main-footer .footer-nav {
@@ -705,8 +723,38 @@ html, body {
 .main-footer .footer-links li a:hover {
   color: #ffc107;
 }
+.main-footer .footer-actions {
+  margin-top: 25px; /* Separación de los links en desktop */
+  line-height: 0; /* Evita espacios extra en el link */
+  /* Estilo ajustado para logos SIN transparencia */
+}
+@media (max-width: 768px) {
+  .main-footer .footer-actions {
+    margin-top: 0;
+  }
+}
+.main-footer .footer-actions .insta-link {
+  display: inline-block;
+  text-decoration: none;
+}
+.main-footer .footer-actions .footer-social-icon {
+  width: 20px !important;
+  height: 20px !important;
+  -o-object-fit: cover;
+     object-fit: cover; /* Cambiamos a cover para asegurar que llene el espacio si no es cuadrado */
+  border-radius: 4px; /* Un toque sutil para redondear las esquinas del bloque */
+  /* ELIMINAMOS EL FILTER QUE HACÍA EL BLOQUE GRIS/BLANCO */
+  filter: none !important;
+  opacity: 0.8; /* Un poco de transparencia general para que no brille tanto */
+  transition: all 0.3s ease;
+}
+.main-footer .footer-actions .footer-social-icon:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
 .main-footer .footer-bottom {
   width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding-top: 30px;
 }
 .main-footer .footer-bottom .copyright {
@@ -715,13 +763,13 @@ html, body {
   letter-spacing: 0.5px;
   display: flex;
   justify-content: space-between;
-  align-items: left;
+  align-items: center;
 }
 @media (max-width: 768px) {
   .main-footer .footer-bottom .copyright {
     flex-direction: column;
     gap: 15px;
-    text-align: left;
+    align-items: flex-start;
   }
 }
 .main-footer .footer-bottom .legal-tag {

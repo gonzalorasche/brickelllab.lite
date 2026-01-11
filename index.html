@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Brickell Lab | Desarrollo Web y Soluciones Digitales</title>
-    <meta name="description" content="Estudio de diseño especializado en desarrollo web, UX/UI y soluciones digitales.">
+    <meta name="description" content="Estudio de diseño especializado en desarrollo web, UX/UI y branding. Creamos interfaces de alto impacto y soluciones digitales para escalar tu negocio hoy.">
+    <meta name="keywords" content="desarrollo web, diseño ux ui, branding digital, estudio de diseño, brickell lab, packaging, soluciones digitales, interfaces modernas, optimización web, diseño gráfico">
+    <meta name="robots" content="index, follow">
     <meta name="author" content="Gonzalo Raschella">
 
     <!-- ICONOS -->
@@ -38,8 +40,8 @@
         <nav class="sticky-nav">
             <div class="nav-container">
                 <div class="nav-logo">
-                    <a href="/" title="Brickell Lab">
-                        <img src="./static/img/logo_nav.png" alt="Brickell Lab Logo">
+                    <a href="#inicio" aria-label="Ir al inicio de Brickell Lab">
+                        <img src="./static/img/logo_nav.png" alt="Brickell Lab">
                     </a>
                 </div>
             </div>
@@ -56,79 +58,87 @@
                         <h1>Diseñamos la fórmula de tu crecimiento digital.</h1>
                         <p>Desarrollamos webs de alto impacto y experiencias de usuario precisas. En Brickell Lab convertimos código y diseño en rentabilidad para tu negocio.</p>
                         <div class="hero-cta">
-                            <button type="button" class="btn btn-warning" onclick="document.getElementById('contacto').scrollIntoView({behavior: 'smooth'})">CONTACTATE</button>
+                            <button 
+                                type="button" 
+                                class="btn btn-warning" 
+                                aria-label="Ir al formulario de contacto para solicitar una web"
+                                aria-controls="contacto"
+                                onclick="document.getElementById('contacto').scrollIntoView({behavior: 'smooth'})">
+                                QUIERO MI WEB
+                            </button>
                         </div>
                     </div>
                     
                     <div class="hero-image">
                         <div class="image-wrapper">
-                            <img src="./static/img/niam.png" alt="Brickell Lab Concept">
+                            <img src="./static/img/niam.png" alt="" role="presentation">
                             <div class="scan-line"></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="services-grid">
-                    <div class="tech-card">
+                    <div class="tech-card" role="article">
                         <div class="card-header">
-                            <span class="code">01_WEB</span>
-                            <div class="indicator"></div>
+                            <span class="code" aria-hidden="true">01_WEB</span>
+                            <div class="indicator" aria-hidden="true"></div>
                         </div>
                         <h3>Desarrollo Web</h3>
                         <p>Sitios rápidos, escalables y optimizados para convertir visitas en ventas.</p>
                     </div>
 
-                    <div class="tech-card">
+                    <div class="tech-card" role="article">
                         <div class="card-header">
-                            <span class="code">02_UXUI</span>
-                            <div class="indicator"></div>
+                            <span class="code" aria-hidden="true">02_UXUI</span>
+                            <div class="indicator" aria-hidden="true"></div>
                         </div>
                         <h3>Diseño UX / UI</h3>
                         <p>Interfaces intuitivas diseñadas bajo análisis de comportamiento de usuarios.</p>
                     </div>
 
-                    <div class="tech-card">
+                    <div class="tech-card" role="article">
                         <div class="card-header">
-                            <span class="code">03_PACK</span>
-                            <div class="indicator"></div>
+                            <span class="code" aria-hidden="true">03_PACK</span>
+                            <div class="indicator" aria-hidden="true"></div>
                         </div>
                         <h3>Packaging</h3>
                         <p>Diseño físico que conecta con tu audiencia desde el primer contacto.</p>
                     </div>
 
-                    <div class="tech-card">
+                    <div class="tech-card" role="article">
                         <div class="card-header">
-                            <span class="code">04_GRAPH</span>
-                            <div class="indicator"></div>
+                            <span class="code" aria-hidden="true">04_GRAPH</span>
+                            <div class="indicator" aria-hidden="true"></div>
                         </div>
                         <h3>Diseño Gráfico</h3>
                         <p>Identidad visual sólida y coherente para diferenciarte en el mercado.</p>
                     </div>
+                </div>
                 </div>
 
             </div> 
         </section>
     </main>
 
-    <div class="mobile-divider-tech">
+    <div class="mobile-divider-tech" aria-hidden="true">
         <div class="ping-container">
             <div class="ping-ball"></div>
             <div class="ping-wave"></div>
         </div>
     </div>
 
-    <section class="testimonials-section" id="testimonios">
+    <section class="testimonials-section" id="testimonios" aria-labelledby="testimonial-heading">
         <div class="services-inner">
-            <h2 class="testimonial-title">Mensajes que nos llenan de orgullo</h2>
+            <h2 class="testimonial-title" id="testimonial-heading">Mensajes que nos llenan de orgullo</h2>
             
             <div class="swiper testimonial-carousel">
                 <div class="swiper-wrapper">
                     
-                    <div class="swiper-slide testimonial-card">
+                    <div class="swiper-slide testimonial-card" role="group" aria-roledescription="testimonio">
                         <p class="testimonial-text">"Buscaba una web que transmitiera la seriedad de mi estudio y el resultado fue impecable. El proceso fue muy organizado y entendieron rápido la estética sobria que necesitaba."</p>
                         <div class="testimonial-user">
                             <div class="avatar-wrapper">
-                                <img src="./static/img/testimonio_sersi.png" alt="Melanie Sersen (Abogada)">
+                                <img src="./static/img/testimonio_sersi.png" alt="Melanie Sersen">
                             </div>
                             <div class="user-info">
                                 <span class="user-name">MELANIE S.</span>
@@ -137,7 +147,7 @@
                         </div>
                     </div>
 
-                    <div class="swiper-slide testimonial-card">
+                    <div class="swiper-slide testimonial-card" role="group" aria-roledescription="testimonio">
                         <p class="testimonial-text">"La capacidad de respuesta y la calidad técnica del equipo son excepcionales. Lograron una plataforma robusta y muy intuitiva."</p>
                         <div class="testimonial-user">
                             <div class="avatar-wrapper">
@@ -150,7 +160,7 @@
                         </div>
                     </div>
 
-                    <div class="swiper-slide testimonial-card">
+                    <div class="swiper-slide testimonial-card" role="group" aria-roledescription="testimonio">
                         <p class="testimonial-text">"Entendieron perfectamente la identidad visual que buscaba. Es difícil encontrar un equipo que combine tan bien diseño y código."</p>
                         <div class="testimonial-user">
                             <div class="avatar-wrapper">
@@ -163,7 +173,7 @@
                         </div>
                     </div>
 
-                    <div class="swiper-slide testimonial-card">
+                    <div class="swiper-slide testimonial-card" role="group" aria-roledescription="testimonio">
                         <p class="testimonial-text">"El ROI de nuestro proyecto digital creció significativamente gracias a su asesoría estratégica y optimización de UX."</p>
                         <div class="testimonial-user">
                             <div class="avatar-wrapper">
@@ -176,7 +186,7 @@
                         </div>
                     </div>
 
-                    <div class="swiper-slide testimonial-card">
+                    <div class="swiper-slide testimonial-card" role="group" aria-roledescription="testimonio">
                         <p class="testimonial-text">"Trabajar con ellos fue como tener un departamento de tecnología propio. La comunicación fluyó de principio a fin."</p>
                         <div class="testimonial-user">
                             <div class="avatar-wrapper">
@@ -189,7 +199,7 @@
                         </div>
                     </div>
 
-                    <div class="swiper-slide testimonial-card">
+                    <div class="swiper-slide testimonial-card" role="group" aria-roledescription="testimonio">
                         <p class="testimonial-text">"Superaron los plazos de entrega sin sacrificar ni un ápice de calidad. Un equipo profesional y sumamente comprometido."</p>
                         <div class="testimonial-user">
                             <div class="avatar-wrapper">
@@ -202,7 +212,7 @@
                         </div>
                     </div>
 
-                    <div class="swiper-slide testimonial-card">
+                    <div class="swiper-slide testimonial-card" role="group" aria-roledescription="testimonio">
                         <p class="testimonial-text">"La visión integral que tienen del negocio digital marca la diferencia. No solo hacen webs, construyen soluciones que venden."</p>
                         <div class="testimonial-user">
                             <div class="avatar-wrapper">
@@ -215,67 +225,98 @@
                         </div>
                     </div>
 
-                </div> <div class="swiper-button-prev lab-arrow"></div>
-                <div class="swiper-button-next lab-arrow"></div>
+                </div> 
                 
-            </div> <div class="swiper-pagination"></div>
-
+                <div class="swiper-button-prev lab-arrow" role="button" aria-label="Ver testimonio anterior"></div>
+                <div class="swiper-button-next lab-arrow" role="button" aria-label="Ver testimonio siguiente"></div>
+                
+                <div class="swiper-pagination" aria-hidden="true"></div>
+            </div> 
         </div> 
     </section>
 
-    <section class="contact-section" id="contacto">
+    <section class="contact-section" id="contacto" aria-labelledby="contact-heading">
         <div class="services-inner">
-            <h2 class="contact-title">Iniciemos la fórmula de tu proyecto</h2>
+            <h2 class="contact-title" id="contact-heading">Iniciemos la fórmula de tu proyecto</h2>
 
             <form action="https://formspree.io/f/xpqqaywe" class="fs-form" method="POST">
-            <div class="form-grid">
-                <div class="fs-field">
-                <label class="fs-label" for="name">NOMBRE</label>
-                <input class="fs-input" id="name" name="name" placeholder="Ej: Juan Perez" required />
+                <div class="form-grid">
+                    <div class="fs-field">
+                        <label class="fs-label" for="name">NOMBRE</label>
+                        <input 
+                            class="fs-input" 
+                            id="name" 
+                            name="name" 
+                            type="text"
+                            placeholder="Ej: Juan Perez" 
+                            required 
+                            aria-required="true" />
+                    </div>
+
+                    <div class="fs-field">
+                        <label class="fs-label" for="email">EMAIL</label>
+                        <input 
+                            class="fs-input" 
+                            id="email" 
+                            type="email" 
+                            name="email" 
+                            placeholder="juan@ejemplo.com" 
+                            required 
+                            aria-required="true" />
+                    </div>
                 </div>
 
                 <div class="fs-field">
-                <label class="fs-label" for="email">EMAIL</label>
-                <input class="fs-input" id="email" type="email" name="email" placeholder="juan@ejemplo.com" required />
+                    <label class="fs-label" for="message">MENSAJE</label>
+                    <textarea 
+                        class="fs-input" 
+                        id="message" 
+                        name="message" 
+                        rows="4" 
+                        placeholder="Contanos sobre tu idea..." 
+                        required 
+                        aria-required="true"></textarea>
                 </div>
-            </div>
 
-            <div class="fs-field">
-                <label class="fs-label" for="message">MENSAJE</label>
-                <textarea class="fs-input" id="message" name="message" rows="4" placeholder="Contanos sobre tu idea..." required></textarea>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn-submit">Enviar</button>
-            </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit" aria-label="Enviar formulario de contacto">
+                        Enviar
+                    </button>
+                </div>
             </form>
         </div>
     </section>
 
-    <footer class="main-footer">
-        <div class="services-inner">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <img src="./static/img/logo_nav.png" alt="Brickell Lab Logo" class="footer-logo">
-                </div>
-                
-                <nav class="footer-nav">
-                    <ul class="footer-links">
-                        <li><a href="#inicio">Inicio</a></li>
-                        <li><a href="#testimonios">Testimonios</a></li>
-                        <li><a href="#contacto">Contacto</a></li>
-                    </ul>
-                </nav>
+<footer class="main-footer">
+    <div class="services-inner">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <img src="./static/img/logo_nav.png" alt="Brickell Lab" class="footer-logo">
             </div>
             
-            <div class="footer-bottom">
-                <p class="copyright">
-                    &copy; 2024 Brickell Lab. Todos los derechos reservados. 
-                    <span class="legal-tag">SISTEMA_OPERATIVO_V.1.0</span>
-                </p>
+            <nav class="footer-nav" aria-label="Navegación secundaria">
+                <ul class="footer-links">
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#testimonios">Testimonios</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+
+            <div class="footer-actions">
+                <a href="https://www.instagram.com/brickell.lab" target="_blank" rel="noopener noreferrer" class="insta-link" aria-label="Seguinos en Instagram">
+                    <img src="./static/img/insta.png" alt="Instagram" class="footer-social-icon">
+                </a>
             </div>
         </div>
-    </footer>
+        
+        <div class="footer-bottom">
+            <p class="copyright">
+                &copy; 2026 Brickell Lab. Todos los derechos reservados. 
+                <span class="legal-tag" aria-hidden="true">SISTEMA_OPERATIVO_V.1.0</span>
+            </p>
+        </div>
+    </div>
+</footer>
 
 
 

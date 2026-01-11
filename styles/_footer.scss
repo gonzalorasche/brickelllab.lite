@@ -1,5 +1,5 @@
 /* ============================================================
-   FOOTER - BRICKELL LAB (AJUSTADO)
+   FOOTER - BRICKELL LAB (SISTEMA_OPERATIVO_V.1.0)
    ============================================================ */
 
 .main-footer {
@@ -12,30 +12,41 @@
         margin: 0 auto;
         padding: 0 20px;
         display: flex;
-        flex-direction: column; // Todo hacia abajo en escritorio
-        align-items: flex-start; // Alineado a la izquierda
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .footer-top {
         margin-bottom: 40px;
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
 
         @media (max-width: 768px) {
-            text-align: left;
+            /* En mobile, logo a la izquierda e Instagram a la derecha */
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 30px;
         }
     }
 
     .footer-logo {
-        height: 35px; // Un poco más discreto
+        height: 30px; 
         width: auto;
         opacity: 0.9;
-        margin-bottom: 30px; // Espacio antes de los links
+        margin-bottom: 30px;
+
+        @media (max-width: 768px) {
+            margin-bottom: 0; 
+        }
     }
 
+    /* Navegación - Solo Desktop */
     .footer-nav {
         @media (max-width: 768px) {
-            display: none; // DESAPARECE EN MOBILE como pediste
+            display: none; 
         }
     }
 
@@ -44,8 +55,8 @@
         padding: 0;
         margin: 0;
         display: flex;
-        flex-direction: column; // Links uno debajo del otro
-        gap: 12px; // Espacio entre links
+        flex-direction: column;
+        gap: 12px;
 
         li a {
             color: rgba(255, 255, 255, 0.5);
@@ -55,13 +66,48 @@
             transition: color 0.3s ease;
 
             &:hover {
-                color: #ffc107; // Amarillo Bootstrap
+                color: #ffc107; 
             }
         }
     }
 
+    /* Redes Sociales - Instagram */
+    .footer-actions {
+        margin-top: 25px; /* Separación de los links en desktop */
+        line-height: 0;   /* Evita espacios extra en el link */
+        
+        @media (max-width: 768px) {
+            margin-top: 0; 
+        }
+
+        .insta-link {
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        /* Estilo ajustado para logos SIN transparencia */
+.footer-social-icon {
+    width: 20px !important;
+    height: 20px !important;
+    object-fit: cover; /* Cambiamos a cover para asegurar que llene el espacio si no es cuadrado */
+    border-radius: 4px; /* Un toque sutil para redondear las esquinas del bloque */
+    
+    /* ELIMINAMOS EL FILTER QUE HACÍA EL BLOQUE GRIS/BLANCO */
+    filter: none !important; 
+    
+    opacity: 0.8; /* Un poco de transparencia general para que no brille tanto */
+    transition: all 0.3s ease;
+
+    &:hover {
+        opacity: 1;
+        transform: translateY(-2px);
+    }}}
+
+
+    /* Copyright y Legal */
     .footer-bottom {
         width: 100%;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
         padding-top: 30px;
         
         .copyright {
@@ -70,12 +116,12 @@
             letter-spacing: 0.5px;
             display: flex;
             justify-content: space-between;
-            align-items: left;
+            align-items: center;
 
             @media (max-width: 768px) {
                 flex-direction: column;
                 gap: 15px;
-                text-align: left;
+                align-items: flex-start;
             }
         }
 

@@ -262,12 +262,12 @@ $text-gray: #a1a1a1;
 
 
 /* ============================================================
-   SECCIÓN CONTACTO - BRICKELL LAB (ULTRA MODERN)
+   SECCIÓN CONTACTO - BRICKELL LAB (ULTRA MODERN - READABLE)
    ============================================================ */
 $bootstrap-warning: #ffc107; 
 
 .contact-section {
-    padding: 80px 0; // Un poco más compacto
+    padding: 80px 0;
     background-color: #000000;
 
     .services-inner {
@@ -279,19 +279,19 @@ $bootstrap-warning: #ffc107;
     .contact-title {
         color: #fff;
         font-family: 'Inter', sans-serif;
-        font-size: 28px; // Más elegante al ser más chico
+        font-size: 28px;
         font-weight: 700;
         margin-bottom: 40px;
         letter-spacing: -0.5px;
     }
 
     .fs-form {
-        max-width: 600px; // Reducimos el ancho para que sea más estilizado
+        max-width: 600px; 
         
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px; // Más aire entre columnas
+            gap: 30px;
             margin-bottom: 30px;
 
             @media (max-width: 600px) {
@@ -305,12 +305,13 @@ $bootstrap-warning: #ffc107;
         display: flex;
         flex-direction: column;
         margin-bottom: 30px;
-        position: relative; // Para efectos de línea
+        position: relative;
 
         .fs-label {
-            color: rgba(255, 255, 255, 0.4); // Gris tenue para no sobrecargar
+            /* MEJORADO: Subí de 0.4 a 0.8 para que NOMBRE/EMAIL se lean claro */
+            color: rgba(255, 255, 255, 0.8); 
             font-family: 'Inter', sans-serif;
-            font-size: 10px; // Estilo micro-copy
+            font-size: 10px;
             font-weight: 700;
             margin-bottom: 8px;
             text-transform: uppercase;
@@ -319,27 +320,29 @@ $bootstrap-warning: #ffc107;
         }
 
         .fs-input {
-            background-color: transparent; // Fuera el fondo gris pesado
+            background-color: transparent;
             border: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1); // Solo línea inferior
-            border-radius: 0; // Recto es más técnico
+            /* MEJORADO: Línea un poco más blanca para ver el límite */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3); 
+            border-radius: 0;
             color: #fff;
             font-family: 'Inter', sans-serif;
             font-size: 14px;
-            padding: 10px 0; // Padding lateral 0 para alinear con la línea
+            padding: 10px 0;
             transition: all 0.3s ease;
             outline: none;
 
             &::placeholder {
-                color: rgba(255, 255, 255, 0.2);
+                /* MEJORADO: Subí de 0.2 a 0.5 para que el ejemplo sea legible */
+                color: rgba(255, 255, 255, 0.5); 
                 font-weight: 300;
             }
 
             &:focus {
                 border-bottom-color: $bootstrap-warning;
-                // En lugar de sombra externa, iluminamos levemente la línea
                 box-shadow: 0 1px 0 $bootstrap-warning; 
                 
+                /* El label cambia a amarillo al escribir */
                 & + .fs-label {
                     color: $bootstrap-warning;
                 }
@@ -356,7 +359,6 @@ $bootstrap-warning: #ffc107;
         margin-top: 10px;
 
         .btn-submit {
-            /* CLON BOOTSTRAP BTN-OUTLINE-WARNING (Compacto) */
             display: inline-block;
             font-family: 'Inter', sans-serif;
             font-weight: 600;
@@ -366,7 +368,7 @@ $bootstrap-warning: #ffc107;
             cursor: pointer;
             background-color: transparent;
             border: 1px solid $bootstrap-warning;
-            padding: 10px 30px; // Más chico
+            padding: 10px 30px;
             font-size: 11px;
             border-radius: 4px;
             transition: all 0.2s ease-in-out;
