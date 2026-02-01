@@ -1,164 +1,39 @@
-/* 1. RESET ANTI-BORDES CORREGIDO */
-html, body {
-    background-color: #0F1115 !important;
-    margin: 0;
-    padding: 0; // <--- CAMBIADO DE 10px A 0
-    overflow-x: hidden;
-}
-
-.hero-container, 
-.nav-container, 
-.services-inner, 
-.footer-container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding-left: 30px !important; 
-    padding-right: 30px !important;
-    box-sizing: border-box;
-}
-
-
-// Variables
-$bg-nav: #000000;
-$white: #ffffff;
-
 .sticky-nav {
     position: fixed;
     top: 0;
     width: 100%;
-    height: 55px; 
-    background: $bg-nav;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+    height: 60px;
+    
+    // --- CRISTAL PURO Y PROFUNDIDAD ---
+    background: rgba(5, 5, 5, 0.4); // Mucho más transparente para que no "pese"
+    backdrop-filter: blur(15px);    // Desenfoque elegante
+    -webkit-backdrop-filter: blur(15px);
+    
+    // En lugar de bordes de colores, usamos un borde blanco casi invisible
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
+    
+    // La clave: una sombra suave que le da volumen sobre el hero
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    
     display: flex;
     align-items: center;
     z-index: 1000;
+
+    // Quitamos el ::before de colores que era "demasiado"
 
     .nav-container {
         width: 100%;
         max-width: 1200px; 
         margin: 0 auto;
-        padding: 0 20px; 
+        padding: 0 30px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-
-        @media (max-width: 768px) {
-            padding: 0 15px; 
-        }
     }
 
-    .nav-logo {
-        display: flex;
-        align-items: center;
-        
-        a {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        img {
-            height: 24px; 
-            width: auto;
-            display: block;
-            filter: brightness(0) invert(1);
-        }
+    .nav-logo img {
+        height: 22px;
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
     }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* El resto del código del #migration-alert queda igual al que ya tenías */
-#migration-alert {
-    position: fixed;
-    top: 55px; 
-    left: 0;
-    width: 100%;
-    min-height: 45px;
-    background: rgba(10, 10, 10, 0.95);
-    color: #ffc107;
-    padding: 10px 15px;
-    z-index: 99999;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 193, 7, 0.5);
-    backdrop-filter: blur(12px);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    text-transform: uppercase;
-    box-sizing: border-box;
-}
-/* ... (mantené los estilos de .alert-content, .alert-icon y .close-alert que ya tenías) */
-
-.alert-content {
-    display: flex;
-    align-items: center; 
-    gap: 10px;
-    flex: 1; 
-}
-
-.alert-content p {
-    margin: 0;
-    line-height: 1.2;
-}
-
-.alert-icon {
-    font-size: 14px;
-    display: flex;
-    align-items: center; 
-    animation: blink 1.5s step-end infinite;
-}
-
-.close-alert {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
-    width: 28px;
-    height: 28px;
-    flex-shrink: 0; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 3px;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-/* --- AJUSTE PARA MOBILE --- */
-@media (max-width: 600px) {
-    #migration-alert {
-        top: 60px; /* Un poquito más de aire en mobile si tu nav cambia de tamaño */
-        font-size: 9px;
-        letter-spacing: 0.5px;
-        padding: 8px 10px;
-    }
-    
-    .alert-content strong {
-        display: block; 
-    }
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-}
-
-/* Espacio extra en el body para que el cartel no tape el inicio del contenido */
-body {
-    padding-top: 100px; /* 55px del nav + 45px del alert */
 }

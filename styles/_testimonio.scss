@@ -5,19 +5,41 @@
    SECCIÓN TESTIMONIOS - BRICKELL LAB (SISTEMA FINAL CORREGIDO)
    ============================================================ */
 
-$tech-yellow: #ffc107;
+/* --- TUS VARIABLES --- */
+$bg-dark: #050505;
+$accent: #ffffff;
 $text-gray: #a1a1a1;
+$tech-yellow: #ffc107;
+$contact-bg: #f5f5f7; // Blanco tecnológico (Apple style)
+$contact-text: #050505;
+$contact-accent: #6e57ff; // Un violeta eléctrico para variar del amarillo
 
 .testimonials-section {
-    padding: 80px 0;
-    background-color: #000000;
+    padding: 100px 0;
+    // Eliminamos el gris #1c1b1b y usamos el negro profundo del Lab
+    background-color: #050505; 
     font-family: 'Inter', sans-serif;
+    position: relative;
     overflow: hidden;
+
+    // --- LUZ DE AMBIENTE TÉCNICA ---
+    // Una línea de energía muy sutil que separa del Hero
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 100%; height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 193, 7, 0.15), transparent);
+    }
+
+    // Reflejo violeta sutil en una esquina para dar coherencia cromática
+    background-image: radial-gradient(circle at 90% 10%, rgba(157, 0, 255, 0.03) 0%, transparent 40%);
 
     .services-inner {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 0 20px;
+        padding: 0 30px; // Alineado con el padding de tu Nav y Hero
         position: relative;
     }
 
@@ -45,32 +67,37 @@ $text-gray: #a1a1a1;
     .testimonial-card {
         min-height: 240px;
         height: auto;
-        background-color: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        // Estilo Cristal (Glassmorphism)
+        background-color: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        
+        border: 1px solid rgba(255, 255, 255, 0.05);
         border-radius: 4px;
-        padding: 25px;
+        padding: 30px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         box-sizing: border-box;
         transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
-        /* MOBILE: Sin transformaciones */
+        /* MOBILE: Visibles por defecto */
         opacity: 1;
         transform: scale(1);
 
         @media (min-width: 1024px) {
-            opacity: 0.15;
-            transform: scale(0.6); 
-            filter: blur(2px);
+            opacity: 0.1; // Más apagadas las laterales para enfoque tipo "Lab"
+            transform: scale(0.85); 
+            filter: grayscale(1) blur(1px);
             pointer-events: none;
 
             &.swiper-slide-active {
                 opacity: 1;
                 transform: scale(1);
-                filter: blur(0);
-                border-color: rgba($tech-yellow, 0.4);
-                background-color: rgba(255, 255, 255, 0.05);
+                filter: grayscale(0) blur(0);
+                border-color: rgba(255, 193, 7, 0.3); // Brillo amarillo sutil
+                background-color: rgba(255, 255, 255, 0.04);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
                 z-index: 10;
                 pointer-events: all;
             }
@@ -78,11 +105,12 @@ $text-gray: #a1a1a1;
     }
 
     .testimonial-text {
-        color: $text-gray;
-        font-size: 14px;
-        line-height: 1.6;
-        font-style: italic;
+        color: #a1a1a1;
+        font-size: 15px;
+        line-height: 1.7;
+        font-style: normal; // Menos decorativo, más profesional
         margin-bottom: 25px;
+        position: relative;
     }
 
     .testimonial-user {
@@ -91,45 +119,47 @@ $text-gray: #a1a1a1;
         gap: 12px;
 
         .avatar-wrapper img {
-            width: 45px;
-            height: 45px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             object-fit: cover;
             filter: grayscale(100%);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.4s ease;
         }
 
-        /* Contenedor de info para poner uno abajo del otro */
         .user-info {
             display: flex;
-            flex-direction: column; // Puesto abajo del nombre
+            flex-direction: column;
             gap: 2px;
         }
 
         .user-name {
             color: #fff;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.2;
         }
 
         .user-role {
-            color: $tech-yellow;
+            color: #ffc107;
             font-weight: 500;
             font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
     }
 
+    // Activación de color en el avatar seleccionado
     .swiper-slide-active .avatar-wrapper img {
         filter: grayscale(0%);
-        border-color: $tech-yellow;
+        border-color: #ffc107;
+        box-shadow: 0 0 10px rgba(255, 193, 7, 0.2);
     }
 
-    /* --- FLECHAS --- */
+    /* --- FLECHAS TÉCNICAS --- */
     .lab-arrow {
-        color: $tech-yellow;
+        color: #ffc107;
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
@@ -144,31 +174,39 @@ $text-gray: #a1a1a1;
             justify-content: center;
         }
 
-        &::after { font-size: 20px; font-weight: 900; }
-        &:hover { color: #fff; transform: translateY(-50%) scale(1.1); }
+        &::after { 
+            font-size: 18px; 
+            font-weight: 900; 
+        }
+        
+        &:hover { 
+            color: #fff; 
+            transform: translateY(-50%) scale(1.1); 
+        }
     }
 
-    .swiper-button-prev { left: 10px; }
-    .swiper-button-next { right: 10px; }
+    .swiper-button-prev { left: 0px; }
+    .swiper-button-next { right: 0px; }
 
-    /* --- PAGINACIÓN --- */
+    /* --- PAGINACIÓN ESTILO TERMINAL --- */
     .swiper-pagination {
         position: relative !important;
-        margin-top: 40px !important;
+        margin-top: 50px !important;
         text-align: center !important;
         bottom: 0 !important;
 
         .swiper-pagination-bullet {
-            background: #333 !important;
+            background: rgba(255, 255, 255, 0.1) !important;
             opacity: 1 !important;
-            border-radius: 0 !important;
-            width: 6px;
-            height: 6px;
-            transition: 0.3s;
+            border-radius: 0 !important; // Cuadradas como los elementos del Hero
+            width: 8px;
+            height: 2px; // Estilo línea de carga
+            transition: all 0.3s ease;
 
             &-active {
-                background: $tech-yellow !important;
-                width: 25px !important;
+                background: #ffc107 !important;
+                width: 30px !important;
+                box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
             }
         }
     }
@@ -262,39 +300,53 @@ $text-gray: #a1a1a1;
 
 
 /* ============================================================
-   SECCIÓN CONTACTO - BRICKELL LAB (ULTRA MODERN - READABLE)
+   SECCIÓN CONTACTO - FULL SCREEN LAB
    ============================================================ */
-$bootstrap-warning: #ffc107; 
-
 .contact-section {
-    padding: 80px 0;
-    background-color: #000000;
+    width: 100%;
+    // Fuerza a que la sección mida al menos el 100% de la altura de la pantalla
+    min-height: 100vh; 
+    display: flex;
+    align-items: center; // Centra el contenido verticalmente
+    
+    background-color: #050505; 
+    position: relative;
+    padding: 100px 0; // Espacio de seguridad para el contenido
+    box-sizing: border-box;
+    overflow: hidden;
+
+    // Gradiente ambiental para llenar el espacio de pantalla completa
+    background-image: 
+        radial-gradient(circle at 10% 90%, rgba(157, 0, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 90% 10%, rgba(0, 200, 255, 0.03) 0%, transparent 40%);
 
     .services-inner {
+        width: 100%;
         max-width: 1200px;
         margin: 0 auto;
-        padding: 0 20px;
+        padding: 0 30px;
+        z-index: 2;
     }
 
     .contact-title {
         color: #fff;
         font-family: 'Inter', sans-serif;
-        font-size: 28px;
+        font-size: clamp(28px, 5vw, 36px); // Tamaño fluido
         font-weight: 700;
-        margin-bottom: 40px;
-        letter-spacing: -0.5px;
+        margin-bottom: 50px;
+        letter-spacing: -1px;
     }
 
     .fs-form {
-        max-width: 600px; 
+        max-width: 650px; // Un poco más ancho para llenar mejor el espacio
         
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            gap: 40px;
             margin-bottom: 30px;
 
-            @media (max-width: 600px) {
+            @media (max-width: 768px) {
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
@@ -304,86 +356,81 @@ $bootstrap-warning: #ffc107;
     .fs-field {
         display: flex;
         flex-direction: column;
-        margin-bottom: 30px;
+        margin-bottom: 35px;
         position: relative;
 
         .fs-label {
-            /* MEJORADO: Subí de 0.4 a 0.8 para que NOMBRE/EMAIL se lean claro */
-            color: rgba(255, 255, 255, 0.8); 
-            font-family: 'Inter', sans-serif;
+            color: rgba(255, 255, 255, 0.7); 
             font-size: 10px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            transition: color 0.3s ease;
+            letter-spacing: 2px;
         }
 
         .fs-input {
             background-color: transparent;
             border: none;
-            /* MEJORADO: Línea un poco más blanca para ver el límite */
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2); 
             border-radius: 0;
             color: #fff;
             font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            padding: 10px 0;
-            transition: all 0.3s ease;
+            font-size: 16px; // Un poco más grande para el look full screen
+            padding: 12px 0;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             outline: none;
 
-            &::placeholder {
-                /* MEJORADO: Subí de 0.2 a 0.5 para que el ejemplo sea legible */
-                color: rgba(255, 255, 255, 0.5); 
-                font-weight: 300;
-            }
-
             &:focus {
-                border-bottom-color: $bootstrap-warning;
-                box-shadow: 0 1px 0 $bootstrap-warning; 
+                border-bottom-color: #ffc107;
+                box-shadow: 0 1px 0 #ffc107; 
                 
-                /* El label cambia a amarillo al escribir */
                 & + .fs-label {
-                    color: $bootstrap-warning;
+                    color: #ffc107;
                 }
             }
         }
         
         textarea.fs-input {
-            resize: none;
-            min-height: 80px;
+            min-height: 100px;
         }
     }
 
     .form-actions {
-        margin-top: 10px;
+    margin-top: 10px; // Espaciado superior respecto al último input
 
-        .btn-submit {
-            display: inline-block;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            color: $bootstrap-warning;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            background-color: transparent;
-            border: 1px solid $bootstrap-warning;
-            padding: 10px 30px;
-            font-size: 11px;
-            border-radius: 4px;
-            transition: all 0.2s ease-in-out;
+    .btn-submit {
+        // --- ESTILO BASE (IDÉNTICO A BTN-WARNING) ---
+        display: inline-block;
+        background: transparent;
+        color: #ffc107; 
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 16px 40px;
+        border-radius: 4px;
+        border: 1px solid #ffc107;
+        
+        // La física del movimiento (Cubic Bezier)
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        cursor: pointer;
+        outline: none;
 
-            &:hover {
-                color: #000;
-                background-color: $bootstrap-warning;
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba($bootstrap-warning, 0.2);
-            }
-
-            &:active {
-                transform: scale(0.95);
-            }
+        // --- HOVER: ACTIVACIÓN SÓLIDA ---
+        &:hover {
+            background: #ffc107;
+            color: #000;
+            // Brillo de activación sutil (Glow)
+            box-shadow: 0 0 25px rgba(255, 193, 7, 0.4);
         }
+
+        // --- ACTIVE: EFECTO DE PRESIÓN ---
+        &:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+    }
+
     }
 }
 
@@ -392,15 +439,37 @@ $bootstrap-warning: #ffc107;
 
 
 
+.testimonial-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; // Asegura que el botón quede abajo si hay poco texto
 
+    .testimonial-action {
+        margin-top: 25px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        padding-top: 20px;
 
+        .btn-project {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: $tech-yellow;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            transition: all 0.3s ease;
 
+            svg {
+                transition: transform 0.3s ease;
+            }
 
-
-
-
-
-
-
-
-
+            &:hover {
+                color: #fff;
+                svg {
+                    transform: translate(2px, -2px);
+                }
+            }
+        }
+    }
+}

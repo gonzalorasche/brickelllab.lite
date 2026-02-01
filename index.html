@@ -4,44 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Brickell Lab | Desarrollo Web y Soluciones Digitales</title>
-    <meta name="description" content="Estudio de diseño especializado en desarrollo web, UX/UI y branding. Creamos interfaces de alto impacto y soluciones digitales para escalar tu negocio hoy.">
-    <meta name="keywords" content="desarrollo web, diseño ux ui, branding digital, estudio de diseño, brickell lab, packaging, soluciones digitales, interfaces modernas, optimización web, diseño gráfico">
+    <title>Brickell Lab | Desarrollo Web, UX/UI y Branding en Argentina</title>
+    <meta name="description" content="Impulsa tu negocio con Brickell Lab. Expertos en desarrollo web de alto impacto, diseño UX/UI y branding digital. Soluciones digitales a medida en Argentina.">
+    <link rel="canonical" href="https://labbrickell.com.ar/">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Gonzalo Raschella">
 
-    <!-- ICONOS -->
-    <link rel="icon" href="./static/img/icon.png" type="image/x-icon">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Brickell Lab | Desarrollo Web y Soluciones Digitales">
+    <meta property="og:description" content="Creamos interfaces de alto impacto y soluciones digitales para escalar tu negocio. Diseño UX/UI, Web y Branding.">
+    <meta property="og:url" content="https://labbrickell.com.ar/">
+    <meta property="og:image" content="https://labbrickell.com.ar/static/img/og-image.jpg"> <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Brickell Lab | Soluciones Digitales">
+    <meta name="twitter:description" content="Desarrollo web y diseño UX/UI para escalar tu negocio.">
+
     <link rel="icon" href="./static/img/icon.png" type="image/png">
     <link rel="apple-touch-icon" href="./static/img/appleicon.png">
 
-    <!-- FUENTES -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <!-- BOOSTRAP -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-    <!-- OTROS SCRIPTS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-    <!-- STYLES -->
     <link rel="stylesheet" href="./styles/main.css">
 
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "Brickell Lab",
+      "image": "https://labbrickell.com.ar/static/img/icon.png",
+      "@id": "",
+      "url": "https://labbrickell.com.ar/",
+      "telephone": "", 
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Buenos Aires",
+        "addressCountry": "AR"
+      },
+      "serviceType": ["Desarrollo Web", "Diseño UX/UI", "Branding"],
+      "founder": {
+        "@type": "Person",
+        "name": "Gonzalo Raschella"
+      }
+    }
+    </script>
 </head>
 
 <body>
-
-<div id="migration-alert">
-    <div class="alert-content">
-        <span class="alert-icon">⚠️</span>
-        <p>Estamos migrando nuestro sitio, disfrutá mientras tanto de la <strong>VERSIÓN LITE</strong></p>
-    </div>
-    <button onclick="document.getElementById('migration-alert').style.display='none'; document.body.style.paddingTop='55px'" class="close-alert">
-    &times;
-</button>
-</div>
 
 <nav class="sticky-nav">
     </nav>
@@ -130,12 +142,7 @@
         </section>
     </main>
 
-    <div class="mobile-divider-tech" aria-hidden="true">
-        <div class="ping-container">
-            <div class="ping-ball"></div>
-            <div class="ping-wave"></div>
-        </div>
-    </div>
+
 
     <section class="testimonials-section" id="testimonios" aria-labelledby="testimonial-heading">
         <div class="services-inner">
@@ -143,6 +150,30 @@
             
             <div class="swiper testimonial-carousel">
                 <div class="swiper-wrapper">
+                    
+                    <div class="swiper-slide testimonial-card" role="group" aria-roledescription="testimonio">
+                        <p class="testimonial-text">“Tenía el servicio de tarot, pero no una forma clara de que me contacten. Me ayudaron a ordenar la imagen y a crear una página simple y profesional que hoy convierte visitas en consultas.”</p>
+                        
+                        <div class="testimonial-user">
+                                <div class="avatar-wrapper">
+                                    <img src="./static/img/anamaria.png" alt="Ana Maria">
+                                </div>
+                                <div class="user-info">
+                                    <span class="user-name">ANA MARÍA</span>
+                                    <span class="user-role">TAROTISTA</span>
+                                </div>
+                            </div>
+
+                            <div class="testimonial-action">
+                                <a href="https://anamariatarot-sigma.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn-project">
+                                    VER PROYECTO
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                                        <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>                    
                     
                     <div class="swiper-slide testimonial-card" role="group" aria-roledescription="testimonio">
                         <p class="testimonial-text">"Buscaba una web que transmitiera la seriedad de mi estudio y el resultado fue impecable. El proceso fue muy organizado y entendieron rápido la estética sobria que necesitaba."</p>
@@ -183,18 +214,7 @@
                         </div>
                     </div>
 
-                    <div class="swiper-slide testimonial-card" role="group" aria-roledescription="testimonio">
-                        <p class="testimonial-text">"Tenía una idea dando vueltas y los chicos la bajaron a tierra enseguida. Me armaron toda la imagen nueva y ahora el local tiene otra presencia, mucho más profesional."</p>
-                        <div class="testimonial-user">
-                            <div class="avatar-wrapper">
-                                <img src="./static/img/testimonio_marcos.png" alt="Marcos">
-                            </div>
-                            <div class="user-info">
-                                <span class="user-name">MARCOS RUIZ</span>
-                                <span class="user-role">COMERCIANTE</span>
-                            </div>
-                        </div>
-                    </div>
+                    
 
                     <div class="swiper-slide testimonial-card" role="group" aria-roledescription="testimonio">
                         <p class="testimonial-text">"Les pedí ayuda porque tenía todo desordenado y me terminaron haciendo desde la web hasta las etiquetas de los envíos. Ahora todo tiene el mismo estilo y la marca se ve mucho más profesional."</p>
@@ -296,7 +316,6 @@
         <div class="footer-bottom">
             <p class="copyright">
                 &copy; 2026 Brickell Lab. Todos los derechos reservados. 
-                <span class="legal-tag" aria-hidden="true">ESTADO: MIGRACIÓN_ACTIVA // VERSIÓN_LITE_V.1.0</span>
             </p>
         </div>
     </div>

@@ -1,285 +1,180 @@
-// Variables
+/* --- TUS VARIABLES --- */
 $bg-dark: #050505;
 $accent: #ffffff;
 $text-gray: #a1a1a1;
 $tech-yellow: #ffc107;
-$grid-color: rgba(255, 255, 255, 0.05);
+$glass-border: rgba(255, 255, 255, 0.1);
 
+/* ============================================================
+   HERO SECTION - FIX FINAL: AIRE SUPERIOR + RESPONSIVE
+   ============================================================ */
 .hero-section {
     width: 100%;
-    min-height: 100vh;
     background-color: $bg-dark;
-    
-    // Patrón de grilla técnica
-    background-image: 
-        linear-gradient($grid-color 1px, transparent 1px),
-        linear-gradient(90deg, $grid-color 1px, transparent 1px);
-    background-size: 40px 40px;
-
-    padding-top: 100px; 
-    padding-bottom: 60px;
+    position: relative;
+    overflow-x: hidden;
     box-sizing: border-box;
+    
+    // MODO MOBILE: Flujo natural con mucho aire arriba
+    display: block; 
+    padding: 120px 0 60px 0; 
 
-    .hero-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        width: 100%;
-        padding-left: 20px;
-        padding-right: 20px;
-
-        @media (max-width: 768px) {
-            padding-left: 15px;
-            padding-right: 15px;
-        }
+    // MODO ESCRITORIO: Altura fija + Aire para la Nav
+    @media (min-width: 992px) {
+        display: flex;
+        align-items: center;
+        height: 100vh; 
+        // Agregamos un padding superior para compensar los 60px de tu nav
+        padding: 60px 0 0 0; 
     }
 
-    // --- ESTRUCTURA SPLIT ---
+    // --- FONDO LABORATORIO ---
+    background-image: 
+        radial-gradient(circle at 15% 25%, rgba(157, 0, 255, 0.2) 0%, transparent 55%), 
+        radial-gradient(circle at 85% 75%, rgba(0, 200, 255, 0.25) 0%, transparent 55%), 
+        radial-gradient(circle at 50% 50%, rgba(5, 5, 5, 0.9) 0%, #000 100%);
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        opacity: 0.02;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .hero-container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 30px;
+        position: relative;
+        z-index: 5;
+    }
+
     .hero-split {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 60px;
+        grid-template-columns: 1fr;
+        gap: 40px;
         align-items: center;
-        margin-bottom: 80px;
+        margin-bottom: 50px;
 
-        @media (max-width: 768px) {
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-            text-align: left; // CORREGIDO: Alineación a la izquierda
+        @media (min-width: 992px) {
+            grid-template-columns: 1.1fr 0.9fr;
+            margin-bottom: 40px; // Reducido un poco para que las cards suban
         }
     }
 
     .hero-text {
-        @media (max-width: 768px) { order: 1; }
-
-        .lab-badge {
-            font-size: 10px;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 2px;
-            color: $tech-yellow;
-            border: 1px solid rgba($tech-yellow, 0.3);
-            padding: 4px 8px;
-            border-radius: 2px;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-
         h1 {
-            font-size: 3.5rem;
-            line-height: 1.1;
+            font-size: clamp(2.2rem, 8vw, 3.5rem); 
+            line-height: 1.1; 
             font-weight: 700;
-            letter-spacing: -1px;
-            margin-bottom: 30px;
+            letter-spacing: -1px; 
+            margin-bottom: 25px;
             color: $accent;
-            
-            @media (max-width: 768px) { 
-                font-size: 2.5rem; 
-                text-align: left; // Aseguramos título a la izquierda
-            }
         }
 
         p {
             font-size: 1.1rem;
             color: $text-gray;
-            line-height: 1.6;
-            max-width: 90%;
-            margin-bottom: 32px;
-            
-            @media (max-width: 768px) { 
-                margin: 0 0 32px 0; // CORREGIDO: Quitamos el margin auto que centraba
-                text-align: left;    // Aseguramos párrafo a la izquierda
-            }
+            line-height: 1.7;
+            max-width: 500px;
+            margin-bottom: 35px;
         }
+    }
 
-        .btn-warning {
-            display: inline-block;
-            background: $tech-yellow; 
+    .btn-warning {
+        background: transparent;
+        color: $tech-yellow;
+        font-weight: 700;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 14px 35px;
+        border-radius: 4px;
+        border: 1px solid $tech-yellow;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        cursor: pointer;
+
+        &:hover {
+            background: $tech-yellow;
             color: #000;
-            font-weight: 700;
-            font-size: 12px;
-            letter-spacing: 1px;
-            padding: 12px 30px;
-            text-decoration: none;
-            border-radius: 2px;
-            transition: 0.3s ease;
-
-            &:hover {
-                background: #000000;
-                color: $tech-yellow;
-                transform: translateY(-2px);
-
-                 &:active {
-                transform: scale(0.95);
-            }
-            }
+            box-shadow: 0 0 20px rgba($tech-yellow, 0.4);
+            transform: translateY(-2px);
         }
     }
-}
 
+    .hero-image {
+        display: flex;
+        justify-content: center;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-@keyframes glowFlicker {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-}
-
-.hero-image {
-    @media (max-width: 768px) { 
-        order: 2; 
-        width: 100%; 
-        margin-top: 20px;
-    }
-    display: flex;
-    justify-content: center;
-    position: relative;
-    /* Evita que cualquier brillo se escape del contenedor */
-    overflow: hidden; 
-
-    .image-wrapper {
-        position: relative;
-        max-width: 100%;
-        display: inline-block;
-        z-index: 1;
-        /* Padding para que el resplandor tenga aire y no toque los bordes */
-        padding: 20px; 
-        
-        // EL DESTELLO SUTIL - SOLO NÚCLEO CENTRAL
-        &::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            
-            // MUCHO MÁS CHICO: Solo el corazón de la imagen
-            width: 60%; 
-            height: 60%;
-            
-            background: radial-gradient(
-                circle, 
-                rgba($tech-yellow, 0.25) 0%, // Un poco más de color en el centro
-                transparent 70%              // Muere mucho antes de llegar al borde
-            );
-            
-            filter: blur(35px); 
-            z-index: -1;
-            pointer-events: none;
-            animation: glowFlicker 5s infinite ease-in-out;
+        @media (min-width: 992px) {
+            justify-content: flex-end;
         }
 
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            filter: grayscale(10%) contrast(110%);
-            border-radius: 4px;
+        .image-wrapper {
             position: relative;
-            z-index: 2;
-            /* Quitamos el borde blanco para que no atrape luz innecesaria */
-            border: none; 
+            max-width: 420px; 
+            
+            img {
+                width: 100%;
+                height: auto;
+                filter: drop-shadow(0 0 50px rgba(0,0,0,0.5));
+                border-radius: 8px;
+            }
         }
     }
-}
 
-
-
-
-
-
-
-
-
-
-
-
-
-// --- CARDS ---
     .services-grid {
-        @media (max-width: 768px) { order: 3; }
-
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: 1fr;
         gap: 20px;
+        width: 100%;
 
-        @media (max-width: 900px) { grid-template-columns: repeat(2, 1fr); }
-        @media (max-width: 600px) { grid-template-columns: 1fr; }
+        @media (min-width: 600px) { grid-template-columns: repeat(2, 1fr); }
+        @media (min-width: 992px) { grid-template-columns: repeat(4, 1fr); }
 
         .tech-card {
-            background: #0a0a0a; // Color sólido (sustituye al transparente)
-            border: 1px solid rgba(255, 255, 255, 0.15); // Borde un poco más visible
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 24px;
             border-radius: 4px;
             position: relative;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s ease;
             overflow: hidden;
-
-            .card-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 20px;
-
-                .code {
-                    font-family: 'Courier New', monospace;
-                    font-size: 10px;
-                    color: $text-gray;
-                }
-
-                .indicator {
-                    width: 6px;
-                    height: 6px;
-                    background-color: #333;
-                    border-radius: 50%;
-                    transition: 0.3s ease;
-                }
-            }
-
-            h3 {
-                font-size: 1.1rem;
-                font-weight: 600;
-                margin-bottom: 10px;
-                color: $accent;
-            }
-
-            p {
-                font-size: 0.85rem;
-                color: $text-gray;
-                line-height: 1.5;
-            }
-
-            &:hover {
-                border-color: rgba($tech-yellow, 0.6); // Más intenso el borde al hover
-                transform: translateY(-5px);
-                background: #111; // Fondo sólido un poco más claro al hover
-
-                .indicator {
-                    background-color: $tech-yellow;
-                    box-shadow: 0 0 10px $tech-yellow;
-                }
-            }
 
             &::before {
                 content: '';
                 position: absolute;
                 top: 0; left: 0;
-                width: 12px; height: 12px;
-                border-top: 2px solid $tech-yellow; // Un toque más grueso para que destaque
+                width: 15px; height: 15px;
+                border-top: 2px solid $tech-yellow;
                 border-left: 2px solid $tech-yellow;
                 opacity: 0;
                 transition: 0.3s;
+                transform: translate(-5px, -5px);
             }
-            &:hover::before { opacity: 1; }
+
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 15px;
+                .code { font-family: monospace; font-size: 9px; color: rgba($text-gray, 0.5); }
+                .indicator { width: 6px; height: 6px; background: #222; border-radius: 50%; transition: 0.3s; }
+            }
+
+            h3 { font-size: 1.1rem; color: $accent; margin-bottom: 10px; }
+            p { font-size: 0.85rem; color: rgba($text-gray, 0.8); line-height: 1.6; }
+
+            &:hover {
+                transform: translateY(-8px);
+                background: rgba(255, 255, 255, 0.06);
+                border-color: rgba($tech-yellow, 0.4);
+                &::before { opacity: 1; transform: translate(0, 0); }
+                .indicator { background: $tech-yellow; box-shadow: 0 0 10px $tech-yellow; }
+            }
         }
-        }
+    }
+}
