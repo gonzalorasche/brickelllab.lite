@@ -6,27 +6,26 @@
     
     <meta name="google-site-verification" content="MCyfiatBkjYUPIvGJqf48TgujB_KmI07B_Uqm4IEwrc" />
 
-    <title>Desarrollo Web y Diseño UX/UI | Brickell Lab Argentina</title>
+    <title id="meta-title">Desarrollo Web y Diseño UX/UI | Brickell Lab Argentina</title>
     
-    <meta name="description" content="Brickell Lab: Agencia boutique de desarrollo web de alto impacto, diseño de interfaces UX/UI y branding digital. Escalamos negocios en Argentina, México y USA con tecnología de vanguardia.">
+    <meta name="description" id="meta-desc" content="Brickell Lab: Agencia boutique de desarrollo web de alto impacto, diseño de interfaces UX/UI y branding digital. Escalamos negocios en Argentina, México y USA con tecnología de vanguardia.">
     <meta name="keywords" content="Desarrollo Web, Diseño UX/UI, Branding Digital, Agencia Web Argentina, Diseño de Interfaces, React, SCSS, Brickell Lab, Gonzalo Raschella, Diseño Web Miami, Desarrollo E-commerce">
     
     <link rel="canonical" href="https://labbrickell.com.ar/">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Gonzalo Raschella">
 
-    <link rel="alternate" hreflang="es-AR" href="https://labbrickell.com.ar/" />
-    <link rel="alternate" hreflang="es-MX" href="https://labbrickell.com.ar/" />
-    <link rel="alternate" hreflang="es-US" href="https://labbrickell.com.ar/" />
+    <link rel="alternate" hreflang="es" href="https://labbrickell.com.ar/" />
+    <link rel="alternate" hreflang="en" href="https://labbrickell.com.ar/" />
     <link rel="alternate" hreflang="x-default" href="https://labbrickell.com.ar/" />
 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Brickell Lab | Desarrollo Web y Diseño UX/UI de Autor">
-    <meta property="og:description" content="Transformamos marcas con soluciones digitales premium. Expertos en Web, UX/UI y Branding con alcance internacional.">
+    <meta property="og:title" id="og-title" content="Brickell Lab | Desarrollo Web y Diseño UX/UI de Autor">
+    <meta property="og:description" id="og-desc" content="Transformamos marcas con soluciones digitales premium. Expertos en Web, UX/UI y Branding con alcance internacional.">
     <meta property="og:url" content="https://labbrickell.com.ar/">
     <meta property="og:image" content="https://labbrickell.com.ar/assets/static/img/og-image.jpg">
-    <meta property="og:image:alt" content="Brickell Lab - Desarrollo Web de Alto Impacto">
-    <meta property="og:locale" content="es_AR">
+    <meta property="og:image:alt" id="og-img-alt" content="Brickell Lab - Desarrollo Web de Alto Impacto">
+    <meta property="og:locale" id="og-locale" content="es_AR">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Brickell Lab | Soluciones Digitales">
@@ -97,14 +96,22 @@
         <div class="nav__actions">
             <div class="nav__socials">
                 <a href="https://www.instagram.com/brickell.lab/" target="_blank" rel="noopener">
-                    <img src="./assets/static/img/instagram.png" alt="Síguenos en Instagram">
+                    <img src="./assets/static/img/instagram.png" alt="Instagram">
                 </a>
                 <a href="https://www.linkedin.com/company/brickell-lab" target="_blank" rel="noopener">
-                    <img src="./assets/static/img/linkedin.png" alt="Síguenos en LinkedIn">
+                    <img src="./assets/static/img/linkedin.png" alt="LinkedIn">
                 </a>
             </div>
             
-            <a href="#contacto" class="btn btn--outline btn--desktop-only">Contacto</a>
+            <a href="#contacto" class="btn btn--outline btn--desktop-only" data-i18n="nav-contact">Contacto</a>
+
+            <div class="nav__lang">
+                <button id="lang-switch" class="lang-btn">
+                    <span class="lang-text active" data-lang="es">ES</span>
+                    <span class="lang-divider">/</span>
+                    <span class="lang-text" data-lang="en">EN</span>
+                </button>
+            </div>
         </div>
     </div>
 </nav>
@@ -124,22 +131,22 @@
     </div>
 
     <div class="hero__container">
-        <h1 class="hero__title">
+        <h1 class="hero__title" data-i18n="hero-title">
             Desarrollo web <br>
             y diseño <br>
             <span class="text-serif">high-end</span>
         </h1>
         
         <div class="hero__footer">
-            <p class="hero__subtitle">
+            <p class="hero__subtitle" data-i18n="hero-subtitle">
                 Brickell Lab — Estudio boutique de soluciones digitales. Especializados en branding, UX/UI y desarrollo web a medida para mercados globales.
             </p>
-            <a href="#proyectos" class="link-proyectos">Ver proyectos</a>
+            <a href="#proyectos" class="link-proyectos" data-i18n="hero-btn">Ver proyectos</a>
         </div>
     </div>
 
     <div class="hero__scroll">
-        <span class="scroll-text">Scroll</span>
+        <span class="scroll-text" data-i18n="scroll">Scroll</span>
         <span class="scroll-line"></span>
     </div>
 </section>
@@ -158,7 +165,7 @@
 <section class="services" id="servicios">
     <div class="services__container">
         <header class="services__header">
-            <h2 class="services__title-main">Servicios</h2>
+            <h2 class="services__title-main" data-i18n="serv-main-title">Servicios</h2>
         </header>
         
         <div class="services__poster-grid">
@@ -167,8 +174,8 @@
                     <span class="poster-item__index">01</span>
                     <span class="poster-item__category">Tech</span>
                 </div>
-                <h3 class="poster-item__title">desarrollo <br>web</h3>
-                <p class="poster-item__desc">Sitios rápidos, escalables y optimizados para convertir visitas en ventas.</p>
+                <h3 class="poster-item__title" data-i18n="serv-1-title">desarrollo <br>web</h3>
+                <p class="poster-item__desc" data-i18n="serv-1-desc">Sitios rápidos, escalables y optimizados para convertir visitas en ventas.</p>
                 <div class="poster-item__line-wrapper">
                     <div class="poster-item__line poster-item__line--web"></div>
                 </div>
@@ -179,8 +186,8 @@
                     <span class="poster-item__index">02</span>
                     <span class="poster-item__category">Interface</span>
                 </div>
-                <h3 class="poster-item__title">diseño <br>ux / ui</h3>
-                <p class="poster-item__desc">Interfaces intuitivas diseñadas bajo análisis de comportamiento.</p>
+                <h3 class="poster-item__title" data-i18n="serv-2-title">diseño <br>ux / ui</h3>
+                <p class="poster-item__desc" data-i18n="serv-2-desc">Interfaces intuitivas diseñadas bajo análisis de comportamiento.</p>
                 <div class="poster-item__line-wrapper">
                     <div class="poster-item__line poster-item__line--ux"></div> 
                 </div>
@@ -191,8 +198,8 @@
                     <span class="poster-item__index">03</span>
                     <span class="poster-item__category">Physical</span>
                 </div>
-                <h3 class="poster-item__title">packaging <br>design</h3>
-                <p class="poster-item__desc">Diseño físico que conecta con tu audiencia desde el primer contacto.</p>
+                <h3 class="poster-item__title" data-i18n="serv-3-title">packaging <br>design</h3>
+                <p class="poster-item__desc" data-i18n="serv-3-desc">Diseño físico que conecta con tu audiencia desde el primer contacto.</p>
                 <div class="poster-item__line-wrapper">
                     <div class="poster-item__line poster-item__line--pack"></div>
                 </div>
@@ -203,8 +210,8 @@
                     <span class="poster-item__index">04</span>
                     <span class="poster-item__category">Identity</span>
                 </div>
-                <h3 class="poster-item__title">Diseño <br>Gráfico</h3>
-                <p class="poster-item__desc">Identidad visual sólida y coherente para diferenciarte.</p>
+                <h3 class="poster-item__title" data-i18n="serv-4-title">Diseño <br>Gráfico</h3>
+                <p class="poster-item__desc" data-i18n="serv-4-desc">Identidad visual sólida y coherente para diferenciarte.</p>
                 <div class="poster-item__line-wrapper">
                     <div class="poster-item__line poster-item__line--brand"></div>
                 </div>
@@ -226,7 +233,7 @@
 <section class="projects" id="proyectos">
     <div class="projects__container">
         <header class="projects__header">
-            <h2 class="projects__title-main">Proyectos</h2>
+            <h2 class="projects__title-main" data-i18n="projects-main-title">Proyectos</h2>
         </header>
 
         <div class="projects__grid">
@@ -234,7 +241,7 @@
                 <div class="project-card__image-container">
                     <img src="./assets/static/img/proyecto-1.webp" alt="Proyecto Pilates Power Fit" class="project-card__img">
                     <div class="project-card__cta-tag">
-                        <span>Ver Proyecto</span>
+                        <span data-i18n="projects-view">Ver Proyecto</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M7 17L17 7M17 7H7M17 7V17" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -242,7 +249,7 @@
                 </div>
                 <div class="project-card__footer">
                     <h3 class="project-card__title">Pilates Power Fit</h3>
-                    <p class="project-card__desc">Desarrollo web y de marca para estudio de Pilates Intenso.</p>
+                    <p class="project-card__desc" data-i18n="proj-1-desc">Desarrollo web y de marca para estudio de Pilates Intenso.</p>
                 </div>
             </a>
 
@@ -250,7 +257,7 @@
                 <div class="project-card__image-container">
                     <img src="./assets/static/img/proyecto-2.webp" alt="Proyecto Ana María Tarot" class="project-card__img">
                     <div class="project-card__cta-tag">
-                        <span>Ver Proyecto</span>
+                        <span data-i18n="projects-view">Ver Proyecto</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M7 17L17 7M17 7H7M17 7V17" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -258,7 +265,7 @@
                 </div>
                 <div class="project-card__footer">
                     <h3 class="project-card__title">Ana María Tarot</h3>
-                    <p class="project-card__desc">Plataforma global para gestión de flujo de clientes internacionales.</p>
+                    <p class="project-card__desc" data-i18n="proj-2-desc">Plataforma global para gestión de flujo de clientes internacionales.</p>
                 </div>
             </a>
         </div>
@@ -310,17 +317,17 @@
 <section class="contact" id="contacto">
     <div class="contact__container">
         <header class="contact__header">
-            <h2 class="contact__title-main">Contacto</h2>
+            <h2 class="contact__title-main" data-i18n="contact-main-title">Contacto</h2>
         </header>
 
         <div class="contact__content">
-            <h3 class="contact__headline">Iniciemos la fórmula <br>de tu proyecto</h3>
+            <h3 class="contact__headline" data-i18n="contact-headline">Iniciemos la fórmula <br>de tu proyecto</h3>
 
             <form action="https://formspree.io/f/xpqqaywe" class="contact__form" method="POST">
                 <div class="contact__grid">
                     <div class="contact__field">
-                        <label class="contact__label" for="name">Nombre</label>
-                        <input class="contact__input" id="name" name="name" type="text" placeholder="Ej: Juan Perez" required>
+                        <label class="contact__label" for="name" data-i18n="contact-label-name">Nombre</label>
+                        <input class="contact__input" id="name" name="name" type="text" placeholder="Ej: Juan Perez" required data-i18n-ph="contact-ph-name">
                     </div>
 
                     <div class="contact__field">
@@ -330,13 +337,13 @@
                 </div>
 
                 <div class="contact__field">
-                    <label class="contact__label" for="message">Mensaje</label>
-                    <textarea class="contact__input" id="message" name="message" rows="1" placeholder="Contanos sobre tu idea..." required></textarea>
+                    <label class="contact__label" for="message" data-i18n="contact-label-msg">Mensaje</label>
+                    <textarea class="contact__input" id="message" name="message" rows="1" placeholder="Contanos sobre tu idea..." required data-i18n-ph="contact-ph-msg"></textarea>
                 </div>
 
                 <div class="contact__actions">
                     <button type="submit" class="contact__btn">
-                        <span>Enviar Mensaje</span>
+                        <span data-i18n="contact-btn">Enviar Mensaje</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M7 17L17 7M17 7H7M17 7V17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -366,27 +373,26 @@
 
         <nav class="footer__nav">
             <ul class="footer__nav-list">
-                <li><a href="#servicios" class="footer__nav-link">Servicios</a></li>
-                <li><a href="#proyectos" class="footer__nav-link">Proyectos</a></li>
-                <li><a href="#contacto" class="footer__nav-link">Contacto</a></li>
+                <li><a href="#servicios" class="footer__nav-link" data-i18n="footer-link-serv">Servicios</a></li>
+                <li><a href="#proyectos" class="footer__nav-link" data-i18n="footer-link-proj">Proyectos</a></li>
+                <li><a href="#contacto" class="footer__nav-link" data-i18n="footer-link-cont">Contacto</a></li>
             </ul>
         </nav>
 
         <div class="footer__socials">
             <a href="https://www.linkedin.com/company/brickell-lab" rel="noopener" target="_blank" class="footer__social-link">
-                <img src="./assets/static/img/linkedin.png" alt="Síguenos en LinkedIn">
+                <img src="./assets/static/img/linkedin.png" alt="LinkedIn" data-i18n-alt="alt-linkedin">
             </a>
             <a href="https://www.instagram.com/brickell.lab/" rel="noopener" target="_blank" class="footer__social-link">
-                <img src="./assets/static/img/instagram.png" alt="Síguenos en Instagram">
-            </a>
-            <a href="https://wa.me/5491162770800?text=Hola,%20quiero%20contactarme%20con%20Brickell%20Lab" rel="noopener" target="_blank" class="footer__social-link">
-                <img src="./assets/static/img/whatsapp.png" alt="Escribinos por WhatsApp">
+                <img src="./assets/static/img/instagram.png" alt="Instagram" data-i18n-alt="alt-instagram">
+            <a href="https://wa.me/5491162770800?text=Hola,%20quiero%20contactarme%20con%20Brickell%20Lab" id="whatsapp-link" rel="noopener" target="_blank" class="footer__social-link" data-i18n-link="whatsapp-url">
+                <img src="./assets/static/img/whatsapp.png" alt="WhatsApp" data-i18n-alt="alt-whatsapp">
             </a>
         </div>
 
         <div class="footer__legals">
-            <p>&copy; 2026 Brickell Lab. Todos los derechos reservados.</p>
-            <p>Diseño y Desarrollo de Autor.</p>
+            <p data-i18n="footer-copy">&copy; 2026 Brickell Lab. Todos los derechos reservados.</p>
+            <p data-i18n="footer-signature">Diseño y Desarrollo de Autor.</p>
         </div>
     </div>
 </footer>
@@ -395,6 +401,7 @@
 
 
 <script src="./assets/script/script.js"></script>
+<script src="./assets/script/translations.js"></script>
 
 </body>
 </html>
