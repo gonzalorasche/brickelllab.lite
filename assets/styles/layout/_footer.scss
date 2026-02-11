@@ -1,0 +1,95 @@
+@use '../base/variables' as var;
+
+.footer {
+    background-color: var.$ink-900;
+    padding: 80px 0 40px 0;
+    color: var.$color-bg-main; // El "bone" de fondo ahora es el color de texto
+
+    &__container {
+        max-width: var.$content-max-width;
+        margin: 0 auto;
+        padding: 0 var.$padding-inline-mobile;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; // Alineación técnica a la izquierda
+        
+        @media (min-width: 768px) {
+            padding: 0 var.$content-padding-desktop;
+        }
+    }
+
+    &__logo {
+        height: 20px;
+        width: auto;
+        margin-bottom: 40px;
+        transition: opacity 0.3s ease;
+        // Invertimos el logo si es negro originalmente para que se vea en el fondo oscuro
+        filter: brightness(0) invert(1); 
+
+        &:hover {
+            opacity: 0.7;
+        }
+    }
+
+    &__nav {
+        margin-bottom: 40px;
+
+        &-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        &-link {
+            text-decoration: none;
+            color: var.$bone-300;
+            font-family: var.$font-accent;
+            text-transform: uppercase;
+            font-weight: 800;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            transition: color 0.3s ease;
+
+            &:hover {
+                color: var.$color-bg-main;
+            }
+        }
+    }
+
+    &__socials {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 60px;
+        align-items: center;
+
+        img {
+            height: 18px; // Tamaño sutil para redes
+            width: auto;
+            filter: brightness(0) invert(1); // Mantenemos estética monocromática
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0.6;
+
+            &:hover {
+                transform: translateY(-3px);
+                opacity: 1;
+            }
+        }
+    }
+
+    &__legals {
+        width: 100%;
+        border-top: 1px solid rgba(var.$bone-300, 0.1);
+        padding-top: 25px;
+        
+        p {
+            font-family: var.$font-sans;
+            font-size: 0.7rem;
+            color: var.$ink-500;
+            margin: 5px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    }
+}

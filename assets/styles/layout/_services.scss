@@ -1,0 +1,128 @@
+@use '../base/variables' as var;
+
+.services {
+    // 1. ESPACIO DE SEGURIDAD
+    // Le damos un respiro superior real para que el título no empiece en el pixel 0 de la Nav
+    padding: 100px 0 60px 0; 
+    background-color: var.$color-bg-main;
+
+    // 2. EL ANCLAJE DINÁMICO
+    // Al scrollear, el navegador frenará 65px antes de la sección, 
+    // dejando ver el padding de 100px que acabamos de armar.
+    scroll-margin-top: 65px; 
+
+    // 3. ALTURA COMPACTA
+    // Bajamos el min-height para que no sea un bloque eterno y permita ver el contenido
+    min-height: auto; 
+
+    &__container {
+        max-width: var.$content-max-width;
+        margin: 0 auto;
+        padding: 0 var.$padding-inline-mobile;
+        @media (min-width: 768px) { padding: 0 var.$content-padding-desktop; }
+    }
+
+    &__header {
+        // Reducimos el margen inferior de 60px a 30px 
+        // para que las cajas suban y se vean junto al título
+        margin-bottom: 30px; 
+        border-bottom: 1px solid var.$ink-900;
+        display: inline-block;
+        padding-right: 20px;
+    }
+
+    &__title-main {
+        font-family: var.$font-accent;
+        font-weight: 800;
+        font-size: 1rem; 
+        text-transform: uppercase;
+        color: var.$ink-900;
+        letter-spacing: 0.2em;
+        margin: 0;
+        padding-bottom: 6px;
+        line-height: 1;
+    }
+
+    &__poster-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        // Gap más apretado (de 60px a 30px) para compactar la sección
+        gap: 30px 40px; 
+
+        @media (min-width: 768px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+}
+
+.poster-item {
+    display: flex;
+    flex-direction: column;
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px; // Más apretado
+        border-bottom: 1px solid rgba(var.$ink-900, 0.1);
+        padding-bottom: 8px;
+    }
+
+    &__index {
+        font-family: var.$font-sans;
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: var.$ink-900;
+    }
+
+    &__category {
+        font-family: var.$font-sans;
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var.$ink-500;
+    }
+
+    &__title {
+        font-family: var.$font-accent;
+        font-weight: 800;
+        font-size: clamp(1.8rem, 3.5vw, 2.5rem); // Un pelín más chico para ganar espacio vertical
+        line-height: 1.05;
+        text-transform: uppercase;
+        color: var.$ink-900;
+        margin: 10px 0; // Reducido de 15px a 10px
+        letter-spacing: -0.04em;
+    }
+
+    &__desc {
+        font-family: var.$font-sans;
+        font-size: 0.95rem; // Un pelín más chico
+        line-height: 1.3;
+        color: var.$ink-700;
+        margin: 0;
+        max-width: 320px;
+    }
+
+    &__line-wrapper {
+        margin-top: 15px; // Reducido de 25px a 15px
+        width: 100%;
+        height: 1.5px;
+        background-color: transparent;
+        overflow: hidden;
+    }
+
+    &__line {
+        width: 20px;
+        height: 100%;
+        transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        
+        &--web   { background-color: #4F46E5; } 
+        &--ux    { background-color: var.$color-accent-main; } 
+        &--pack  { background-color: #F59E0B; } 
+        &--brand { background-color: #10B981; } 
+    }
+
+    &:hover &__line {
+        width: 60px;
+    }
+}

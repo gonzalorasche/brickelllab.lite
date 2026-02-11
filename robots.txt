@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /assets/styles/
+Disallow: /assets/script/
+
+# Priorizar el rastreo de imágenes para Google Imágenes
+User-agent: Googlebot-Image
+Allow: /assets/static/img/
+
+Sitemap: https://labbrickell.com.ar/sitemap.xml

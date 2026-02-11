@@ -1,0 +1,68 @@
+@use '../base/variables' as var;
+
+.nav {
+    height: 65px;
+    width: 100%;
+    background-color: var.$color-bg-main;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    border-bottom: 1px solid var.$card-border;
+    display: flex;
+    align-items: center;
+
+    &__container {
+        width: 100%;
+        max-width: var.$content-max-width;
+        margin: 0 auto;
+        padding: 0 var.$padding-inline-mobile;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        @media (min-width: 768px) {
+            padding: 0 var.$content-padding-desktop;
+        }
+    }
+
+    &__logo img {
+        height: 25px;
+        width: auto;
+        display: block;
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    &__socials {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+
+        a {
+            display: none; // Ocultas en móvil
+
+            @media (min-width: 768px) {
+                display: flex; // Aparecen en Desktop
+            }
+        }
+
+        img {
+            height: 25px;
+            width: auto;
+        }
+    }
+}
+
+// ESTO ELIMINA EL BOTÓN EN MÓVIL POR COMPLETO
+.btn--desktop-only {
+    display: none !important;
+
+    @media (min-width: 768px) {
+        display: inline-flex !important;
+    }
+}

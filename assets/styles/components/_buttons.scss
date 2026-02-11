@@ -1,0 +1,72 @@
+@use '../base/variables' as var;
+
+// 1. ESTILO BASE (Lo que ya tenías)
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 25px; 
+    padding: 0 1rem;
+    font-family: var.$button-font;
+    font-weight: var.$button-weight;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: var.$radius-xs;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+
+    // BOTÓN DE LA NAV (Sigue igual)
+    &--outline {
+        background-color: transparent;
+        border: 1px solid var.$ink-900;
+        color: var.$ink-900;
+
+        &:hover {
+            background-color: var.$ink-900;
+            color: var.$white-pure;
+        }
+    }
+ }
+
+
+
+
+
+
+
+
+
+
+
+    /* --- Botón Editorial para el Hero (Independiente) --- */
+.btn-hero {
+    display: inline-block;
+    width: fit-content;
+    color: var.$color-accent-main;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 4px;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 30px;
+        height: 1px;
+        background-color: var.$color-accent-main;
+        transition: width 0.3s ease;
+    }
+
+    &:hover::after {
+        width: 100%;
+    }
+
+    @media (max-height: 450px) { font-size: 0.65rem; }
+}

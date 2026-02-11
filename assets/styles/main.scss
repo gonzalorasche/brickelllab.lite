@@ -1,0 +1,45 @@
+// 1. IMPORTACIÓN DE MÓDULOS (Dart Sass @use)
+@use 'base/variables' as var;
+@use 'base/fonts';
+@use 'layout/nav';
+@use 'layout/hero';
+@use 'layout/services';
+@use 'layout/proyects';
+@use 'layout/marquee';
+@use 'layout/contact';
+@use 'layout/footer';
+@use 'components/buttons';
+
+// 2. RESET Y ESTILOS GLOBALES
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    // Evitamos el scroll horizontal accidental de forma global
+    overflow-x: hidden; 
+}
+
+body {
+    background-color: var.$color-bg-main;
+    font-family: var.$font-sans;
+    color: var.$color-text-main;
+    // Compensación exacta por la nav fixed para evitar solapamiento
+    padding-top: 65px; 
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+// 3. UTILIDADES EDITORIALES (Opcional pero recomendado)
+.text-accent {
+    color: var.$color-accent-main;
+}
+
+.text-serif {
+    font-family: var.$font-serif;
+    font-style: italic;
+}

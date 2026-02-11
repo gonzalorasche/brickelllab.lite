@@ -1,0 +1,162 @@
+@use '../base/variables' as var;
+
+.contact {
+    background-color: var.$color-bg-main;
+    position: relative;
+    padding: 80px 0 60px 0; // Equilibrio de aire real
+
+    // El ancla invisible (Solución técnica al problema de la Nav)
+    &::before {
+        content: "";
+        display: block;
+        height: 100px; 
+        margin-top: -100px;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    &__container {
+        max-width: var.$content-max-width;
+        margin: 0 auto;
+        padding: 0 var.$padding-inline-mobile;
+        @media (min-width: 768px) { padding: 0 var.$content-padding-desktop; }
+    }
+
+    &__header {
+        margin-bottom: 50px;
+        border-bottom: 1px solid var.$ink-900;
+        display: inline-block;
+        padding-right: 40px;
+    }
+
+    &__title-main {
+        font-family: var.$font-accent;
+        font-weight: 800;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var.$ink-900;
+        margin: 0;
+        padding-bottom: 10px;
+        line-height: 1;
+    }
+
+    &__content {
+        max-width: 800px;
+    }
+
+    &__headline {
+        font-family: var.$font-accent;
+        font-size: clamp(2.2rem, 5vw, 1.5rem);
+        line-height: 1.05;
+        text-transform: uppercase;
+        font-weight: 800;
+        margin-bottom: 50px;
+        color: var.$ink-900;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        @media (min-width: 768px) { grid-template-columns: 1fr 1fr; }
+    }
+
+    &__field {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    &__label {
+        font-family: var.$font-sans;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        margin-bottom: 12px;
+        color: var.$ink-500;
+        transition: color 0.3s ease;
+    }
+
+    &__input {
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid var.$bone-300;
+        padding: 12px 0;
+        font-family: var.$font-sans;
+        font-size: 1.1rem;
+        color: var.$ink-900;
+        outline: none;
+        border-radius: 0;
+        transition: border-color 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+        &::placeholder {
+            // AJUSTE DE ACCESIBILIDAD: De bone-300 a ink-500 para más contraste
+            color: var.$ink-500; 
+            font-size: 0.9rem;
+            transition: opacity 0.3s ease;
+        }
+
+        &:focus {
+            border-bottom-color: var.$ink-900;
+            &::placeholder { opacity: 0; }
+        }
+    }
+
+    textarea.contact__input {
+        min-height: 120px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+
+    &__actions {
+        margin-top: 20px;
+    }
+
+    &__btn {
+        background: var.$ink-900;
+        color: var.$color-bg-main;
+        border: none;
+        padding: 18px 35px;
+        display: inline-flex;
+        align-items: center;
+        gap: 15px;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        position: relative;
+        overflow: hidden;
+
+        span {
+            font-family: var.$font-sans;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            position: relative;
+            z-index: 2;
+        }
+
+        svg {
+            width: 18px;
+            height: 18px;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        &:hover {
+            background: var.$ink-700;
+            padding-right: 45px;
+
+            svg {
+                transform: rotate(45deg);
+            }
+        }
+
+        &:active {
+            transform: scale(0.96);
+        }
+    }
+}

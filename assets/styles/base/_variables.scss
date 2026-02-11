@@ -1,0 +1,126 @@
+/* ==========================================================
+   COLOR SYSTEM — NEUTRAL CORE
+========================================================== */
+
+/* Whites / bones / papers */
+$white-pure: #FFFFFF;
+$bone-100: #F2EEEB; // hueso principal
+$bone-200: #E8E4E1;
+$bone-300: #DCD8D5;
+
+/* Ink scale (text & contrast) */
+$ink-900: #1F1E1D; // negro principal
+$ink-800: #2C2B2A;
+$ink-700: #403C3A;
+$ink-600: #595856;
+$ink-500: #8C8987;
+
+/* Semantic backgrounds */
+$color-bg-main: $bone-100;
+$color-bg-alt: $white-pure;
+$color-bg-muted: $bone-200;
+$color-bg-dark: $ink-900;
+
+/* Semantic text */
+$color-text-main: $ink-900;
+$color-text-strong: $ink-800;
+$color-text-muted: $ink-600;
+$color-text-soft: $ink-500;
+$color-text-inverse: $bone-100;
+
+
+/* ==========================================================
+   ACCENTS — AVAILABLE
+========================================================== */
+
+/*
+  Estos NO son base.
+  Se usan en: highlights, hover, indicadores, detalles gráficos.
+*/
+
+$accent-pink: #F24B78;
+$accent-magenta: #D904A0;
+$accent-orange: #F29727;
+$accent-coral: #F27F3D;
+$accent-red: #F25E5E;
+
+/* Accent routing */
+$color-accent-main: $accent-magenta; // default técnico
+$color-accent-soft: $accent-pink;    // editorial puntual
+$color-accent-warm: $accent-orange;  // alertas suaves
+$color-accent-hot: $accent-red;      // estados / énfasis fuerte
+
+
+/* ==========================================================
+   TYPOGRAPHY
+========================================================== */
+
+/* Families */
+$font-serif: 'Lora', serif;
+$font-sans: 'Inter', sans-serif;
+$font-accent: 'Syne', sans-serif;
+
+/* Weights */
+$weight-regular: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+
+$weight-lora-regular: 400;
+$weight-lora-bold: 700;
+
+$weight-accent: 800;
+
+/* Sizes */
+$fs-h1: clamp(2.2rem, 5vw, 3.2rem);
+$fs-h2: clamp(1.7rem, 4vw, 2.4rem);
+$fs-h3: 1.35rem;
+
+$fs-body: 1rem;
+$fs-small: 0.875rem;
+$fs-micro: 0.75rem;
+
+
+/* ==========================================================
+   LAYOUT
+========================================================== */
+
+$content-max-width: 1400px;
+$content-padding-desktop: 3rem;
+
+$padding-inline-mobile: 1.5rem;
+$section-padding-mobile: 3rem;
+$section-padding-desktop: 6rem;
+
+
+/* ==========================================================
+   UI / SHAPE
+========================================================== */
+
+$radius-xs: 2px;
+$radius-sm: 4px;
+$radius-md: 6px;
+$radius-lg: 10px;
+
+$shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.08);
+
+
+/* ==========================================================
+   BUTTONS
+========================================================== */
+
+$button-font: $font-accent;
+$button-weight: $weight-accent;
+$button-letter-spacing: 0.12em;
+
+$button-bg: $ink-900;
+$button-text: $bone-100;
+$button-border: transparent;
+
+
+/* ==========================================================
+   CARDS / SURFACES
+========================================================== */
+
+$card-bg: $color-bg-alt;
+$card-border: rgba(0, 0, 0, 0.06);
+$card-divider: rgba(0, 0, 0, 0.08);
