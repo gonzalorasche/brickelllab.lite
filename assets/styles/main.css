@@ -187,6 +187,75 @@
     z-index: 0;
   }
 }
+.hero__status {
+  position: absolute;
+  top: 2rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  z-index: 10;
+}
+@media (min-width: 768px) {
+  .hero__status {
+    top: 3rem;
+    right: 3rem;
+  }
+}
+@media (max-height: 500px) {
+  .hero__status {
+    display: none;
+  }
+}
+.hero__status .status-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #D904A0;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #D904A0;
+  animation: pulse 2s infinite;
+}
+.hero__status .status-text {
+  font-family: "Inter", sans-serif;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #595856;
+}
+.hero__scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  z-index: 10;
+}
+@media (min-width: 768px) {
+  .hero__scroll {
+    bottom: 3rem;
+    left: 3rem;
+  }
+}
+@media (max-height: 500px) {
+  .hero__scroll {
+    display: none;
+  }
+}
+.hero__scroll .scroll-text {
+  writing-mode: vertical-rl;
+  font-family: "Inter", sans-serif;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #8C8987;
+}
+.hero__scroll .scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, #8C8987, transparent);
+}
 .hero__container {
   width: 100%;
   max-width: 1400px;
@@ -204,7 +273,7 @@
   font-family: "Syne", sans-serif;
   font-weight: 800;
   font-size: clamp(2.8rem, 9vw, 6.5rem);
-  line-height: 1.05;
+  line-height: 1.15;
   letter-spacing: -0.04em;
   color: #1F1E1D;
   margin-bottom: 2.5rem;
@@ -214,10 +283,13 @@
   font-style: italic;
   text-transform: lowercase;
   display: block;
+  color: #D904A0;
+  margin-top: 0.3rem;
 }
-@media (max-height: 450px) {
+@media (max-height: 500px) {
   .hero__title {
-    font-size: clamp(1.8rem, 7vh, 2.5rem);
+    font-size: clamp(1.8rem, 8vh, 2.8rem);
+    margin-top: 1.5rem;
     margin-bottom: 1rem;
   }
 }
@@ -274,6 +346,20 @@
   width: 100%;
 }
 
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 .services {
   padding: 100px 0 60px 0;
   background-color: #F2EEEB;

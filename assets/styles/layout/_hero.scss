@@ -6,34 +6,33 @@
     align-items: center;
     background-color: var.$color-bg-main;
     overflow: hidden;
-    position: relative; // Necesario para los elementos de fondo
+    position: relative;
 
-&::before {
+    // Capa de textura sutil
+    &::before {
         content: '';
         position: absolute;
         top: 0; left: 0;
         width: 100%; height: 100%;
-        background-image: url("https://www.transparenttextures.com/patterns/stardust.png"); // Textura más marcada
+        background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
         opacity: 0.15; 
         pointer-events: none;
         z-index: 1;
     }
 
-// 2. EL AURA (Re-calibrada)
+    // Aura de profundidad
     &::after {
         content: '';
         position: absolute;
-        // MOBILE: La traemos al frente y la centramos más
         top: 10%; 
         right: -10%; 
-        width: 250px; // Tamaño fijo para asegurar visibilidad en mobile
+        width: 250px;
         height: 250px;
         background: radial-gradient(circle, rgba(var.$ink-900, 0.25) 0%, transparent 70%);
-        filter: blur(35px); // Menos blur para que se note el borde de la mancha
-        z-index: 2; // LA SUBIMOS por encima de la textura (que tiene z-index: 1)
+        filter: blur(35px);
+        z-index: 2;
         pointer-events: none;
 
-        // DESKTOP: Vuelve a su lugar sutil y expansivo
         @media (min-width: 768px) {
             top: -5%; 
             right: -5%;
@@ -41,7 +40,78 @@
             height: 45vw;
             background: radial-gradient(circle, rgba(var.$ink-900, 0.2) 0%, transparent 70%);
             filter: blur(60px);
-            z-index: 0; // Vuelve al fondo para no molestar al texto
+            z-index: 0;
+        }
+    }
+
+    // Elementos de Status (Tech Lab)
+    &__status {
+        position: absolute;
+        top: 2rem;
+        right: var.$padding-inline-mobile;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        z-index: 10;
+
+        @media (min-width: 768px) {
+            top: 3rem;
+            right: var.$content-padding-desktop;
+        }
+
+        // Limpieza para mobile horizontal
+        @media (max-height: 500px) { display: none; }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var.$color-accent-main;
+            border-radius: 50%;
+            box-shadow: 0 0 10px var.$color-accent-main;
+            animation: pulse 2s infinite;
+        }
+
+        .status-text {
+            font-family: var.$font-sans;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var.$ink-600;
+        }
+    }
+
+    // Indicador de Scroll
+    &__scroll {
+        position: absolute;
+        bottom: 2rem;
+        left: var.$padding-inline-mobile;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        z-index: 10;
+
+        @media (min-width: 768px) {
+            bottom: 3rem;
+            left: var.$content-padding-desktop;
+        }
+
+        // Limpieza para mobile horizontal
+        @media (max-height: 500px) { display: none; }
+
+        .scroll-text {
+            writing-mode: vertical-rl;
+            font-family: var.$font-sans;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var.$ink-500;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var.$ink-500, transparent);
         }
     }
 
@@ -51,7 +121,7 @@
         margin: 0 auto;
         padding: 0 var.$padding-inline-mobile;
         position: relative;
-        z-index: 5; // Por encima de la textura y el aura
+        z-index: 5;
         
         @media (min-width: 768px) { padding: 0 var.$content-padding-desktop; }
     }
@@ -60,7 +130,7 @@
         font-family: var.$font-accent;
         font-weight: 800; 
         font-size: clamp(2.8rem, 9vw, 6.5rem);
-        line-height: 1.05; // El respiro justo para la "ñ"
+        line-height: 1.15; // Interlineado corregido para que no se pise
         letter-spacing: -0.04em;
         color: var.$ink-900;
         margin-bottom: 2.5rem;
@@ -70,10 +140,14 @@
             font-style: italic;
             text-transform: lowercase;
             display: block; 
+            color: var.$color-accent-main;
+            margin-top: 0.3rem; // Espacio extra para la "g" de high-end
         }
 
-        @media (max-height: 450px) {
-            font-size: clamp(1.8rem, 7vh, 2.5rem);
+        // Ajuste para mobile horizontal
+        @media (max-height: 500px) {
+            font-size: clamp(1.8rem, 8vh, 2.8rem);
+            margin-top: 1.5rem;
             margin-bottom: 1rem;
         }
     }
@@ -101,7 +175,6 @@
     }
 }
 
-// EL BOTÓN EDITORIAL
 .link-proyectos {
     display: inline-flex;
     align-items: center;
@@ -113,7 +186,7 @@
     text-decoration: none;
     position: relative;
     padding-bottom: 4px;
-    z-index: 10; // Asegura que el click funcione sobre el fondo
+    z-index: 10;
 
     &::after {
         content: '';
@@ -129,4 +202,10 @@
     &:hover::after {
         width: 100%;
     }
+}
+
+@keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
 }
