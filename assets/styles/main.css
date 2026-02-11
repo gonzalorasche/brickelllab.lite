@@ -206,7 +206,6 @@
   font-size: clamp(2.8rem, 9vw, 6.5rem);
   line-height: 1.05;
   letter-spacing: -0.04em;
-  text-transform: uppercase;
   color: #1F1E1D;
   margin-bottom: 2.5rem;
 }
