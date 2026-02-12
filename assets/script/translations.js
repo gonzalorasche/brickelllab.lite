@@ -33,6 +33,7 @@ const translations = {
         "projects-view": "Ver Proyecto",
         "proj-1-desc": "Desarrollo web y de marca para estudio de Pilates Intenso.",
         "proj-2-desc": "Plataforma global para gestión de flujo de clientes internacionales.",
+        "proj-3-desc": "Plataforma de producciones artísticas para eventos de alto nivel en Miami.",
         // Contacto
         "contact-main-title": "Contacto",
         "contact-headline": "Iniciemos la fórmula <br>de tu proyecto",
@@ -83,6 +84,7 @@ const translations = {
         "projects-view": "View Project",
         "proj-1-desc": "Web and brand development for a High-Intensity Pilates studio.",
         "proj-2-desc": "Global platform for international client flow management.",
+        "proj-3-desc": "Artistic productions platform for high-end events in Miami.",
         // Contact
         "contact-main-title": "Contact",
         "contact-headline": "Let's start your <br>project's formula",

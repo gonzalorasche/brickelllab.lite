@@ -10,7 +10,10 @@
         max-width: var.$content-max-width;
         margin: 0 auto;
         padding: 0 var.$padding-inline-mobile;
-        @media (min-width: 768px) { padding: 0 var.$content-padding-desktop; }
+        
+        @media (min-width: 768px) { 
+            padding: 0 var.$content-padding-desktop; 
+        }
     }
 
     &__header {
@@ -35,11 +38,11 @@
     &__grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 40px 30px; // Gap horizontal reducido para acompañar el tamaño chico
+        gap: 40px 24px;
 
         @media (min-width: 768px) {
-            // ACHICADO: De 380px a 320px para efecto postal real
-            grid-template-columns: repeat(2, 320px); 
+            // Ajustado a 3 columnas de 280px para que entren los 3 proyectos en fila
+            grid-template-columns: repeat(3, 280px); 
             justify-content: start;
         }
     }
@@ -66,27 +69,28 @@
         height: 100%;
         object-fit: cover;
         filter: grayscale(100%);
-        transition: filter 0.6s cubic-bezier(0.19, 1, 0.22, 1), 
-                    transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        // Transición de 1.2s para el color y transform
+        transition: filter 1.2s cubic-bezier(0.19, 1, 0.22, 1), 
+                    transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
     }
 
     &__cta-tag {
         position: absolute;
-        bottom: 12px; // Un poco más ajustado
+        bottom: 12px;
         right: 12px;
         background-color: var.$color-bg-main;
-        padding: 6px 12px; // Etiqueta un poco más chica también
+        padding: 6px 12px;
         display: flex;
         align-items: center;
         gap: 6px;
         z-index: 10;
         transform: translateY(160%); 
-        transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         
         span {
             font-family: var.$font-sans;
-            font-size: 0.6rem; // Tipografía más micro
+            font-size: 0.6rem;
             text-transform: uppercase;
             font-weight: 800;
             color: var.$ink-900;
@@ -107,7 +111,7 @@
     &__title {
         font-family: var.$font-accent;
         font-weight: 800;
-        font-size: 1rem; // Un pelín más chico para no romper la armonía
+        font-size: 0.9rem; // Ajustado levemente para la columna más estrecha
         color: var.$ink-900;
         text-transform: uppercase;
         margin: 0 0 4px 0;
@@ -116,13 +120,14 @@
 
     &__desc {
         font-family: var.$font-sans;
-        font-size: 0.8rem; // Más fino
+        font-size: 0.75rem;
         line-height: 1.3;
         color: var.$ink-500;
         margin: 0;
     }
 
-    &:hover {
+    // Unificamos hover y estado visible del Intersection Observer
+    &:hover, &.is-visible {
         .project-card__img {
             filter: grayscale(30%); 
             transform: scale(1.05);
@@ -139,27 +144,116 @@
 
 
 
-.project-card {
-    &__img {
-        // ... otros estilos
-        // Pasamos de 0.6s a 1.2s para que el color vuelva muy lento
-        transition: filter 1.2s cubic-bezier(0.19, 1, 0.22, 1), 
-                    transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
-    }
 
-    &__cta-tag {
-        // ... otros estilos
-        // La etiqueta sube un poquito más lento también
-        transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
-    }
 
-    &.is-visible {
-        .project-card__img {
-            filter: grayscale(30%);
-            transform: scale(1.05);
+
+
+
+@media (max-width: 767px) {
+    .projects {
+        // Reducimos un poco el padding superior en móvil para que no quede tanto aire
+        padding: 80px 0 40px 0;
+
+        &__container {
+            // Usa el padding-inline de tus bases para consistencia
+            padding: 0 var.$padding-inline-mobile;
         }
-        .project-card__cta-tag {
-            transform: translateY(0);
+
+        &__header {
+            margin-bottom: 24px;
+            padding-right: 20px;
+        }
+
+        &__grid {
+            // Apilado vertical: una sola columna que ocupa todo el ancho disponible
+            grid-template-columns: 1fr;
+            // Aumentamos el gap vertical para que las "postales" respiren al estar una sobre otra
+            gap: 48px; 
+        }
+    }
+
+    .project-card {
+        &__title {
+            font-size: 1rem; // Volvemos a un tamaño un poco más legible en móvil
+        }
+
+        &__desc {
+            font-size: 0.8rem;
+            max-width: 90%; // Evita que el texto toque los bordes bruscamente
+        }
+
+        &__cta-tag {
+            // En móvil, a veces es mejor que el tag esté siempre visible o suba más rápido
+            transform: translateY(0); 
+            opacity: 0.9;
+            padding: 8px 14px;
+            
+            span {
+                font-size: 0.65rem;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+/* RESPONSIVE HORIZONTAL (Landscape) - Cards Mini */
+@media (max-height: 600px) and (orientation: landscape) {
+    .projects {
+        padding: 70px 0 30px 0; // Padding mínimo para no empujar el título
+
+        &__container {
+            padding: 0 var.$padding-inline-mobile;
+        }
+
+        &__header {
+            margin-bottom: 15px; // Espacio muy reducido tras el título
+        }
+
+        &__grid {
+            // Forzamos 3 columnas de 140px. Al ser chicas, la altura baja sola.
+            grid-template-columns: repeat(3, 140px); 
+            justify-content: start; // Alineadas a la izquierda
+            gap: 15px; // Gap pequeño para que no se desparramen
+        }
+    }
+
+    .project-card {
+        &__image-container {
+            aspect-ratio: 1080 / 1440; // Proporción intacta
+            margin-bottom: 6px;
+        }
+
+        &__title {
+            font-size: 0.65rem; // Tipografía muy pequeña
+            letter-spacing: 0.02em;
+        }
+
+        &__desc {
+            font-size: 0.6rem;
+            line-height: 1.1;
+            // Limitamos a 2 líneas para que el footer no crezca
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        &__cta-tag {
+            padding: 3px 6px;
+            bottom: 5px;
+            right: 5px;
+            
+            span { font-size: 0.45rem; }
+            svg { width: 6px; height: 6px; }
         }
     }
 }
