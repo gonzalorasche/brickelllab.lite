@@ -38,46 +38,71 @@
     <link rel="stylesheet" href="./assets/styles/main.css">
 
     <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
     {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "ProfessionalService",
-          "@id": "https://labbrickell.com.ar/#organization",
-          "name": "Brickell Lab",
-          "url": "https://labbrickell.com.ar/",
-          "image": "https://labbrickell.com.ar/assets/static/img/icon.png",
-          "logo": "https://labbrickell.com.ar/assets/static/img/logo_nav.png",
-          "telephone": "+5491162770800",
-          "priceRange": "$$$",
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Buenos Aires",
-            "addressRegion": "CABA",
-            "addressCountry": "AR"
+      "@type": "ProfessionalService",
+      "@id": "https://labbrickell.com.ar/#organization",
+      "name": "Brickell Lab",
+      "url": "https://labbrickell.com.ar/",
+      "image": "https://labbrickell.com.ar/assets/static/img/icon.png",
+      "logo": "https://labbrickell.com.ar/assets/static/img/logo_nav.png",
+      "telephone": "+5491162770800",
+      "priceRange": "$$$",
+      "description": "Estudio boutique especializado en desarrollo web de alto rendimiento y diseño de experiencia de usuario (UX/UI) de autor.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Buenos Aires",
+        "addressRegion": "CABA",
+        "addressCountry": "AR"
+      },
+      "sameAs": [
+        "https://www.instagram.com/lab.brickell",
+        "https://www.linkedin.com/company/brickell-lab/"
+      ],
+      "knowsAbout": [
+        "Desarrollo Web Premium",
+        "Diseño UX/UI de Autor",
+        "React.js y Next.js Development",
+        "Branding Digital",
+        "E-commerce de Alto Impacto",
+        "Optimización de Performance Web"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios Digitales",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Desarrollo Web Escalable",
+              "description": "Arquitecturas modernas con React y tecnologías de vanguardia."
+            }
           },
-          "sameAs": [
-            "https://www.instagram.com/lab.brickell",
-            "https://www.linkedin.com/company/brickell-lab/"
-          ],
-          "description": "Estudio boutique especializado en desarrollo web de alto rendimiento y diseño de experiencia de usuario (UX/UI)."
-        },
-        {
-          "@type": "WebSite",
-          "@id": "https://labbrickell.com.ar/#website",
-          "url": "https://labbrickell.com.ar/",
-          "name": "Brickell Lab",
-          "publisher": { "@id": "https://labbrickell.com.ar/#organization" }
-        },
-        {
-          "@type": "Service",
-          "serviceType": "Desarrollo Web de Autor",
-          "provider": { "@id": "https://labbrickell.com.ar/#organization" },
-          "areaServed": ["AR", "US", "MX"]
-        }
-      ]
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Diseño UX/UI Premium",
+              "description": "Interfaces de usuario de alta fidelidad con enfoque en conversión."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://labbrickell.com.ar/#website",
+      "url": "https://labbrickell.com.ar/",
+      "name": "Brickell Lab Argentina",
+      "publisher": { "@id": "https://labbrickell.com.ar/#organization" },
+      "inLanguage": ["es-AR", "en-US"]
     }
-    </script>
+  ]
+}
+</script>
 </head>
 <body>
 
