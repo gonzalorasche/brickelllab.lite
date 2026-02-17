@@ -1,10 +1,25 @@
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Claude-Bot
+Allow: /
+
 User-agent: *
 Allow: /
 Disallow: /assets/styles/
 Disallow: /assets/script/
 
-# Priorizar el rastreo de imágenes para Google Imágenes
 User-agent: Googlebot-Image
 Allow: /assets/static/img/
 
+# Referencia al Sitemap
 Sitemap: https://labbrickell.com.ar/sitemap.xml
