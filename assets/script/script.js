@@ -1,6 +1,6 @@
 /**
  * BRICKELL LAB - Script Principal
- * Gestión de Idiomas (i18n), SEO Dinámico y Animaciones
+ * Gestión de Idiomas (i18n), SEO Dinámico y Modales
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,44 +14,35 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentLang = localStorage.getItem('language') || (translations[browserLang] ? browserLang : 'es');
 
     /**
-     * Aplica los textos, placeholders, alts, metas y enlaces según el idioma seleccionado
+     * Aplica los textos, placeholders, alts, metas y datos de modales
      */
     const applyTranslations = (lang) => {
         const t = translations[lang];
+        if (!t) return;
 
-        // A. Traducir contenido estándar (innerHTML)
+        // A. Contenido estándar (innerHTML)
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (t && t[key]) {
-                el.innerHTML = t[key];
-            }
+            if (t[key]) el.innerHTML = t[key];
         });
 
-        // B. Traducir PLACEHOLDERS de formularios
+        // B. PLACEHOLDERS
         document.querySelectorAll('[data-i18n-ph]').forEach(el => {
             const key = el.getAttribute('data-i18n-ph');
-            if (t && t[key]) {
-                el.placeholder = t[key];
-            }
+            if (t[key]) el.placeholder = t[key];
         });
 
-        // C. Traducir TEXTOS ALTERNATIVOS (alt) de imágenes
+        // C. TEXTOS ALTERNATIVOS (alt)
         document.querySelectorAll('[data-i18n-alt]').forEach(el => {
             const key = el.getAttribute('data-i18n-alt');
-            if (t && t[key]) {
-                el.alt = t[key];
-            }
+            if (t[key]) el.alt = t[key];
         });
 
-        // D. ACTUALIZAR SEO Y REDES SOCIALES (Meta Tags)
-        if (t["seo-title"]) {
-            document.title = t["seo-title"];
-        }
+        // D. SEO Y REDES SOCIALES
+        if (t["seo-title"]) document.title = t["seo-title"];
         
         const metaDesc = document.getElementById('meta-desc');
-        if (metaDesc && t["seo-desc"]) {
-            metaDesc.setAttribute('content', t["seo-desc"]);
-        }
+        if (metaDesc && t["seo-desc"]) metaDesc.setAttribute('content', t["seo-desc"]);
 
         const ogTitle = document.getElementById('og-title');
         const ogDesc = document.getElementById('og-desc');
@@ -61,21 +52,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if (ogTitle && t["og-title"]) ogTitle.setAttribute('content', t["og-title"]);
         if (ogDesc && t["og-desc"]) ogDesc.setAttribute('content', t["og-desc"]);
         if (ogAlt && t["og-img-alt"]) ogAlt.setAttribute('content', t["og-img-alt"]);
-        
-        // Actualizamos el locale para coherencia en redes sociales
-        if (ogLocale) {
-            ogLocale.setAttribute('content', lang === 'es' ? 'es_AR' : 'en_US');
-        }
+        if (ogLocale) ogLocale.setAttribute('content', lang === 'es' ? 'es_AR' : 'en_US');
 
-        // E. Traducir ENLACES DINÁMICOS (WhatsApp)
+        // E. ENLACES DINÁMICOS (WhatsApp)
         document.querySelectorAll('[data-i18n-link]').forEach(el => {
             const key = el.getAttribute('data-i18n-link');
-            if (t && t[key]) {
-                el.href = t[key];
-            }
+            if (t[key]) el.href = t[key];
         });
 
-        // F. Atributos de idioma y estética del switch
+        // G. TRADUCIR ATRIBUTOS DEL MODAL (Lo que lee el modal al abrirse)
+        document.querySelectorAll('[data-i18n-title]').forEach(btn => {
+            const titleKey = btn.getAttribute('data-i18n-title');
+            const infoKey = btn.getAttribute('data-i18n-info');
+            if (t[titleKey]) btn.setAttribute('data-title', t[titleKey]);
+            if (t[infoKey]) btn.setAttribute('data-info', t[infoKey]);
+        });
+
+        // H. TRADUCIR ELEMENTOS FIJOS DEL MODAL (Botón y Label)
+        const modalLabel = document.querySelector('.modal__label');
+        const modalCta = document.querySelector('.modal__cta');
+        if (modalLabel && t["modal-label"]) modalLabel.innerHTML = t["modal-label"];
+        if (modalCta && t["modal-cta"]) modalCta.innerHTML = t["modal-cta"];
+
+        // F. Estética del switch
         langTexts.forEach(text => {
             text.classList.toggle('active', text.dataset.lang === lang);
         });
@@ -84,6 +83,34 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('language', lang);
     };
 
+    // --- 2. GESTIÓN DEL MODAL ---
+    const modal = document.getElementById('plan-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalText = document.getElementById('modal-text');
+
+    if (modal) {
+        const closeBtn = modal.querySelector('.modal__close');
+        const overlay = modal.querySelector('.modal__overlay');
+        const ctaBtn = modal.querySelector('.modal__cta');
+
+        const closeModal = () => modal.classList.remove('modal--active');
+
+        // Abrir modal capturando los datos traducidos en el momento
+        document.querySelectorAll('.plan-card__btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                modalTitle.innerHTML = btn.getAttribute('data-title');
+                modalText.innerHTML = btn.getAttribute('data-info');
+                modal.classList.add('modal--active');
+            });
+        });
+
+        if (ctaBtn) ctaBtn.addEventListener('click', closeModal);
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        if (overlay) overlay.addEventListener('click', closeModal);
+    }
+
+    // --- 3. INICIALIZACIÓN ---
     applyTranslations(currentLang);
 
     if (langBtn) {
@@ -92,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
             applyTranslations(currentLang);
         });
     }
+});
 
     // --- 2. ANIMACIONES DE PROYECTOS (Intersection Observer) ---
 
@@ -116,4 +144,3 @@ document.addEventListener('DOMContentLoaded', () => {
         projectObserver.observe(card);
     });
 
-});
