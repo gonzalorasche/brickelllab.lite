@@ -264,7 +264,7 @@
 
     &:hover {
         background-color: var.$white-pure;
-        transform: translateX(8px);
+        transform: translateX(2px);
         border-color: rgba(var.$ink-900, 0.15);
     }
 
@@ -306,6 +306,12 @@
         white-space: nowrap;
         margin-left: 15px;
         transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+        .ojo {
+            height: 10px;          // La altura que pediste
+            width: auto;           // Que mantenga la proporción
+            display: block;
+        }
 
         &:hover {
             transform: translateY(-2px);

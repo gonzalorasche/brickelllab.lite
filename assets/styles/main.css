@@ -651,7 +651,7 @@
 }
 .plan-card:hover {
   background-color: #FFFFFF;
-  transform: translateX(8px);
+  transform: translateX(2px);
   border-color: rgba(31, 30, 29, 0.15);
 }
 .plan-card__info {
@@ -689,6 +689,11 @@
   white-space: nowrap;
   margin-left: 15px;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.plan-card__btn .ojo {
+  height: 10px;
+  width: auto;
+  display: block;
 }
 .plan-card__btn:hover {
   transform: translateY(-2px);
