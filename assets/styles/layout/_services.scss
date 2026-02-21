@@ -1,18 +1,12 @@
 @use '../base/variables' as var;
 
+/* ==========================================================
+   SECCIÓN SERVICIOS
+   ========================================================== */
 .services {
-    // 1. ESPACIO DE SEGURIDAD
-    // Le damos un respiro superior real para que el título no empiece en el pixel 0 de la Nav
     padding: 100px 0 60px 0; 
     background-color: var.$color-bg-main;
-
-    // 2. EL ANCLAJE DINÁMICO
-    // Al scrollear, el navegador frenará 65px antes de la sección, 
-    // dejando ver el padding de 100px que acabamos de armar.
     scroll-margin-top: 65px; 
-
-    // 3. ALTURA COMPACTA
-    // Bajamos el min-height para que no sea un bloque eterno y permita ver el contenido
     min-height: auto; 
 
     &__container {
@@ -23,8 +17,6 @@
     }
 
     &__header {
-        // Reducimos el margen inferior de 60px a 30px 
-        // para que las cajas suban y se vean junto al título
         margin-bottom: 30px; 
         border-bottom: 1px solid var.$ink-900;
         display: inline-block;
@@ -46,8 +38,11 @@
     &__poster-grid {
         display: grid;
         grid-template-columns: 1fr;
-        // Gap más apretado (de 60px a 30px) para compactar la sección
         gap: 30px 40px; 
+        
+        /* 1. Evita que Chrome estire las columnas a la misma altura */
+        align-items: start; 
+        align-content: start;
 
         @media (min-width: 768px) {
             grid-template-columns: repeat(2, 1fr);
@@ -55,15 +50,23 @@
     }
 }
 
+/* ==========================================================
+   POSTER ITEM (CONTENEDOR INDIVIDUAL)
+   ========================================================== */
 .poster-item {
     display: flex;
     flex-direction: column;
+    
+    /* 2. Blindaje contra estiramiento vertical */
+    height: auto;
+    align-self: start;
+    flex-grow: 0;
 
     &__header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 15px; // Más apretado
+        margin-bottom: 15px; 
         border-bottom: 1px solid rgba(var.$ink-900, 0.1);
         padding-bottom: 8px;
     }
@@ -83,28 +86,39 @@
         color: var.$ink-500;
     }
 
-    &__title {
-        font-family: var.$font-accent;
-        font-weight: 800;
-        font-size: clamp(1.8rem, 3.5vw, 2.5rem); // Un pelín más chico para ganar espacio vertical
+&__title {
+        font-family: var.$font-accent; 
+        font-weight: 900;              // Inter Black
+        font-size: clamp(1.8rem, 3.5vw, 2.5rem); 
         line-height: 1.05;
         text-transform: uppercase;
         color: var.$ink-900;
-        margin: 10px 0; // Reducido de 15px a 10px
-        letter-spacing: -0.04em;
+        margin: 10px 0; 
+        
+        // INTERLETRADO (TRACKING)
+        // Antes tenías -0.04em (apretado). 
+        // 0.05em le da un respiro elegante. 
+        // 0.1em lo hace ver muy "high-end" y expandido.
+        letter-spacing: 0.01em; 
+        
+        // Suavizado para que el peso 900 no se vea "mordido"
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
     }
 
     &__desc {
         font-family: var.$font-sans;
-        font-size: 0.95rem; // Un pelín más chico
+        font-size: 0.95rem; 
         line-height: 1.3;
         color: var.$ink-700;
         margin: 0;
         max-width: 320px;
     }
 
+    /* 3. La línea decorativa siempre al final del contenido real */
     &__line-wrapper {
-        margin-top: 15px; // Reducido de 25px a 15px
+        margin-top: 30px; 
         width: 100%;
         height: 1.5px;
         background-color: transparent;
@@ -127,10 +141,99 @@
     }
 }
 
+/* ==========================================================
+   BLOQUE DE PLANES Y COSTOS
+   ========================================================== */
+.poster-item__plans {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 0; /* 4. IMPORTANTE: Que no crezca artificialmente */
+}
 
+.plan-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+    background-color: rgba(var.$bone-300, 0.2); 
+    border: 1px solid var.$card-border;
+    border-radius: var.$radius-xs;
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), 
+                background-color 0.3s ease,
+                border-color 0.3s ease;
 
+    &:hover {
+        background-color: var.$white-pure;
+        transform: translateX(8px);
+        border-color: rgba(var.$ink-900, 0.15);
+    }
 
+    &__info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
 
+    &__name {
+        font-family: var.$font-accent;
+        font-size: 0.85rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var.$ink-900;
+        margin: 0;
+        letter-spacing: 0.05em;
+    }
+
+    &__detail {
+        font-family: var.$font-sans;
+        font-size: 0.75rem;
+        color: var.$ink-600;
+        margin: 0;
+        line-height: 1.3;
+    }
+
+    &__btn {
+        font-family: var.$font-accent;
+        font-size: 0.6rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        padding: 8px 14px;
+        background-color: var.$ink-900;
+        color: var.$bone-100;
+        text-decoration: none;
+        border-radius: var.$radius-xs;
+        white-space: nowrap;
+        margin-left: 15px;
+        transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+    }
+}
+
+/* LÓGICA DE COLORES HOVER */
+.poster-item {
+    &:has(.poster-item__line--web) .plan-card__btn:hover { background-color: #4F46E5; color: var.$white-pure; }
+    &:has(.poster-item__line--ux) .plan-card__btn:hover { background-color: var.$color-accent-main; color: var.$white-pure; }
+    &:has(.poster-item__line--pack) .plan-card__btn:hover { background-color: #F59E0B; color: var.$white-pure; }
+    &:has(.poster-item__line--brand) .plan-card__btn:hover { background-color: #10B981; color: var.$white-pure; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+    .plan-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+        &__btn { margin-left: 0; width: 100%; text-align: center; padding: 12px; }
+    }
+}
 
 
 

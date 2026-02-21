@@ -52,23 +52,22 @@ $color-accent-hot: $accent-red;      // estados / énfasis fuerte
 
 
 /* ==========================================================
-   TYPOGRAPHY
+   TYPOGRAPHY — UNIFIED INTER SYSTEM
 ========================================================== */
 
 /* Families */
-$font-serif: 'Lora', serif;
+// Todas las familias apuntan a Inter para coherencia total
+$font-serif: 'Inter', sans-serif; 
 $font-sans: 'Inter', sans-serif;
-$font-accent: 'Syne', sans-serif;
+$font-accent: 'Inter', sans-serif;
 
 /* Weights */
-$weight-regular: 400;
-$weight-medium: 500;
-$weight-semibold: 600;
-
-$weight-lora-regular: 400;
-$weight-lora-bold: 700;
-
-$weight-accent: 800;
+// Aprovechamos los archivos exactos que tienes en tu carpeta fonts
+$weight-regular: 400;   // inter-v20-latin-regular
+$weight-medium: 500;    // inter-v20-latin-500
+$weight-semibold: 600;  // inter-v20-latin-600
+$weight-bold: 700;      // inter-v20-latin-700
+$weight-accent: 800;    // inter-v20-latin-800 (para títulos de impacto)
 
 /* Sizes */
 $fs-h1: clamp(2.2rem, 5vw, 3.2rem);
