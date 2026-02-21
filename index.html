@@ -110,6 +110,18 @@
   ]
 }
 </script>
+<style>
+  /* Fuerza el renderizado inmediato del Hero */
+  .hero {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    content-visibility: auto;
+  }
+  .hero__title {
+    contain: content; /* Aísla el renderizado del título */
+  }
+</style>
 </head>
 <body>
 
@@ -157,12 +169,12 @@
 <!-- ------------------------- -->
 
 <section class="hero" id="inicio">
-    <div class="hero__status" fetchpriority="high">
+    <div class="hero__status">
         <span class="status-dot"></span>
         <span class="status-text">Tech Lab</span>
     </div>
 
-    <div class="hero__container">
+    <div class="hero__container" fetchpriority="high">
         <h1 class="hero__title" data-i18n="hero-title">
             Desarrollo web <br>
             y diseño <br>
