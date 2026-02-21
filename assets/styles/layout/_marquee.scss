@@ -2,68 +2,69 @@
 
 .marquee {
     padding: 80px 0 40px 0;
-    background-color: transparent; 
     overflow: hidden;
+    background-color: transparent;
+    position: relative;
+    width: 100%;
+
+    // Difuminados laterales (Fantasmas para el mouse)
+    &::before, &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 100px;
+        height: 100%;
+        z-index: 5;
+        pointer-events: none;
+    }
+    &::before { left: 0; background: linear-gradient(to right, var.$color-bg-main, transparent); }
+    &::after { right: 0; background: linear-gradient(to left, var.$color-bg-main, transparent); }
 
     &__track {
-        position: relative;
         display: flex;
-        width: 100%;
+        width: max-content;
+        // MOVEMOS LA ANIMACIÓN AQUÍ: Así todo el bloque se mueve como una sola unidad
+        animation: scroll-infinite 40s linear infinite;
         
-        &::before,
-        &::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            width: 80px; // Un poco más corto el difuminado para mobile
-            height: 100%;
-            z-index: 2;
-            pointer-events: none;
-        }
-        &::before { left: 0; background: linear-gradient(to right, var.$color-bg-main, transparent); }
-        &::after { right: 0; background: linear-gradient(to left, var.$color-bg-main, transparent); }
     }
 
     &__content {
         display: flex;
         flex-shrink: 0;
         align-items: center;
-        
-        // --- ESCRITORIO ---
         gap: 100px; 
         padding-right: 100px; 
-        animation: scroll-infinite 40s linear infinite;
 
-        // --- RESPONSIVE (Ajustes solicitados) ---
         @media (max-width: 768px) {
-            gap: 30px;             // Más pegados (de 50px a 30px)
-            padding-right: 30px; 
-            animation-duration: 25s; // Más lento (de 15s a 25s)
+            gap: 40px;
+            padding-right: 40px;
         }
 
         img {
-            height: 55px; 
-            width: auto;
+            display: block;
+            height: auto;
+            width: 180px; 
             filter: grayscale(100%) brightness(0.8);
             opacity: 0.5;
-            transition: all 0.4s ease;
+            transition: transform 0.3s ease, filter 0.3s ease, opacity 0.3s ease;
+            cursor: pointer;
 
             &:hover {
                 filter: grayscale(100%) brightness(1.2); 
                 opacity: 1;
-                transform: scale(1.05);
+                transform: scale(1.1);
             }
 
             @media (max-width: 768px) {
-                height: 45px; // Un poco más pequeños para que el gap de 30px luzca bien
-                opacity: 0.8; 
-                filter: grayscale(100%) brightness(0.5); // Bien oscuros
+                width: 120px;
             }
         }
     }
 }
 
 @keyframes scroll-infinite {
-    from { transform: translateX(0); }
-    to { transform: translateX(-100%); }
+    0% { transform: translateX(0); }
+    /* IMPORTANTE: -50% porque el track tiene dos bloques idénticos. 
+       Al llegar a la mitad, reinicia y el ojo no nota el salto. */
+    100% { transform: translateX(-50%); } 
 }
