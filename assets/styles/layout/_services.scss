@@ -365,3 +365,67 @@
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==========================================================
+   FIX: PLAN-CARD RESPONSIVE (MOBILE VERTICAL)
+========================================================== */
+
+.plan-card {
+    /* Forzamos que el contenedor no rompa el alineado */
+    display: flex !important;
+    flex-direction: row !important; // Evita que se pongan uno arriba del otro
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100%;
+}
+
+.plan-card__info {
+    flex: 1; /* El texto toma todo el espacio restante */
+    min-width: 0; /* Evita que el texto desborde al padre */
+}
+
+.plan-card__btn {
+    /* BLOQUE CRÍTICO: Evita que el botón se estire a lo largo */
+    flex-shrink: 0 !important; 
+    width: 35px !important;  /* Ancho fijo para que sea cuadrado */
+    height: 35px !important; /* Altura fija */
+    padding: 0 !important;   /* Quitamos padding que estira */
+    margin-left: 12px !important;
+    
+    /* Centrado del ojo */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.plan-card__btn .ojo {
+    height: 15px !important; /* Tu medida exacta */
+    width: auto !important;
+    display: block !important;
+}
+
+/* Ajuste fino para pantallas muy angostas */
+@media (max-width: 400px) {
+    .plan-card__name {
+        font-size: 0.75rem !important; /* Achicamos un pelo para que no empuje */
+    }
+    
+    .plan-card__btn {
+        width: 30px !important;
+        height: 30px !important;
+    }
+}
