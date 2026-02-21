@@ -1376,7 +1376,7 @@
   font-family: "Inter", sans-serif;
   text-transform: uppercase;
   font-weight: 800;
-  font-size: 0.9rem;
+  font-size: 0.6rem;
   letter-spacing: 0.1em;
   transition: color 0.3s ease;
 }
@@ -1407,7 +1407,7 @@
 }
 .footer__legals p {
   font-family: "Inter", sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.5rem;
   color: #8C8987;
   margin: 5px 0;
   text-transform: uppercase;
