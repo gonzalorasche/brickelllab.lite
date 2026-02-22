@@ -305,7 +305,7 @@
 .hero__title {
   font-family: "Inter", sans-serif;
   font-weight: 800;
-  font-size: clamp(2.8rem, 9vw, 6.5rem);
+  font-size: clamp(2.8rem, 9vw, 6.2rem);
   line-height: 1.1;
   letter-spacing: -0.02em;
   color: #1F1E1D;
@@ -319,6 +319,7 @@
   display: block;
   color: #D904A0;
   margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
 }
 @media (max-height: 500px) {
   .hero__title {

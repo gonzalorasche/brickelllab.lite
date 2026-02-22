@@ -125,9 +125,9 @@
     }
 
     &__title {
-        font-family: var.$font-sans; // Todo a Inter
+        font-family: var.$font-sans; 
         font-weight: 800; 
-        font-size: clamp(2.8rem, 9vw, 6.5rem);
+        font-size: clamp(2.8rem, 9vw, 6.2rem);
         line-height: 1.1;
         letter-spacing: -0.02em;
         color: var.$ink-900;
@@ -140,7 +140,8 @@
             text-transform: lowercase;
             display: block; 
             color: var.$color-accent-main;
-            margin-top: 0.3rem; 
+            margin-top: 0.3rem;
+            margin-bottom: 0.3rem;
         }
 
         @media (max-height: 500px) {
