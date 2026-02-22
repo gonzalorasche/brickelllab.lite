@@ -114,13 +114,11 @@
 }
 </script>
 <style>
-    /* 1. TU BASE (Hero y Contenedor) */
     .hero {
         display: flex !important;
         visibility: visible !important;
         opacity: 1 !important;
         content-visibility: auto;
-        min-height: 100vh; /* Agregamos esto para que Services no salte hacia arriba */
     }
     .hero__title {
         contain: content; 
@@ -129,28 +127,7 @@
         display: block !important;
     }
     .hero__container { min-height: 60vh; }
-
-    /* 2. FIX DE IMÁGENES (Para frenar el CLS en Desktop sin afectar Mobile) */
-    .header__logo img { 
-        width: 199px; 
-        height: 39px; 
-        aspect-ratio: 199 / 39; 
-    }
     
-    /* El ojo y linkedin: les damos tamaño para que no muevan el body */
-    .ojo { 
-        width: 36px !important; 
-        height: 26px !important; 
-        aspect-ratio: 36 / 26; 
-    }
-    
-    img[src*="linkedin"] { 
-        width: 32px; 
-        height: 32px; 
-        aspect-ratio: 1/1; 
-    }
-
-    /* 3. TU BASE (Modal) */
     .modal {
         display: none !important;
         opacity: 0 !important;
