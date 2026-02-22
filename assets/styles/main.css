@@ -220,41 +220,6 @@
     z-index: 0;
   }
 }
-.hero__status {
-  position: absolute;
-  top: 2rem;
-  right: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  z-index: 10;
-}
-@media (min-width: 768px) {
-  .hero__status {
-    top: 3rem;
-    right: 3rem;
-  }
-}
-@media (max-height: 500px) {
-  .hero__status {
-    display: none;
-  }
-}
-.hero__status .status-dot {
-  width: 6px;
-  height: 6px;
-  background-color: #D904A0;
-  border-radius: 50%;
-  box-shadow: 0 0 10px #D904A0;
-  animation: pulse 2s infinite;
-}
-.hero__status .status-text {
-  font-family: "Inter", sans-serif;
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: #595856;
-}
 .hero__scroll {
   position: absolute;
   bottom: 2rem;

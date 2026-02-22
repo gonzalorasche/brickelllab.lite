@@ -44,40 +44,6 @@
         }
     }
 
-    // Elementos de Status
-    &__status {
-        position: absolute;
-        top: 2rem;
-        right: var.$padding-inline-mobile;
-        display: flex;
-        align-items: center;
-        gap: 0.7rem;
-        z-index: 10;
-
-        @media (min-width: 768px) {
-            top: 3rem;
-            right: var.$content-padding-desktop;
-        }
-
-        @media (max-height: 500px) { display: none; }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            background-color: var.$color-accent-main;
-            border-radius: 50%;
-            box-shadow: 0 0 10px var.$color-accent-main;
-            animation: pulse 2s infinite;
-        }
-
-        .status-text {
-            font-family: var.$font-sans;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: var.$ink-600;
-        }
-    }
 
     // Indicador de Scroll
     &__scroll {
