@@ -1,0 +1,75 @@
+---
+// src/components/HeaderLumina.astro
+import LangSwitcher from './LangSwitcher.astro';
+
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+
+const backLabel = lang === 'en' ? 'Back to Brickell Lab' : 'Volver a Brickell Lab';
+const backHref = lang === 'en' ? '/en/' : '/';
+const luminaHref = lang === 'en' ? '/en/lumina' : '/lumina';
+
+const path = Astro.url.pathname;
+const basePath = path.replace(/^\/en(\/|$)/, '/');
+const esUrl = basePath;
+const enUrl = basePath === '/' ? '/en/' : `/en${basePath}`;
+---
+<header class="lm-header">
+  <div class="lm-header-in">
+    <div class="lm-box">
+      <a href={luminaHref} class="lm-logo" aria-label="Lúmina — inicio">
+        <img src="/logolumina.png" alt="Lúmina" />
+      </a>
+      <LangSwitcher lang={lang} variant="dropdown" />
+      <a href={backHref} class="lm-back">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        {backLabel}
+      </a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .lm-header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    padding:10px 0;
+  }
+  .lm-header-in{
+    width:100%; padding:0 var(--gutter);
+    display:flex; align-items:center; justify-content:flex-end;
+  }
+  .lm-box{
+    display:inline-flex; align-items:center; gap:14px;
+    background:rgba(255,255,255,.82); backdrop-filter:blur(14px) saturate(1.2);
+    border:1px solid var(--border); border-radius:var(--r-pill);
+    padding:7px 7px 7px 16px; box-shadow:var(--shadow-sm);
+  }
+  .lm-logo{ display:inline-flex; align-items:center; text-decoration:none; }
+  .lm-logo img{ height:18px !important; width:auto; display:block; position:relative; top:-1px; }
+
+  .lm-back{
+    display:inline-flex; align-items:center; gap:7px;
+    font-size:13px; font-weight:var(--fw-semibold); letter-spacing:-.01em;
+    color:var(--text-primary); background:var(--n-200); text-decoration:none;
+    padding:9px 16px; border-radius:var(--r-pill);
+    transition:background var(--dur) var(--ease), color var(--dur) var(--ease), transform var(--dur-fast) var(--ease);
+  }
+  .lm-back:hover{ background:#0B0B0B; color:#fff; transform:translateY(-1px); }
+  .lm-back svg{ transition:transform var(--dur) var(--ease); }
+  .lm-back:hover svg{ transform:translateX(-3px); }
+
+  .lm-lang{ display:inline-flex; align-items:center; gap:5px; }
+  .lm-lang a{
+    font-size:12px; font-weight:var(--fw-semibold); letter-spacing:.04em;
+    color:var(--text-muted); text-decoration:none; padding:2px 3px;
+    transition:color var(--dur) var(--ease);
+  }
+  .lm-lang a:hover{ color:var(--text-primary); }
+  .lm-lang a.on{ color:var(--magenta); }
+  .lm-lang-sep{ color:var(--border-strong); font-size:12px; }
+
+  @media (max-width:560px){
+    .lm-back{ font-size:12px; padding:8px 13px; }
+    .lm-logo img{ height:24px; }
+  }
+</style>

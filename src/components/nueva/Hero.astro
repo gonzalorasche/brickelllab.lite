@@ -1,0 +1,266 @@
+---
+// src/components/nueva/Hero.astro
+//
+// ══════════════════════════════════════════════════════════
+// EL HERO · Brickell, Miami — a sangre, en negativo
+// ══════════════════════════════════════════════════════════
+//
+// ⚠️ ES LA ÚNICA PANTALLA OSCURA DE TODA LA PÁGINA, Y ESA ES LA IDEA. Las siete
+// secciones que siguen son blancas; ésta es tinta. Un estudio de diseño no abre
+// con la misma superficie con la que continúa — abre con una pieza, y después
+// empieza el documento. El corte entre el hero y lo que sigue es el gesto.
+//
+// ⚠️ NO ES OSCURO POR GUSTO: ESTÁ MEDIDO. La foto tiene rango completo justo
+// donde va el texto —el agua trae reflejos casi negros y el cielo nubes grises—
+// así que un titular en tinta sobre ella medía 1,00:1 en su peor punto: invisible.
+// No hay composición que lo salve, porque el problema no es dónde poner el texto
+// sino que abajo de cualquier lugar hay de todo. Tratada a `brightness(.46)`, el
+// píxel más claro de la superficie entera queda en 115 y el blanco tiene 4,76:1
+// EN TODAS PARTES. Recién ahí el texto puede ir donde la composición lo pida y no
+// donde la foto lo permita. El cálculo completo está en `nueva.css`.
+//
+// ⚠️ Y LA FOTO ES BRICKELL, MIAMI, QUE ES DE DONDE SALE EL NOMBRE. Por eso el
+// hero lleva las coordenadas escritas arriba en lugar de una frase de bienvenida:
+// no es un adorno de estilo técnico, es la única parte de la página que dice de
+// dónde viene la marca. Un dato real vale más que un "bienvenidos".
+//
+// ──────────────────────────────────────────────────────────
+// LO QUE SE FUE, Y POR QUÉ
+// ──────────────────────────────────────────────────────────
+//
+// ⚠️ NO ESTÁN MÁS EL iPHONE CON LÚMINA NI EL SELLO. `Piezas.astro` sigue en el
+// proyecto entero y sin tocar —no se borró nada— pero este hero ya no lo monta.
+// Un mockup de teléfono flotando al costado del título es exactamente lo que hace
+// toda agencia de desarrollo: es el recurso que hacía que el hero se viera
+// genérico por más que cada pieza estuviera bien resuelta. El producto se muestra
+// mejor en su propia sección, a tamaño real, que como una miniatura decorativa
+// acá arriba. Para devolverlo alcanza con importar `Piezas` y montarlo.
+//
+// ⚠️ TAMPOCO ESTÁ EL PANEL CON LA OLA. La foto ya no es el relleno de una caja
+// dentro de la página: es la pantalla entera. Un recuadro alrededor la volvería
+// otra vez una tarjeta.
+import { useTranslations } from '../../i18n/utils';
+
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+const t = useTranslations(lang);
+
+/* Los años se calculan, no se escriben: el número tiene que seguir siendo
+   cierto el año que viene sin que nadie se acuerde de venir a cambiarlo. */
+const madre = new Date('2024-09-10T00:00:00');
+const hoy = new Date();
+const years = Math.max(1, Math.round((hoy.getTime() - madre.getTime()) / (365.25 * 24 * 3600 * 1000)));
+
+/* Los tres datos. `mas` es el signo que va DELANTE del número, y va vacío en los
+   que son exactos: 4 países son cuatro, no más de cuatro. */
+const DATOS = [
+  { n: 70, mas: '+', l: t('hero.stat.projects') },
+  { n: years, mas: '', l: t('hero.stat.years') },
+  { n: 4, mas: '', l: t('hero.stat.countries') },
+];
+
+/* ⚠️ LAS COORDENADAS SON LAS DE BRICKELL, MIAMI, Y SON REALES: 25,7617° N /
+   80,1918° O, escritas en grados y minutos como se rotula una foto. Inventar unas
+   que quedaran lindas sería exactamente el tipo de detalle falso que un estudio
+   de diseño no se puede permitir en su propia portada. */
+const FICHA = [
+  '25°45′N  80°11′W',
+  'Brickell · Miami',
+  'Est. 2024',
+];
+
+/* Las cinco áreas. En este hero se dibujan también en escritorio, corriendo en el
+   borde de abajo: sobre una pantalla oscura una marquesina cierra la composición,
+   mientras que sobre la blanca de antes era un renglón suelto. */
+const TAGS = [0, 1, 2, 3, 4].map((i) => t(`hero.tag.${i}` as any));
+---
+
+<section class="bl-hero bl-hero--noche" id="inicio" aria-label="Brickell Lab">
+
+  {/* ⚠️ LA FOTO VA COMO `<img>` Y NO COMO `background-image`, y no es indistinto:
+      un fondo de CSS no elige por densidad de pantalla. Con `srcset` una pantalla
+      común baja 115KB y una de densidad doble 148KB, en lugar de que todo el
+      mundo se lleve el archivo más grande.
+
+      ⚠️ `alt` VACÍO A PROPÓSITO. Es decorativa: lo que el hero dice ya está en el
+      `<h1>` y en la ficha de arriba. Describirla acá haría que un lector de
+      pantalla leyera dos veces lo mismo.
+
+      ⚠️ EL ORIGINAL ES DE 2048px Y ES EL TECHO REAL. Alcanza para una pantalla de
+      1440 al doble de densidad, pero no para un monitor de 4K a sangre: ahí se
+      estaría ampliando. Si hace falta, se necesita el archivo más grande. */}
+  <picture class="bl-hero-foto">
+    <source srcset="/brickell_ciudad-1600.webp 1600w, /brickell_ciudad-2048.webp 2048w"
+            sizes="100vw" type="image/webp" />
+    <img src="/brickell_ciudad-1600.webp" alt="" width="2048" height="1229"
+         loading="eager" fetchpriority="high" decoding="async" />
+  </picture>
+
+  {/* ⚠️ LA GRILLA ES EL ÚNICO ADORNO, Y ES UN ADORNO QUE DICE ALGO: seis columnas
+      dibujadas a la vista, del ancho exacto del contenido, sobre las que se apoya
+      todo lo demás. En la portada de un estudio de diseño, mostrar la grilla no es
+      decoración: es la firma del oficio.
+
+      Va dentro del envoltorio y no a sangre para que sus líneas caigan donde caen
+      de verdad las columnas — a sangre serían seis rayas cualesquiera. */}
+  <div class="bl-wrap bl-hero-grilla" aria-hidden="true"></div>
+
+  <div class="bl-wrap bl-hero-esc">
+
+    {/* ═══ LA FICHA ═══
+        Mono, chiquita y en versalitas. El contraste de escala con el titular
+        —diez píxeles contra ciento veinte— es el que hace que el titular se lea
+        enorme: sin nada chico al lado, "grande" no tiene con qué compararse. */}
+    <header class="bl-ficha">
+      {FICHA.map((f) => <span>{f}</span>)}
+    </header>
+
+    {/* ═══ EL TITULAR ═══ */}
+    <h1 class="bl-titular">
+      {/* El título accesible lleva las palabras que alguien tipea en un buscador;
+          el visible es el que se lee. Los dos dicen lo mismo, en dos registros. */}
+      <span class="sr-only">{t('hero.seo')}</span>
+
+      {/* ⚠️ TRES LÍNEAS EXPLÍCITAS, CADA UNA SU PROPIO BLOQUE, y no un párrafo que
+          se acomoda solo. A esta escala el corte no se puede dejar al azar del
+          ancho de la ventana: una palabra que salta de renglón cambia la silueta
+          del bloque entero, que acá es la composición. Además cada línea necesita
+          ser un elemento propio porque la tercera se corre a la derecha.
+
+          ⚠️ Y VAN EN CAJA ALTA POR CSS, NO ESCRITAS EN MAYÚSCULAS. El texto es el
+          mismo de siempre —no se tocó una palabra— y así se copia, se traduce y se
+          lee en voz alta como corresponde. */}
+      {/* El `--i` es el turno de cada línea en la entrada: el revelado las va
+          soltando de a una. El escalonado y el porqué están en `nueva.css`. */}
+      <span class="bl-titular-in" aria-hidden="true">
+        <em style="--i:0">Construimos</em>
+        {/* ⚠️ EL `<i>` NO ES CURSIVA: ES EL PUNTO DE CORTE PARA EL TELÉFONO. Esta
+            línea mide 408px a la escala de mobile contra 356 disponibles, así que
+            SE VA A PARTIR SÍ O SÍ. Sin decirle dónde, el navegador la corta donde
+            le toca —"LO QUE TU / MARCA"— y deja una palabra suelta con media línea
+            vacía al lado. Partida acá, el corte es "LO QUE / TU MARCA": dos
+            bloques parejos, y el titular conserva su tamaño. En escritorio el
+            `<i>` es `inline` y no hace nada. */}
+        <em style="--i:1">lo que <i>tu marca</i></em>
+        <em class="bl-titular-eco" style="--i:2">necesita</em>
+      </span>
+    </h1>
+
+    {/* ═══ EL PIE ═══
+        ⚠️ TRES COSAS EN UN RENGLÓN, SEPARADAS POR EL FILETE DE ARRIBA: qué hace el
+        estudio, cuánto lleva hecho y por dónde se empieza. Apiladas serían tres
+        renglones más de alto en un hero que tiene que entrar en una pantalla, y
+        además romperían la lectura horizontal que sostiene la grilla. */}
+    <footer class="bl-hero-pie">
+      <p class="bl-hero-lede" style="--d:0">{t('hero.lede')}</p>
+
+      <div class="bl-datos" style="--d:1">
+        {DATOS.map((d) => (
+          <div class="bl-dato">
+            {/* ⚠️ EL NÚMERO VA EN SU PROPIO `<span>` porque es lo único que anima
+                el contador: mientras sube de 0 a 70, el "+" es un hermano y queda
+                quieto. Si el signo viviera dentro del mismo nodo de texto, el
+                contador lo borraría en el primer cuadro. */}
+            <span class="bl-dato-n">
+              {d.mas && <i class="mas" aria-hidden="true">{d.mas}</i>}
+              <span class="cuenta" data-hasta={d.n}>{d.n}</span>
+            </span>
+            <span class="bl-dato-l">{d.l}</span>
+          </div>
+        ))}
+      </div>
+
+      <a class="bl-btn bl-btn--acento bl-hero-cta" href="#contacto" style="--d:2">
+        {/* La franja de luz que lo cruza. Va como elemento y no como `::after`
+            porque el botón ya usa su `::after`… y sobre todo porque así se puede
+            apagar sola con `prefers-reduced-motion`. */}
+        <span class="bl-luz" aria-hidden="true"></span>
+        {t('ag.cta')}
+        <svg class="bl-fl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>
+      </a>
+    </footer>
+  </div>
+
+  {/* ═══ LA MARQUESINA ═══
+      ⚠️ VA FUERA DE `.bl-wrap` A PROPÓSITO: tiene que llegar a los dos bordes de
+      la pantalla, y el envoltorio la dejaría con el margen de la columna. Es lo
+      que la vuelve una cinta y no un renglón centrado.
+
+      La lista está DOS VECES y la segunda es `aria-hidden`: el bucle se hace
+      corriendo la pista un 50% y volviendo a cero, y para que ese salto no se vea
+      el contenido tiene que estar duplicado. Para un lector de pantalla la copia
+      no existe: leería las cinco áreas dos veces seguidas. */}
+  {/* ⚠️ TRES COPIAS, NO DOS, Y EL BUCLE MUEVE UN TERCIO. Con dos, la pista medía
+      poco más que la pantalla y las dos copias se veían a la vez: la repetición
+      quedaba a la vista de entrada. Con tres, la pista es bastante más ancha que
+      cualquier viewport y en pantalla nunca hay una copia entera y media.
+
+      ⚠️ LAS COPIAS SON `aria-hidden` MENOS LA PRIMERA: para un lector de pantalla
+      la cinta dice las cinco áreas UNA vez. Sin eso las leería tres veces
+      seguidas, que es exactamente el ruido que un lector no necesita. */}
+  <div class="bl-cinta" aria-label="Áreas de trabajo">
+    <div class="bl-cinta-pista">
+      <ul>{TAGS.map((x) => <li>{x}</li>)}</ul>
+      <ul aria-hidden="true">{TAGS.map((x) => <li>{x}</li>)}</ul>
+      <ul aria-hidden="true">{TAGS.map((x) => <li>{x}</li>)}</ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+</style>
+
+
+<script is:inline>
+  /* ══════════════════════════════════════════════════════════
+     EL CONTADOR DE LOS NÚMEROS DEL HERO
+     ══════════════════════════════════════════════════════════
+
+     Sube de 0 al valor final cuando el bloque entra en pantalla. */
+  (function () {
+    var els = document.querySelectorAll('.bl-hero .cuenta');
+    if (!els.length) return;
+
+    /* ⚠️ SI ALGUIEN PIDIÓ MENOS MOVIMIENTO, NO SE ANIMA NADA. Un número que salta
+       es movimiento igual que un desplazamiento, y para quien lo pidió apagado es
+       exactamente lo que molesta. El valor final ya está escrito en el HTML. */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var io = new IntersectionObserver(function (entradas, obs) {
+      entradas.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        obs.unobserve(e.target);
+
+        var el = e.target;
+        var hasta = parseInt(el.getAttribute('data-hasta'), 10) || 0;
+        var dur = 1100;
+        var t0 = performance.now();
+        el.textContent = '0';
+
+        /* ⚠️ Y ADEMÁS HAY UN SEGURO POR TIEMPO. `requestAnimationFrame` no corre
+           en una pestaña de fondo —ni, comprobado, en algunos navegadores
+           automatizados—: sin esto el contador se congela en el número que
+           alcanzó. `setTimeout` sí corre igual, así que pasada la duración
+           escribe el valor final pase lo que pase. Si la animación terminó bien,
+           esto escribe lo mismo que ya estaba y no se nota. */
+        var seguro = setTimeout(function () { el.textContent = hasta; }, dur + 400);
+
+        (function paso(ahora) {
+          var p = Math.min(1, (ahora - t0) / dur);
+          /* Cúbica de salida: arranca rápido y frena al final. Lineal se lee
+             como un cronómetro; así se lee como que llega. */
+          var suave = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(hasta * suave);
+          if (p < 1) requestAnimationFrame(paso);
+          else { clearTimeout(seguro); el.textContent = hasta; }
+        })(t0);
+      });
+    }, { threshold: 0.5 });
+
+    els.forEach(function (el) { io.observe(el); });
+  })();
+</script>

@@ -1,0 +1,117 @@
+---
+// src/components/LangSwitcher.astro
+// Selector de idioma reutilizable: ícono de mundo que despliega banderitas.
+// Variantes: "dropdown" (headers) y "inline" (off-canvas, banderas directas).
+interface Props {
+  lang?: 'es' | 'en';
+  variant?: 'dropdown' | 'inline';
+}
+const { lang = 'es', variant = 'dropdown' } = Astro.props;
+
+// URLs: misma página en el otro idioma
+const path = Astro.url.pathname;
+const basePath = path.replace(/^\/en(\/|$)/, '/');
+const esUrl = basePath;
+const enUrl = basePath === '/' ? '/en/' : `/en${basePath}`;
+
+// Banderas SVG inline
+const esFlag = `<svg viewBox="0 0 3 2" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="3" height="2" fill="#c60b1e"/><rect width="3" height="1" y="0.5" fill="#ffc400"/></svg>`;
+const enFlag = `<svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><clipPath id="uk-s"><path d="M0 0v30h60V0z"/></clipPath><clipPath id="uk-t"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><g clip-path="url(#uk-s)"><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#uk-t)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></g></svg>`;
+---
+{variant === 'inline' ? (
+  <div class="ls-inline" role="group" aria-label="Idioma / Language">
+    <a href={esUrl} class={`ls-flag-btn ${lang === 'es' ? 'on' : ''}`} aria-label="Español">
+      <span class="ls-flag" set:html={esFlag} />
+      <span class="ls-flag-txt">Español</span>
+    </a>
+    <a href={enUrl} class={`ls-flag-btn ${lang === 'en' ? 'on' : ''}`} aria-label="English">
+      <span class="ls-flag" set:html={enFlag} />
+      <span class="ls-flag-txt">English</span>
+    </a>
+  </div>
+) : (
+  <div class="ls" data-lang-switcher>
+    <button type="button" class="ls-toggle" aria-label="Cambiar idioma / Change language" aria-expanded="false" aria-haspopup="true">
+      <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>
+      </svg>
+    </button>
+    <div class="ls-menu" role="menu">
+      <a href={esUrl} class={`ls-item ${lang === 'es' ? 'on' : ''}`} role="menuitem">
+        <span class="ls-flag" set:html={esFlag} />
+        <span>Español</span>
+      </a>
+      <a href={enUrl} class={`ls-item ${lang === 'en' ? 'on' : ''}`} role="menuitem">
+        <span class="ls-flag" set:html={enFlag} />
+        <span>English</span>
+      </a>
+    </div>
+  </div>
+)}
+
+<style>
+  /* ===== Dropdown (headers) ===== */
+  .ls{ position:relative; display:inline-flex; }
+  .ls-toggle{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:34px; height:34px; padding:0; cursor:pointer;
+    background:transparent; border:0; border-radius:50%;
+    color:var(--text-secondary);
+    transition:color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .ls-toggle:hover{ color:var(--text-primary); background:var(--n-150); }
+  .ls-menu{
+    position:absolute; top:calc(100% + 8px); right:0; z-index:120;
+    min-width:150px; padding:6px;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
+    box-shadow:var(--shadow-lg);
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity var(--dur) var(--ease), transform var(--dur) var(--ease), visibility var(--dur);
+  }
+  .ls.open .ls-menu{ opacity:1; visibility:visible; transform:none; }
+  .ls-item{
+    display:flex; align-items:center; gap:10px;
+    padding:9px 10px; border-radius:var(--r-sm); text-decoration:none;
+    font-size:14px; font-weight:var(--fw-medium); color:var(--text-secondary);
+    transition:background var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .ls-item:hover{ background:var(--n-100); color:var(--text-primary); }
+  .ls-item.on{ color:var(--magenta); font-weight:var(--fw-semibold); }
+
+  /* ===== Inline (off-canvas) ===== */
+  .ls-inline{ display:flex; gap:10px; }
+  .ls-flag-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:8px 12px; border-radius:var(--r-md); text-decoration:none;
+    font-size:14px; font-weight:var(--fw-medium); color:var(--text-secondary);
+    border:1px solid var(--border);
+    transition:border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .ls-flag-btn:hover{ border-color:var(--border-strong); color:var(--text-primary); }
+  .ls-flag-btn.on{ border-color:var(--magenta); color:var(--magenta); font-weight:var(--fw-semibold); }
+  .ls-flag-txt{ display:none; }
+
+  /* Banderita */
+  .ls-flag{ display:inline-flex; width:22px; height:16px; border-radius:3px; overflow:hidden; flex:0 0 auto; box-shadow:0 0 0 1px rgba(0,0,0,.06); }
+  .ls-flag :global(svg){ display:block; width:100%; height:100%; }
+</style>
+
+<script>
+  // @ts-nocheck
+  document.querySelectorAll('[data-lang-switcher]').forEach((ls) => {
+    const toggle = ls.querySelector('.ls-toggle');
+    if (!toggle) return;
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = ls.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    document.addEventListener('click', (e) => {
+      if (!ls.contains(e.target)) {
+        ls.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+</script>

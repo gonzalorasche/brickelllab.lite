@@ -1,0 +1,78 @@
+---
+// src/components/FooterLumina.astro
+import { useTranslations } from '../i18n/utils';
+
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+const t = useTranslations(lang);
+
+const p = lang === 'en' ? '/en' : '';
+const luminaApp = 'https://lumina.labbrickell.com.ar';
+const year = new Date().getFullYear();
+---
+<footer class="lmf">
+  <div class="lmf-in">
+    <div class="lmf-top">
+      <div class="lmf-brand">
+        <img class="lmf-logo" src="/logolumina.png" alt="Lúmina" decoding="async" />
+        <p class="lmf-tag">{t('lmf.tag.pre')}<a href={p || '/'}>{t('lmf.tag.link')}</a>{t('lmf.tag.post')}</p>
+      </div>
+      <div class="lmf-links">
+        <a href={luminaApp} target="_blank" rel="noopener">{t('lmf.goto')}</a>
+        <a href={p || '/'}>{t('lmf.back')}</a>
+      </div>
+    </div>
+    <div class="lmf-bottom">
+      <span>© {year} Lúmina · Brickell Lab. {t('lmf.rights')}</span>
+      <div class="lmf-legal">
+        <a href={`${p}/terminos`}>{t('footer.legal.terms')}</a>
+        <a href={`${p}/privacidad`}>{t('footer.legal.privacy')}</a>
+        <button type="button" id="lmfCookies" class="lmf-cookies">{t('footer.legal.cookies')}</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .lmf{ width:100%; background:#0B0B0B; color:#EDEDED; }
+  .lmf-in{ width:100%; padding:clamp(48px,6vw,72px) var(--gutter) clamp(24px,3vw,32px); }
+  .lmf-top{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:clamp(28px,4vw,56px); flex-wrap:wrap;
+    padding-bottom:clamp(32px,4vw,44px);
+  }
+  .lmf-logo{ height:26px; width:auto; display:block; filter:brightness(0) invert(1); }
+  .lmf-tag{ margin:16px 0 0; max-width:44ch; font-size:14px; line-height:1.6; color:rgba(255,255,255,.6); }
+  .lmf-tag a{ color:var(--magenta); text-decoration:none; }
+  .lmf-tag a:hover{ text-decoration:underline; }
+  .lmf-links{ display:flex; flex-direction:column; gap:10px; }
+  .lmf-links a{ font-size:14.5px; color:rgba(255,255,255,.75); text-decoration:none; transition:color var(--dur) var(--ease); }
+  .lmf-links a:hover{ color:var(--magenta); }
+  .lmf-bottom{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    padding-top:clamp(22px,3vw,28px); border-top:1px solid rgba(255,255,255,.12);
+    font-size:13px; color:rgba(255,255,255,.5);
+  }
+  .lmf-legal{ display:flex; gap:20px; flex-wrap:wrap; }
+  .lmf-legal a{ color:rgba(255,255,255,.5); text-decoration:none; transition:color var(--dur) var(--ease); }
+  .lmf-legal a:hover{ color:#fff; }
+  .lmf-cookies{
+    font-family:inherit; font-size:13px; color:rgba(255,255,255,.5);
+    background:none; border:0; padding:0; cursor:pointer;
+    transition:color var(--dur) var(--ease);
+  }
+  .lmf-cookies:hover{ color:#fff; }
+  @media (max-width:560px){
+    .lmf-bottom{ flex-direction:column; align-items:flex-start; gap:8px; }
+  }
+</style>
+
+<script>
+  // @ts-nocheck
+  const lmfCookies = document.getElementById('lmfCookies');
+  if (lmfCookies) {
+    lmfCookies.addEventListener('click', () => {
+      try { localStorage.removeItem('bl_cookie_consent'); } catch(e){}
+      location.reload();
+    });
+  }
+</script>

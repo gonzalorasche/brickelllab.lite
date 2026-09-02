@@ -1,0 +1,78 @@
+---
+// src/components/SeoSchemaLexa.astro
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+const p = lang === 'en' ? '/en' : '';
+const inLang = lang === 'en' ? 'en-US' : 'es-AR';
+
+const tx = {
+  es: {
+    desc: "Servicio de traducción profesional de inglés con matrícula de traductor público (CTPCBA). Traducciones públicas y especializadas: documentos personales, legales, médicos, educativos y más.",
+    cred: "Traductor Público Matriculado",
+    s1n: "Traducción pública y especializada", s1: "Traducciones públicas certificadas por el CTPCBA y traducciones simples especializadas por área.",
+    s2n: "Localización", s2: "Adaptación de textos a la variedad lingüística de cada mercado.",
+    s3n: "Edición y revisión", s3: "Control de calidad de textos en inglés y español.",
+    s4n: "Transcripción", s4: "Conversión de material de audio a texto.",
+    pageName: "Lexa | Traducción de inglés matriculada",
+    pageDesc: "Traducción pública y especializada de inglés con matrícula del CTPCBA.",
+  },
+  en: {
+    desc: "Professional English translation service by a sworn public translator (CTPCBA). Certified and specialized translations: personal, legal, medical, educational documents and more.",
+    cred: "Sworn Public Translator",
+    s1n: "Certified and specialized translation", s1: "Certified public translations by the CTPCBA and specialized standard translations by field.",
+    s2n: "Localization", s2: "Adapting texts to the language variety of each market.",
+    s3n: "Editing and proofreading", s3: "Quality control of texts in English and Spanish.",
+    s4n: "Transcription", s4: "Converting audio material into text.",
+    pageName: "Lexa | Certified English Translation",
+    pageDesc: "Certified and specialized English translation with CTPCBA credentials.",
+  },
+}[lang];
+
+const mkService = (name: string, desc: string) => ({ "@type": "Offer", "itemOffered": { "@type": "Service", "name": name, "description": desc } });
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["Organization", "ProfessionalService"],
+      "@id": "https://labbrickell.com.ar/lexa#lexa",
+      "name": "Lexa",
+      "url": `https://labbrickell.com.ar${p}/lexa`,
+      "image": "https://labbrickell.com.ar/og-image.jpg",
+      "description": tx.desc,
+      "parentOrganization": { "@id": "https://labbrickell.com.ar/#organization" },
+      "areaServed": "AR",
+      "knowsLanguage": ["es", "en"],
+      "hasCredential": {
+        "@type": "EducationalOccupationalCredential",
+        "credentialCategory": tx.cred,
+        "recognizedBy": {
+          "@type": "Organization",
+          "name": "Colegio de Traductores Públicos de la Ciudad de Buenos Aires (CTPCBA)"
+        }
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios de Lexa",
+        "itemListElement": [
+          mkService(tx.s1n, tx.s1),
+          mkService(tx.s2n, tx.s2),
+          mkService(tx.s3n, tx.s3),
+          mkService(tx.s4n, tx.s4),
+        ]
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": `https://labbrickell.com.ar${p}/lexa#webpage`,
+      "url": `https://labbrickell.com.ar${p}/lexa`,
+      "name": tx.pageName,
+      "description": tx.pageDesc,
+      "isPartOf": { "@id": "https://labbrickell.com.ar/#website" },
+      "about": { "@id": "https://labbrickell.com.ar/lexa#lexa" },
+      "inLanguage": inLang
+    }
+  ]
+};
+---
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

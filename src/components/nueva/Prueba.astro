@@ -1,0 +1,123 @@
+---
+// src/components/nueva/Prueba.astro
+//
+// LAS DOS ÚNICAS IMÁGENES DE LA PÁGINA, y están porque son producto real:
+// Lúmina y Lexa no ilustran una idea, son la evidencia de que lo que se ofrece
+// se construyó de verdad. Todo el resto del documento se sostiene sin fotos.
+//
+// ⚠️ FORMATO DE CASO, NO DE TARJETA. La versión anterior ponía el logo y una
+// frase encima de una foto oscurecida, que es el formato de un banner: se mira y
+// no dice nada. Un caso lleva qué es, qué se construyó y un número, y ese número
+// es lo único que convierte "tenemos productos" en una prueba.
+//
+// Va SEGUNDO, pegado al hero: después de entender qué hacés, lo primero que
+// alguien quiere es ver qué hiciste. La agencia y el proceso vienen después.
+import { useTranslations } from '../../i18n/utils';
+
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+const t = useTranslations(lang);
+const p = lang === 'en' ? '/en' : '';
+
+/**
+ * LOS DOS CASOS.
+ *
+ * ⚠️ ACÁ NO SE INVENTA NI UN DATO: cada texto es una clave que ya estaba escrita
+ * y traducida en `i18n/ui.ts`. Nada se redactó para esta página.
+ *
+ * ⚠️ CADA CASO TENÍA ADEMÁS TRES NÚMEROS —Lúmina: 7 funciones, 3 planes, 1 pago ·
+ * Lexa: 6 áreas, 4 servicios, 20 años— que se dibujaban en una fila debajo de la
+ * foto. Se sacaron: la tarjeta ya dice qué es la marca y por dónde se entra, y
+ * esos números agregaban un renglón sin agregar un argumento.
+ *
+ * Si alguna vez vuelven, NO se inventan: cada uno era el largo de una lista que
+ * existe. 7 = `lm.feat.1..7`. 3 planes y 1 pago = `lm.planes.title` y
+ * `lm.planes.lede`. 6 = `lx.area.0..5`. 4 = `lx.serv.1..4`. Y los 20 años salen
+ * de `lx.hero.exp.strong`, que además está replicado en las dos meta
+ * descriptions de `pages/lexa.astro` y su par en inglés: si ese número cambia,
+ * son TRES lugares y tienen que cambiar juntos.
+ */
+const CASOS = [
+  {
+    slug: 'lumina', nombre: 'Lúmina',
+    logo: '/logolumina.png', img: '/slide2.jpg', alt: t('eco.lumina.alt'),
+    rol: `${t('nv.rol.producto')} · SaaS`,
+    txt: t('eco.lumina.tagline'),
+    cta: t('eco.lumina.cta'), href: `${p}/lumina`,
+  },
+  {
+    slug: 'lexa', nombre: 'Lexa',
+    logo: '/logolexa.png', img: '/slide3.jpg', alt: t('eco.lexa.alt'),
+    rol: `${t('nv.rol.producto')} · ${t('sv.otro.lang.name')}`,
+    txt: t('eco.lexa.tagline'),
+    cta: t('eco.lexa.cta'), href: `${p}/lexa`,
+  },
+];
+---
+
+<section class="bl-sec bl-secpad bl-pr" id="ecosistema" data-px aria-labelledby="bl-pr-t">
+  <div class="bl-wrap bl-pr-esc">
+
+    {/* La ficha, en el registro del hero: mono, versalitas y un filete abajo.
+        Sin numerar — es una sección, no un ítem de un índice. */}
+    <div class="bl-cab">
+      <header class="bl-cab-ficha">
+        <span>La prueba</span>
+        <span class="bl-cab-fin">Lúmina · Lexa</span>
+      </header>
+
+      {/* En caja alta por CSS, como el titular del hero, y un escalón por debajo
+          en tamaño: el hero manda y esto lo sigue. El texto no se tocó. */}
+      <h2 class="bl-cab-tit bl-sube" id="bl-pr-t">
+        Antes de venderlo, lo <em>construimos para nosotros</em>
+      </h2>
+
+      <p class="bl-cab-lede bl-sube">
+        Las dos marcas de la casa no son un portfolio: son producto en producción,
+        con clientes que pagan. Lo que ofrecemos afuera es lo que ya sostenemos adentro.
+      </p>
+    </div>
+
+    {/* ⚠️ TODO LO QUE IDENTIFICA A LA MARCA VA DENTRO DE LA IMAGEN: el logo, el
+        rol, qué es y el botón. La foto deja de ser el encabezado de una tarjeta y
+        pasa a SER la tarjeta — un solo objeto en vez de una imagen con una ficha
+        colgando abajo.
+
+        ⚠️ AFUERA NO QUEDA NADA. Hubo una fila de números —7 funciones, 3 planes,
+        20 años— debajo de cada foto y se sacó: la tarjeta ya dice qué es la marca
+        y por dónde se entra, y esa segunda lectura le agregaba un renglón sin
+        agregar un argumento. La tarjeta es la foto.
+
+        ⚠️ Y POR ESO EL LOGO SE INVIERTE A BLANCO Y EL BOTÓN CAMBIA DE VARIANTE:
+        los dos archivos de logo son NEGROS —están hechos para fondo claro— y el
+        botón de contorno oscuro sobre una foto no se ve. El detalle está en el
+        CSS. */}
+    <div class="bl-pr-casos bl-esc" style={`--n:${CASOS.length}`}>
+      {CASOS.map((c, i) => (
+        <article class="bl-pr-caso" style={`--i:${i}`}>
+          <div class="bl-pr-foto">
+            <img src={c.img} alt={c.alt} loading="lazy" decoding="async" />
+
+            {/* ⚠️ EL TEXTO Y EL BOTÓN VAN EN UNA FILA, no apilados. Con el botón
+                debajo del párrafo, el bloque entero medía cuatro renglones de
+                alto y empujaba el logo hacia el medio de la foto; al costado, el
+                bloque baja y la imagen recupera todo lo de arriba, que es donde
+                está lo que la foto tiene para mostrar. */}
+            <div class="bl-pr-sobre">
+              <div class="bl-pr-info">
+                <img class="bl-pr-logo" src={c.logo} alt={c.nombre} loading="lazy" decoding="async" />
+                <span class="bl-pr-rol">{c.rol}</span>
+                <p class="bl-pr-txt">{c.txt}</p>
+              </div>
+
+              <a class="bl-btn bl-pr-cta" href={c.href}>
+                {c.cta}
+                <svg class="bl-fl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,179 @@
+---
+// src/components/Agencia.astro
+import { useTranslations } from '../i18n/utils';
+
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+const t = useTranslations(lang);
+
+const p = lang === 'en' ? '/en' : '';
+
+const pilares = [
+  { n: '01', t: t('ag.card1.t'), d: t('ag.card1.d') },
+  { n: '02', t: t('ag.card2.t'), d: t('ag.card2.d') },
+  { n: '03', t: t('ag.card3.t'), d: t('ag.card3.d') },
+];
+---
+<section class="ag" id="agencia" aria-label="La agencia">
+  <span class="ag-bloom" aria-hidden="true"></span>
+  <div class="ag-in">
+
+    <div class="ag-left ag-reveal">
+      <span class="ag-badge">{t('ag.badge')}</span>
+
+      <h2 class="ag-title">{t('ag.title.pre')}<em>{t('ag.title.em')}</em>{t('ag.title.post')}</h2>
+
+      <span class="ag-rule" aria-hidden="true"></span>
+
+      <p class="ag-lede">
+        {t('ag.lede.pre')}<strong>{t('ag.lede.strong')}</strong>{t('ag.lede.post')}
+      </p>
+      <p class="ag-body">
+        {t('ag.body')}
+      </p>
+
+      <div class="ag-author">
+        <span class="ag-avatar"><img src="/founder.jpg" alt="Gonzalo Raschella" loading="lazy" decoding="async" /></span>
+        <span class="ag-author-id">
+          <span class="ag-author-name">Gonzalo Raschella</span>
+          <span class="ag-author-role">{t('ag.role')}</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="ag-right">
+      {pilares.map((p) => (
+        <article class="ag-card ag-reveal">
+          <span class="ag-card-n">{p.n}</span>
+          <h3 class="ag-card-t">{p.t}</h3>
+          <p class="ag-card-d">{p.d}</p>
+        </article>
+      ))}
+      <a href={`${p}/#contacto`} class="ag-cta ag-reveal">{t('ag.cta')}
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .ag{
+    position:relative; overflow:hidden;
+    width:100%;
+    min-height:100dvh; display:flex; align-items:center;
+    background-color:var(--surface);
+    padding-block:clamp(72px,9vh,110px);
+  }
+  .ag-bloom{
+    position:absolute; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(680px 460px at 88% 6%, rgba(236,30,121,.12), rgba(124,77,255,.06) 46%, transparent 72%),
+      radial-gradient(520px 420px at 4% 96%, rgba(124,77,255,.09), transparent 66%);
+  }
+  .ag-in{
+    position:relative; z-index:1;
+    width:100%; max-width:none; margin:0;
+    padding:0 var(--gutter);
+    display:grid; grid-template-columns:1fr 1fr; gap:0;
+    align-items:start;
+  }
+  .ag-left{ padding-right:var(--gutter); }
+
+  /* Columna izquierda */
+  .ag-badge{
+    display:inline-block; margin-bottom:26px;
+    font-size:8.5px; font-weight:var(--fw-semibold); letter-spacing:.13em; text-transform:uppercase;
+    color:#fff; background:var(--ink);
+    padding:4px 9px; border-radius:var(--r-pill);
+  }
+  .ag-title{
+    margin:0; font-size:clamp(30px,3.6vw,50px); font-weight:var(--fw-bold);
+    letter-spacing:-.035em; line-height:1.05; color:var(--text-primary); text-wrap:balance;
+  }
+  .ag-title em{ font-style:italic; color:var(--magenta); font-weight:var(--fw-semibold); }
+  .ag-rule{
+    display:block; width:56px; height:3px; border-radius:2px;
+    background:var(--grad-2); margin:clamp(20px,2.4vw,28px) 0 0;
+  }
+  .ag-lede{
+    margin:clamp(18px,2.2vw,26px) 0 0; max-width:52ch;
+    font-size:clamp(16px,1.2vw,19px); line-height:1.6; color:var(--text-secondary);
+  }
+  .ag-lede strong{ color:var(--text-primary); font-weight:var(--fw-semibold); }
+  .ag-body{
+    margin:clamp(14px,1.6vw,20px) 0 0; max-width:52ch;
+    font-size:clamp(15px,1.05vw,17px); line-height:1.6; color:var(--text-secondary);
+  }
+
+  /* Firma tipo autor */
+  .ag-author{
+    display:flex; align-items:center; gap:14px; margin-top:clamp(28px,3.4vw,40px);
+    padding-top:clamp(24px,2.6vw,30px); border-top:1px solid var(--border);
+  }
+  .ag-avatar{
+    width:56px; height:56px; border-radius:50%; overflow:hidden; flex:0 0 auto;
+    box-shadow:var(--shadow-md); border:3px solid var(--surface); background:var(--n-100);
+  }
+  .ag-avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .ag-author-id{ display:flex; flex-direction:column; }
+  .ag-author-name{ font-size:15px; font-weight:var(--fw-semibold); color:var(--text-primary); }
+  .ag-author-role{ font-size:11px; font-weight:var(--fw-semibold); letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); margin-top:2px; }
+  
+  /* Columna derecha — tarjetas */
+  .ag-right{ display:flex; flex-direction:column; gap:14px; padding-left:var(--gutter); padding-top:clamp(48px,5vw,72px); } 
+  .ag-card{
+    position:relative; background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--r-lg); padding:22px 24px; box-shadow:var(--shadow-sm);
+    transition:box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .ag-card:hover{ box-shadow:var(--shadow-lg); transform:translateY(-3px); border-color:var(--border-strong); }
+  .ag-card-n{
+    font-family:var(--font-mono); font-size:12px; font-weight:var(--fw-semibold);
+    color:var(--magenta); letter-spacing:.05em;
+  }
+  .ag-card-t{ margin:8px 0 6px; font-size:clamp(17px,1.4vw,20px); font-weight:var(--fw-semibold); letter-spacing:-.02em; color:var(--text-primary); }
+  .ag-card-d{ margin:0; font-size:14.5px; line-height:1.55; color:var(--text-secondary); }
+
+  .ag-cta{
+    display:inline-flex; align-items:center; gap:8px; margin-top:6px; align-self:flex-start;
+    padding:13px 24px; border-radius:var(--r-md);
+    font-size:14px; font-weight:var(--fw-semibold); color:#fff; text-decoration:none;
+    background:var(--magenta); box-shadow:var(--shadow-accent);
+    transition:background var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur-fast) var(--ease);
+  }
+  .ag-cta:hover{ background:var(--magenta-600); transform:translateY(-2px); box-shadow:0 12px 30px -6px rgba(236,30,121,.5); }
+  .ag-cta svg{ transition:transform var(--dur) var(--ease); }
+  .ag-cta:hover svg{ transform:translateX(3px); }
+
+  /* ===== MOBILE / TABLET VERTICAL ===== */
+  @media (max-width:900px){
+    .ag{ min-height:auto; padding-block:clamp(56px,10vw,80px); }
+    .ag-in{ grid-template-columns:1fr; gap:clamp(32px,7vw,44px); align-items:start; }
+    .ag-left{ padding-right:0; }
+    .ag-right{ display:none; }
+    .ag-cta{ display:none; }
+  }
+
+  /* ===== Reveal por scroll (cada elemento al entrar) ===== */
+  .ag-reveal{ opacity:0; transform:translateY(20px); }
+  .ag-reveal.is-in{ opacity:1; transform:none; transition:opacity .6s var(--ease-out), transform .6s var(--ease-out); }
+  @media (prefers-reduced-motion:reduce){
+    .ag-reveal{ opacity:1; transform:none; }
+    .ag-reveal.is-in{ transition:none; }
+    .ag-card:hover, .ag-cta:hover{ transform:none; }
+  }
+</style>
+
+<script is:inline>
+  (function(){
+    var els = document.querySelectorAll('.ag-reveal');
+    if(!els.length) return;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, { threshold:0, rootMargin:'0px 0px -8% 0px' });
+    els.forEach(function(el){ io.observe(el); });
+  })();
+</script>

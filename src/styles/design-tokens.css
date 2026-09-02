@@ -1,0 +1,96 @@
+/* ==========================================================================
+   BRICKELL LAB · Design Tokens — v6.0 "Premium"
+   Neutrales fríos y limpios · marca protagónica · semánticos jewel-tone.
+   Import como CSS global en Astro (Base.astro).
+   ========================================================================== */
+
+:root {
+  /* ---- Neutrales (fríos, limpios · nada de crema) ---- */
+  --n-0:#FFFFFF; --n-25:#FCFCFD; --n-50:#F8F8FA; --n-100:#F1F1F4; --n-150:#E9E9ED;
+  --n-200:#E1E1E6; --n-300:#C9C9D1; --n-400:#A0A0AB; --n-500:#71717A;
+  --n-600:#52525B; --n-700:#3F3F46; --n-800:#27272B; --n-900:#131316; --n-950:#0A0A0C;
+
+  /* ---- Superficies · texto · bordes ---- */
+  --surface:var(--n-0); --surface-2:var(--n-25); --page:var(--n-50); --sunken:var(--n-100); --ink:var(--n-950);
+  --text-primary:var(--n-950); --text-secondary:var(--n-600); --text-muted:var(--n-400);
+  --text-on-accent:#FFFFFF; --text-on-dark:#EDEDF0;
+  --border:var(--n-200); --border-strong:var(--n-300);
+
+  /* ---- MARCA ---- */
+  --magenta:#EC1E79; --magenta-600:#D4156A; --magenta-700:#B01059;
+  --magenta-tint:#FDE6F0; --magenta-ink:#8A0B45;
+  --violet:#7C4DFF; --violet-600:#6A3AE8; --violet-tint:#EDE7FF; --violet-ink:#4A2BB5;
+  --grad:linear-gradient(112deg,#FF2E8F 0%,#B23CFF 52%,#7C4DFF 100%);
+  --grad-2:linear-gradient(112deg,#FF2E8F,#7C4DFF);
+  --yellow:#FFD400; --yellow-ink:#0A0A0C;
+
+  /* ---- Acento activo · por defecto Brickell (magenta) ---- */
+  --accent:var(--magenta); --accent-hover:var(--magenta-600); --accent-active:var(--magenta-700);
+  --accent-tint:var(--magenta-tint); --accent-ink:var(--magenta-ink);
+  --accent-contrast:#FFFFFF; --accent-gradient:none;
+
+  /* ---- Semánticos · jewel-tone, nítidos (NO lavados) ----
+     Cada rol: solid (fill) · strong (hover/borde) · tint (bg) · ink (texto sobre tint) */
+  --success:#0FA968; --success-strong:#0A8A54; --success-tint:#E1F6EC; --success-ink:#0A6B43;
+  --warning:#F59E0B; --warning-strong:#D98207; --warning-tint:#FDF0D5; --warning-ink:#8A5606;
+  --danger:#F43F5E;  --danger-strong:#E11D48;  --danger-tint:#FDE4E9;  --danger-ink:#9F1239;
+  --info:#6366F1;    --info-strong:#4F46E5;    --info-tint:#E8E8FE;    --info-ink:#3730A3;
+
+  /* ---- Espaciado (base 8) ---- */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px;
+  --sp-6:32px; --sp-7:48px; --sp-8:64px; --sp-9:96px; --sp-10:128px;
+
+  /* ---- Radios ---- */
+  --r-xs:6px; --r-sm:8px; --r-md:10px; --r-lg:14px; --r-xl:18px; --r-2xl:26px; --r-pill:999px;
+
+  /* ---- Elevación · sombras en capas (profundidad premium) ---- */
+  --shadow-xs:0 1px 2px rgba(10,10,12,.05);
+  --shadow-sm:0 1px 2px rgba(10,10,12,.06), 0 1px 3px rgba(10,10,12,.05);
+  --shadow-md:0 4px 12px -2px rgba(10,10,12,.10), 0 2px 6px -2px rgba(10,10,12,.06);
+  --shadow-lg:0 12px 32px -8px rgba(10,10,12,.16), 0 6px 14px -6px rgba(10,10,12,.08);
+  --shadow-xl:0 28px 60px -16px rgba(10,10,12,.24), 0 10px 24px -12px rgba(10,10,12,.12);
+  --shadow-accent:0 8px 24px -6px rgba(236,30,121,.42);
+  --shadow-violet:0 8px 24px -6px rgba(124,77,255,.42);
+
+  /* ---- Tipografía (Inter, manejada en serio) ---- */
+  --font-sans:'Inter','Inter var',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --font-mono:ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,monospace;
+  --fw-regular:400; --fw-medium:500; --fw-semibold:600; --fw-bold:700;
+
+  /* Escala tipográfica */
+  --fs-d1:clamp(48px,6.4vw,76px);  --lh-d1:1.0;  --tr-d1:-.04em;
+  --fs-d2:clamp(38px,4.8vw,56px);  --lh-d2:1.03; --tr-d2:-.035em;
+  --fs-d3:clamp(30px,3.4vw,40px);  --lh-d3:1.08; --tr-d3:-.03em;
+  --fs-h1:32px; --fs-h2:26px; --fs-h3:21px; --fs-h4:18px; --fs-h5:15px;
+  --fs-body-l:18px; --fs-body:16px; --fs-body-s:14px; --fs-caption:13px; --fs-micro:11px; --fs-overline:12px;
+
+  /* ---- Movimiento ---- */
+  --ease:cubic-bezier(.4,0,.2,1); --ease-out:cubic-bezier(.16,1,.3,1); --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --dur-fast:120ms; --dur:200ms; --dur-slow:380ms;
+
+  --container:1200px;
+  --gutter:clamp(24px,5vw,72px);
+}
+
+/* ==========================================================================
+   OVERRIDES POR MARCA · un acento activo por vista
+   ========================================================================== */
+.brand-brickell{
+  --accent:var(--magenta); --accent-hover:var(--magenta-600); --accent-active:var(--magenta-700);
+  --accent-tint:var(--magenta-tint); --accent-ink:var(--magenta-ink); --accent-contrast:#fff; --accent-gradient:none;
+}
+.brand-lumina{
+  --accent:var(--violet); --accent-hover:var(--violet-600); --accent-active:#5B2FD1;
+  --accent-tint:var(--violet-tint); --accent-ink:var(--violet-ink); --accent-contrast:#fff;
+  --accent-gradient:var(--grad-2);
+}
+.brand-lexa{
+  --accent:var(--n-950); --accent-hover:#000; --accent-active:#000;
+  --accent-tint:var(--n-100); --accent-ink:var(--n-950); --accent-contrast:#fff; --accent-gradient:none;
+  --accent-pop:var(--yellow); --accent-pop-ink:var(--yellow-ink);
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}
+}

@@ -1,0 +1,144 @@
+---
+// src/components/nueva/Contacto.astro
+//
+// No hay formulario, y es a propósito: en una agencia que ya atiende por
+// WhatsApp, un formulario agrega un paso, una casilla que hay que revisar y un
+// lugar donde un mensaje se pierde sin que nadie se entere.
+//
+// Los dos grupos van separados porque son dos conversaciones distintas.
+// Mezclarlos manda una consulta de traducción al chat equivocado.
+import { useTranslations } from '../../i18n/utils';
+
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+const t = useTranslations(lang);
+
+const WA_BL = '5491162770800';
+const MAIL = 'info@labbrickell.com.ar';
+
+/* ⚠️ ACÁ VIVÍA `REDES` —Instagram, LinkedIn y X— que dibujaba tres íconos al pie
+   de esta sección. Se sacó: las mismas tres cuentas ya están en el pie de la
+   página, a dos pantallas de acá, y repetirlas al final del contacto le agregaba
+   un renglón sin agregar una salida. Lo que cierra la sección ahora es una línea.
+
+   Los enlaces siguen en `Pie.astro`, que es su lugar. */
+
+
+/* ⚠️ LOS TRES CANALES COMO DATO Y NO COMO MARKUP REPETIDO. El componente los
+   dibujaba uno por uno —tres bloques casi idénticos de doce líneas cada uno— y
+   cualquier cambio de estructura había que hacerlo tres veces. Cada entrada trae
+   lo que la fila necesita y nada más.
+
+   ⚠️ NI UN TEXTO NUEVO: todos salen de claves que ya existían y estaban
+   traducidas. `ct.group.bl` y `ct.group.lexa` eran rótulos de grupo y ahora son el
+   dato de la derecha de cada fila — el texto es el mismo, cambió dónde se lee. */
+const CANALES = [
+  {
+    k: t('ct.wa.k'), v: t('ct.wa.v'), marca: t('ct.group.bl'), wa: true,
+    href: `https://wa.me/${WA_BL}?text=${encodeURIComponent(t('ct.wa.text.bl'))}`,
+    fuera: true,
+  },
+  {
+    k: t('ct.mail.k'), v: MAIL, marca: t('ct.group.bl'), wa: false,
+    href: `mailto:${MAIL}`, fuera: false,
+  },
+  {
+    k: t('ct.lexa.k'), v: t('ct.lexa.v'), marca: t('ct.group.lexa'), wa: true,
+    href: `https://wa.me/${WA_BL}?text=${encodeURIComponent(t('ct.wa.text.lexa'))}`,
+    fuera: true,
+  },
+];
+
+const WA_SVG = 'M12.04 2c-5.5 0-9.96 4.46-9.96 9.96 0 1.76.46 3.48 1.34 5L2 22l5.2-1.36a9.9 9.9 0 0 0 4.84 1.24h.01c5.5 0 9.96-4.46 9.96-9.96S17.54 2 12.04 2Zm0 18.18a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.1.81.83-3.02-.2-.31a8.24 8.24 0 1 1 6.96 3.85Zm4.52-6.16c-.25-.13-1.47-.72-1.69-.8-.23-.09-.39-.13-.56.12-.16.25-.64.8-.78.97-.15.16-.29.18-.53.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.09-.16.04-.31-.02-.43-.06-.13-.56-1.35-.77-1.84-.2-.48-.4-.42-.56-.43h-.47c-.16 0-.43.06-.65.31-.22.25-.85.83-.85 2.03s.87 2.35.99 2.51c.13.16 1.72 2.63 4.17 3.69.58.25 1.04.4 1.39.51.59.19 1.12.16 1.54.1.47-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29Z';
+---
+
+<section class="bl-sec bl-secpad bl-ct" id="contacto" data-px aria-labelledby="bl-ct-t">
+
+  {/* ⚠️ LA MISMA CIUDAD QUE EL HERO, DESDE LA VEREDA. El hero la mira desde
+      arriba, a vuelo de dron, y ésta es un contrapicado a nivel de calle: la
+      portada muestra dónde queda Brickell y el cierre muestra cómo se siente
+      estar parado ahí. Es el mismo lugar en dos escalas, y eso es lo que cierra
+      el círculo.
+
+      ⚠️ VA EN BLANCO Y NEGRO, Y NO ES POR GUSTO NI POR COMBINAR. La foto original
+      es un atardecer de tonos naranja y rosa muy saturados. Medido sobre la
+      imagen entera: el 72% de los píxeles están saturados y de esos, el 89% cae a
+      menos de 70 grados del magenta de la marca. O sea que el 64% de la
+      superficie compite EN MATIZ con el acento. A color, el "JUNTOS" en magenta
+      deja de ser el único color de la página y se pierde contra un cielo del
+      mismo tono.
+
+      ⚠️ Y EL BLANCO Y NEGRO ESTÁ EN EL ARCHIVO, NO EN UN `filter` DE CSS. Sin
+      información de croma el WebP pesa bastante menos, y un `grayscale()` sobre
+      una imagen de este tamaño se recalcula en cada pintado. Para volver a color
+      hay que regenerar los dos archivos sacando el `.greyscale()`.
+
+      ⚠️ SANGRA HASTA EL BORDE DERECHO DE LA PANTALLA, no hasta el del envoltorio.
+      Como la sección va de lado a lado, un `right: 0` sobre un absoluto ya llega
+      al canto, sin los trucos de `100vw` que además meten scroll horizontal por
+      el ancho de la barra.
+
+      `alt` vacío: es decorativa, y lo que la sección dice está en el texto de al
+      lado. */}
+  <picture class="bl-ct-foto" aria-hidden="true">
+    <source srcset="/brickell_contacto-1200.webp 1200w, /brickell_contacto-1800.webp 1800w"
+            sizes="48vw" type="image/webp" />
+    <img src="/brickell_contacto-1200.webp" alt="" width="2500" height="1500"
+         loading="lazy" decoding="async" />
+  </picture>
+
+  <div class="bl-wrap bl-ct-esc">
+
+    {/* La ficha del hero, misma construcción: mono, versalitas, filete abajo. */}
+    <div class="bl-cab">
+      <header class="bl-cab-ficha">
+        <span>{t('ct.badge')}</span>
+        <span class="bl-cab-fin">25°45′N 80°11′W · Buenos Aires</span>
+      </header>
+
+      {/* ⚠️ ACÁ SÍ VUELVE LA CAJA ALTA, y es la única sección que la usa. No es
+          una inconsistencia con las demás: es que ésta no es una sección del
+          documento, es el CIERRE — la contratapa del hero. Las secciones del medio
+          se leen; esta y la portada se miran. */}
+      <h2 class="bl-ct-tit" id="bl-ct-t">
+        {t('ct.title.pre')}<em>{t('ct.title.em')}</em>
+      </h2>
+
+      <p class="bl-ct-lede">{t('ct.lede')}</p>
+    </div>
+
+    {/* ⚠️ CADA CANAL ES UNA FILA DEL ANCHO DE LA PÁGINA, no una tarjeta en una
+        columna. Eran dos grupos en media página cada uno, con las filas
+        apretadas contra el borde; a lo ancho, cada canal es un renglón que se
+        puede tocar de punta a punta y la marca a la que pertenece se lee a la
+        derecha, donde no le compite al canal. */}
+    <ul class="bl-ct-lista">
+      {CANALES.map((c) => (
+        <li>
+          <a
+            class="bl-ct-fila"
+            href={c.href}
+            target={c.fuera ? '_blank' : undefined}
+            rel={c.fuera ? 'noopener' : undefined}
+          >
+            <span class={c.wa ? 'bl-ct-ico es-wa' : 'bl-ct-ico'}>
+              {c.wa
+                ? <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={WA_SVG} /></svg>
+                : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5" /><path d="m3 7 9 6 9-6" /></svg>}
+            </span>
+
+            <span class="bl-ct-txt">
+              <span class="bl-ct-k">{c.k}</span>
+              <span class="bl-ct-v">{c.v}</span>
+            </span>
+
+            <span class="bl-ct-marca">{c.marca}</span>
+
+            <svg class="bl-fl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+  </div>
+</section>

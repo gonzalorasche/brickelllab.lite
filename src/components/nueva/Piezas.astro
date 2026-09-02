@@ -1,0 +1,303 @@
+---
+// src/components/nueva/Piezas.astro
+//
+// LAS DOS PIEZAS DEL HERO: una ventana de navegador con una web y, entrando
+// desde abajo a la izquierda por encima de ella, un iPhone con Lúmina.
+//
+// ⚠️ SON DOS MARCOS DISTINTOS A PROPÓSITO, no dos teléfonos. La idea original
+// era poner los dos aparatos iguales —uno con la app y otro con una web— y una
+// web adentro de un iPhone no dice "hacemos webs": dice "hacemos dos apps". Un
+// navegador y un teléfono se leen de un vistazo como las dos cosas que el
+// estudio hace.
+//
+// ────────────────────────────────────────────────────────────
+// LA PANTALLA ES EL PANEL DE LÚMINA DE VERDAD
+// ────────────────────────────────────────────────────────────
+//
+// ⚠️ Y ANTES ERAN BARRAS GRISES, que era el problema: un teléfono con
+// rectángulos adentro se lee como un placeholder, no como un producto. Le
+// faltaba justamente lo que lo hace valer: que se vea que ESO EXISTE.
+//
+// Esto es la pantalla de Invitados portada de `PantallasFono.tsx` de Lúmina —el
+// mismo mockup que aquella landing ya publica— con sus datos de muestra tal
+// cual: los nombres, los cuatro contadores, los filtros, los chips de estado. No
+// se inventó ninguno acá; son los que Lúmina ya muestra en su propia home, así
+// que las dos páginas cuentan lo mismo.
+//
+// Se conserva la estructura completa del panel real: header con logo, migas,
+// franja de stats, buscador, filtros, lista, botón flotante y bottom nav. Lo que
+// hace que una réplica se lea como la app es que estén TODAS las capas; sacando
+// dos, vuelve a parecer un dibujo.
+//
+// ────────────────────────────────────────────────────────────
+// DE DÓNDE SALE CADA MARCO
+// ────────────────────────────────────────────────────────────
+//
+// EL CHASIS es el de Lúmina (`styles/fono.css`). Se conservan las medidas del
+// aparato —pantalla 440×956, bisel 12, esquinas 55, isla 125×36— porque es lo
+// que lo vuelve reconocible: dibujado a ojo queda un rectángulo redondeado que
+// se parece a un teléfono. Se dibuja a tamaño real y se achica con un `scale`.
+//
+// LA VENTANA está modelada sobre el bloque `.win` que ya vive en el
+// `components.css` de este proyecto, que estaba diseñado y sin usar por nadie.
+// Se reescribió con prefijo `bl-` en vez de reutilizarlo: aquel CSS es global y
+// compartido con la home actual, y esta página no depende de nada de afuera.
+//
+// ⚠️ LO QUE SE VE EN LA VENTANA NO FINGE SER UN CLIENTE: ni nombre, ni logo, ni
+// texto legible. Un mockup con una empresa inventada en la home de una agencia
+// se lee como un caso de éxito que no existe. Por lo mismo la URL dice
+// `labbrickell.com.ar`: es el único dominio que podemos poner sin sugerir uno.
+
+import { useTranslations } from '../../i18n/utils';
+
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+const t = useTranslations(lang);
+
+/**
+ * Las filas de la lista, tal como están en la landing de Lúmina.
+ * `ok` confirmado · `inv` invitado · `sin` sin invitar.
+ */
+const FILAS = [
+  { nombre: 'Camila Aubert', estado: 'ok', acomp: '+2/2' },
+  { nombre: 'Martín Ferro', estado: 'ok', acomp: '+1/1' },
+  { nombre: 'Lucía Paz', estado: 'inv', acomp: '—' },
+  { nombre: 'Joaquín Gil', estado: 'ok', acomp: '+3/3' },
+  { nombre: 'Sofía Aguirre', estado: 'sin', acomp: '—' },
+  { nombre: 'Tomás Rivas', estado: 'inv', acomp: '+0/1' },
+  { nombre: 'Delfina Sosa', estado: 'ok', acomp: '+1/1' },
+  { nombre: 'Ignacio Bruno', estado: 'inv', acomp: '—' },
+];
+
+const CHIP = {
+  ok: 'Confirmado',
+  inv: 'Invitado',
+  sin: 'Sin invitar',
+} as const;
+
+const FILTROS = [
+  { label: 'Todos', n: 62 },
+  { label: 'Sin invitar', n: 3 },
+  { label: 'Invitados', n: 24 },
+  { label: 'Confirmados', n: 35 },
+];
+
+---
+
+<div class="bl-piezas" aria-hidden="true">
+  {/* ⚠️ ACÁ HUBO UNA ILUSTRACIÓN DE LA CIUDAD DE BRICKELL DE FONDO Y TRES
+      PASTILLAS FLOTANTES, y se fueron las cuatro. Con la ventana, el teléfono, la
+      ilustración y los flotantes, el hero tenía cuatro cosas peleando por el
+      mismo lugar. Quedaron los dos aparatos, que son los que muestran algo.
+
+      Del experimento sobrevive el sello, que es lo único que sumaba información
+      en vez de textura. */}
+  {/* ⚠️ ACÁ IBAN LA FOTO DEL LABORATORIO DE FONDO Y SU FOCO, sueltas sobre el
+      blanco de la página. Se fueron con el rediseño del hero: el fondo pasó a ser
+      la foto de Brickell y vive DENTRO del panel, en `Hero.astro`, recortada por
+      su `overflow`. Los archivos (`hero_fondo-1000/1600.webp`) siguen en
+      `public/` por si el laboratorio vuelve. */}
+
+
+  {/* ── EL TELÉFONO, entrando desde abajo a la izquierda ──
+      `--fono-w` es un NÚMERO SIN UNIDAD: de ahí sale el `scale`, y una división
+      entre dos longitudes no es válida en `calc()`. Es el mismo contrato que en
+      Lúmina, donde pasarle un `min(...px, ...)` ya rompió el teléfono una vez. */}
+  {/* ⚠️ EL SELLO ES LO QUE CONVIERTE AL TELÉFONO EN UNA PRUEBA. Sin él, el
+      aparato es un teléfono con una app adentro y nadie sabe de quién es: podría
+      ser un mockup comprado. El sello dice de quién es lo que se está viendo.
+
+      Es una ESTAMPA: círculo, rotada, como el "best seller" de la tapa de un
+      libro. No es capricho de forma — una etiqueta rectangular más, al lado de
+      un teléfono rectangular y unas pastillas rectangulares, se pierde entre
+      ellas. Un círculo inclinado es lo único de la composición que no está
+      alineado a nada, y por eso se ve.
+
+      Va montada sobre el canto del aparato, no al lado: pegada se lee como un
+      sello puesto encima; separada, como otro flotante suelto. */}
+  {/* ⚠️ EL TEXTO VA EN ARCO, Y ES LO QUE LO VUELVE UN SELLO. Estuvo apilado
+      —rótulo arriba, logo abajo, los dos en línea recta— y así era una etiqueta
+      redonda: un rectángulo de contenido metido dentro de un círculo, sin
+      relación con la forma que lo contiene. Un sello de verdad usa el círculo
+      como estructura, no como marco.
+
+      Curvando el rótulo contra el borde pasan dos cosas: la orla queda ocupada y
+      el centro se libera, así que el isotipo puede ir centrado de verdad y más
+      grande. La lectura deja de ser una lista de dos renglones y pasa a ser una
+      pieza.
+
+      ⚠️ EL ARCO ES UN `<path>` INVISIBLE, no una curva dibujada: sólo existe para
+      que el `<textPath>` lo siga. Va de izquierda a derecha por arriba (radio 29)
+      para que el texto quede derecho y no cabeza abajo — invirtiendo los extremos
+      del arco, el mismo texto se dibuja del revés.
+
+      ⚠️ LLEVA `href` Y `xlink:href` LOS DOS. `href` es la forma de SVG2 y es lo
+      correcto hoy; `xlink:href` es la vieja, y hay motores que todavía sólo
+      entienden ésa —el rasterizador con el que se probó esto, sin ir más lejos,
+      dibujaba el sello entero menos el texto—. Los dos juntos no molestan.
+
+      ⚠️ EL `id` DEL PATH TIENE QUE SER ÚNICO EN LA PÁGINA: un `textPath` busca por
+      id en todo el documento, no dentro de su propio SVG. Si algún día hay dos
+      sellos, hay que numerarlos. */}
+  <div class="bl-sello">
+    <svg class="bl-sello-orla" viewBox="0 0 96 96" aria-hidden="true">
+      <defs>
+        {/* El arco de arriba: izquierda→derecha por encima. El texto se dibuja
+            con la línea base SOBRE el path y crece hacia afuera. */}
+        <path id="blSelloArco" d="M 19,49 A 29,29 0 0 1 77,49" />
+        {/* ⚠️ EL DE ABAJO TAMBIÉN VA IZQUIERDA→DERECHA, PERO POR DEBAJO, Y ESO NO
+            ES UN DETALLE: es lo único que hace que el texto se lea derecho.
+
+            El texto se dibuja siempre con su "arriba" a la izquierda de la
+            dirección de avance. Avanzando hacia la derecha por la parte de abajo,
+            ese "arriba" apunta al centro y las letras quedan derechas. Recorrido
+            al revés —de derecha a izquierda— apunta hacia afuera y "BRICKELL LAB"
+            sale cabeza abajo: el error clásico del texto en círculo, y acá pasó
+            tal cual antes de corregirlo.
+
+            ⚠️ Y EL RADIO ES 35, NO 29. Recorriendo el arco por abajo, las letras
+            crecen hacia ADENTRO en vez de hacia afuera, así que la línea base
+            tiene que estar MÁS LEJOS del centro para que el texto termine en la
+            misma franja. Con el mismo 29 de arriba, "BRICKELL LAB" se metía seis
+            píxeles más adentro y la orla quedaba despareja.
+
+            ⚠️ PERO TAMPOCO 37, QUE FUE EL PRIMER INTENTO: ahí la línea base queda
+            tan cerca del anillo fino (38,5) que el contorno le pasa por encima al
+            texto.
+
+            El 33 final es ese ajuste ya hecho: deja las dos leyendas en franjas
+            parecidas —arriba 29→36, abajo 33→26— con el texto de abajo despegado
+            del aro. Que no queden exactamente iguales es correcto: la de abajo se
+            lee sobre una curva más cerrada y necesita más aire para no verse
+            apretada contra el contorno.
+
+            ⚠️ EL `sweep-flag` —el penúltimo número del comando `A`— ES LO QUE ELIGE
+            POR DÓNDE VA. Entre dos puntos hay dos arcos posibles, uno por arriba
+            y otro por abajo, y los extremos del path no alcanzan para distinguir
+            cuál. Pero la bandera NO significa "arriba" o "abajo": significa el
+            sentido del barrido, así que cuál sirve depende de desde qué punto se
+            arranca. Saliendo de la izquierda (11,48), el 0 es el que baja. Con el
+            arranque invertido, el mismo 0 sube. Se probó al revés y el texto
+            terminó dibujado arriba y del revés, encima del otro. */}
+        <path id="blSelloArcoBajo" d="M 15,48 A 33,33 0 0 0 81,48" />
+      </defs>
+      {/* Doble anillo: es la convención que separa un sello de un botón redondo.
+          El de afuera marca el canto y el de adentro, más fino y más pálido, le
+          da el grosor de orla donde vive el texto. */}
+      <circle class="aro" cx="48" cy="48" r="42" />
+      <circle class="aro aro--fino" cx="48" cy="48" r="38.5" />
+      <text class="txt">
+        <textPath href="#blSelloArco" xlink:href="#blSelloArco" startOffset="50%" text-anchor="middle">
+          {t('nv.sello')}
+        </textPath>
+      </text>
+      <text class="txt">
+        <textPath href="#blSelloArcoBajo" xlink:href="#blSelloArcoBajo" startOffset="50%" text-anchor="middle">
+          Brickell Lab
+        </textPath>
+      </text>
+      {/* ⚠️ LOS PUNTOS PASARON A LOS COSTADOS. Eran tres, abajo, y estaban ahí
+          para equilibrar el peso del único texto que había arriba. Con una línea
+          arriba y otra abajo ese trabajo ya está hecho, y tres puntos abajo se
+          superponían con "BRICKELL LAB".
+
+          A las tres y a las nueve hacen lo que hacen en cualquier sello: cerrar
+          la orla separando las dos leyendas. Son el remate de una circunferencia
+          de texto, no un adorno suelto. */}
+      <g class="pts">
+        <circle cx="14.5" cy="48" r="1.1" />
+        <circle cx="81.5" cy="48" r="1.1" />
+      </g>
+    </svg>
+    <img class="bl-sello-logo" src="/favicon-96x96.png" alt="" width="96" height="96" loading="eager" decoding="async" />
+  </div>
+
+
+  <div class="bl-fono">
+    <div class="bl-fono-cuerpo">
+      <span class="bl-fono-btn es-accion"></span>
+      <span class="bl-fono-btn es-volup"></span>
+      <span class="bl-fono-btn es-voldn"></span>
+      <span class="bl-fono-btn es-power"></span>
+
+      <div class="bl-fono-pant">
+        <div class="bl-pa">
+          <div class="bl-pa-head">
+            <img src="/logolumina.png" alt="" />
+          </div>
+
+          <div class="bl-pa-body">
+            <div class="bl-pa-top">
+              <div class="mig">Invitados</div>
+              <div class="fila">
+                <h4>Gestión de <em>invitados</em></h4>
+                <svg class="cfg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+              </div>
+            </div>
+
+            {/* La franja de contadores: informa, no filtra. */}
+            <div class="bl-pa-stats">
+              <span><b>86</b><i>/140</i> confirmados</span>
+              <span class="pt">·</span>
+              <span><b class="wa">3</b> sin enviar</span>
+              <span class="pt">·</span>
+              <span><b>124</b><i>/140</i> cargados</span>
+              <span class="pt">·</span>
+              <span><b>16</b> libres</span>
+            </div>
+
+            <div class="bl-pa-buscar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              <span>Buscar invitado...</span>
+            </div>
+
+            <div class="bl-pa-filtros">
+              {FILTROS.map((f, i) => (
+                <div class="fl" data-on={i === 0 ? '' : undefined}>
+                  <span>{f.label}</span>
+                  <span class="n">{f.n}</span>
+                </div>
+              ))}
+            </div>
+
+            <div class="bl-pa-lista">
+              {FILAS.map((g) => (
+                <div class="fila">
+                  <span class="nm">{g.nombre}</span>
+                  <span class={`chip ${g.estado}`}>{CHIP[g.estado as keyof typeof CHIP]}</span>
+                  <span class={`ac ${g.estado === 'ok' ? 'ok' : ''}`}>{g.acomp}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div class="bl-pa-fab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </div>
+
+          <div class="bl-pa-nav">
+            <span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg><em>Inicio</em></span>
+            <span class="it" data-on><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.6"/><path d="M16 15.5a5.4 5.4 0 0 1 5.5 4.5"/></svg><em>Invitados</em></span>
+            <span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12Z"/></svg><em>Mensajes</em></span>
+            <span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 10V7a2 2 0 0 1 4 0v3m8 0V7a2 2 0 0 1 4 0v3"/><rect x="2.5" y="10" width="19" height="6" rx="2"/><path d="M5 16v3m14-3v3"/></svg><em>Mesas</em></span>
+            <span class="it"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><em>Más</em></span>
+          </div>
+        </div>
+
+        <span class="bl-fono-isla"></span>
+        <span class="bl-fono-barrita"></span>
+      </div>
+    </div>
+  </div>
+
+  {/* ⚠️ ACÁ HUBO UN SEGUNDO IPHONE, más chico y solapado sobre éste, con una web
+      de ejemplo adentro cargada por `<iframe>`. Se fue por pedido, y con él las
+      dos páginas que llegó a mostrar —`public/ora/` y `public/prisma/`—.
+
+      Si alguna vez vuelve, lo que costó descubrir fue esto: el aparato no hay que
+      duplicarlo. Se dibuja a 464×980 y se achica con un `scale` que sale de
+      dividir `--fono-w` por 464, así que alcanza con redefinir esa variable en un
+      modificador. Y lo que hacía que se leyera como profundidad no era el tamaño
+      sino el SOLAPE: pegado y tapado un 15% por el de adelante, con z-index menor.
+      Separados eran dos objetos sueltos en las dos puntas del hero. */}
+</div>

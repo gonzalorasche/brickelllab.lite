@@ -1,0 +1,84 @@
+.lf-page{display:flex;flex-direction:column;min-height:100%;background:#fff;
+  font-family:'Inter',system-ui,sans-serif;color:#0A0A0C;-webkit-font-smoothing:antialiased}
+.lf-page *{box-sizing:border-box;margin:0;padding:0}
+
+/* ---- HEADER · la final ---- */
+.lf-p-head{background:#0A1A3C;padding:22px 22px 24px;text-align:center;
+  border-top:5px solid #75AADB}
+.lf-p-ov{font-size:11px;letter-spacing:.34em;color:#75AADB;font-weight:700;
+  text-transform:uppercase;margin-bottom:7px}
+.lf-p-dom{font-size:38px;line-height:.94;font-weight:900;letter-spacing:-.05em;color:#fff}
+
+
+/* ---- CUERPO ---- */
+.lf-p-main{padding:30px 22px 34px;flex:1}
+.lf-p-nom{font-size:21px;line-height:1.15;font-weight:900;letter-spacing:-.025em;
+  color:#0A1A3C;overflow-wrap:anywhere;padding-bottom:14px;margin-bottom:20px;
+  border-bottom:3px solid #75AADB}
+.lf-p-tit{font-size:30px;line-height:1.03;font-weight:400;letter-spacing:-.04em;
+  margin-bottom:12px;text-wrap:balance}
+.lf-p-tit b{font-weight:900;font-variant-numeric:tabular-nums}
+.lf-p-tit em{font-weight:900;font-style:italic;color:#2E6FB7}
+.lf-p-chiste{font-size:15px;line-height:1.5;color:#3F3F46;font-style:italic}
+
+.lf-p-ctas{display:flex;gap:12px;justify-content:center;margin-top:32px}
+.lf-p-ico{width:56px;height:56px;border-radius:50%;background:#0A1A3C;color:#fff;
+  display:flex;align-items:center;justify-content:center;text-decoration:none;flex:0 0 auto}
+.lf-p-ico svg{width:26px;height:26px;display:block}
+
+/* ---- ÉPICO ---- */
+.lf-p-epico{background:#0A1A3C;padding:52px 18px 58px;text-align:center;
+  border-top:5px solid #75AADB;border-bottom:5px solid #75AADB}
+.lf-p-ahora{font-size:13px;color:#75AADB;font-style:italic;letter-spacing:-.01em;margin-bottom:14px}
+.lf-p-vamos{font-size:82px;line-height:.8;font-weight:900;letter-spacing:-.055em;
+  color:#fff;width:fit-content;margin:0 auto;padding-right:.055em;white-space:nowrap}
+.lf-p-vamos span{color:#75AADB}
+
+/* ---- FIRMA ---- */
+.lf-p-firma{background:#fff;padding:16px;text-align:center;font-size:11px;color:#A0A0AB}
+.lf-p-marca{display:inline-block;vertical-align:-3px;text-decoration:none}
+.lf-p-marca img{height:14px;width:auto;display:block;margin-left:5px}
+
+
+  /* ---- ESCRITORIO · caja centrada, texto alineado ---- */
+@media (min-width:760px){
+  .lf-page{min-height:100svh}
+  .lf-p-head>*,
+  .lf-p-epico>*,
+  .lf-p-firma{max-width:520px;margin-left:auto;margin-right:auto}
+  .lf-p-main>*:not(.lf-conf){max-width:520px;margin-left:auto;margin-right:auto;width:100%}
+  .lf-p-head{padding:16px 22px 18px}
+  .lf-p-dom{font-size:32px}
+  .lf-p-main{padding:30px 22px 32px;display:flex;flex-direction:column;justify-content:center}
+  .lf-p-nom{font-size:22px;padding-bottom:11px;margin-bottom:16px}
+  .lf-p-tit{font-size:34px}
+  .lf-p-chiste{font-size:15px}
+  .lf-p-ctas{margin-top:26px}
+  .lf-p-epico{padding:34px 18px 38px}
+  .lf-p-ahora{margin-bottom:10px}
+  .lf-p-vamos{font-size:88px}
+  .lf-p-firma{padding:12px}
+}
+@media (min-width:760px) and (max-height:760px){
+  .lf-p-tit{font-size:29px}
+  .lf-p-nom{font-size:19px}
+  .lf-p-epico{padding:24px 18px 28px}
+  .lf-p-vamos{font-size:68px}
+}
+
+.lf-p-hace{color:#A0A0AB;font-weight:400;text-decoration:none}
+.lf-p-sep{color:#C9C9D1;margin:0 7px}
+
+/* ---- papelitos ---- */
+.lf-p-main{position:relative;overflow:hidden}
+.lf-p-main>*{position:relative;z-index:1}
+.lf-conf{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.lf-conf i{position:absolute;top:-24px;width:7px;height:11px;border-radius:1px;
+  animation:lf-cae linear infinite}
+@keyframes lf-cae{
+  0%  {transform:translateY(-24px) rotate(0deg);opacity:0}
+  8%  {opacity:1}
+  92% {opacity:1}
+  100%{transform:translateY(calc(100% + 640px)) rotate(540deg);opacity:0}
+}
+@media (prefers-reduced-motion:reduce){ .lf-conf{display:none} }

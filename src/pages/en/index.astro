@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import SeoSchema from '../../components/SeoSchema.astro';
+import Header from '../../components/Header.astro';
+import Hero from '../../components/Hero.astro';
+import Ecosistema from '../../components/Ecosistema.astro';
+import Agencia from '../../components/Agencia.astro';
+import Servicios from '../../components/Servicios.astro';
+import Contacto from '../../components/Contacto.astro';
+import Footer from '../../components/Footer.astro';
+---
+<Base
+  title="Brickell Lab | Web Development & Digital Design Agency"
+  description="Web development, digital design and branding studio in Buenos Aires. Creators of Lúmina (event management) and Lexa (certified English translation)."
+  canonical="https://labbrickell.com.ar/en/"
+  schema={true}
+>
+  <SeoSchema slot="schema" lang="en" />
+  <Header lang="en" />
+  <main>
+    <Hero lang="en" />
+    <Ecosistema lang="en" />
+    <Agencia lang="en" />
+    <Servicios lang="en" />
+    <Contacto lang="en" />
+  </main>
+  <Footer lang="en" />
+</Base>

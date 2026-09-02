@@ -1,0 +1,182 @@
+---
+// src/components/nueva/Proyectos.astro
+//
+// ══════════════════════════════════════════════════════════
+// PROYECTOS · la sección que se queda quieta
+// ══════════════════════════════════════════════════════════
+//
+// La sección mide varias pantallas de alto pero lo que se ve queda CLAVADO
+// mientras la página baja: los aparatos no se mueven, lo que cambia es lo que
+// tienen adentro. Cada tramo de scroll es un proyecto, y con el proyecto cambian
+// las dos pantallas, la ficha del costado y el fondo de la sección.
+//
+// ⚠️ EL PRIMERO ES REAL Y LOS OTROS TRES SON RELLENO. Lúmina trae sus dos
+// capturas —la de escritorio y la de teléfono, sacadas de la landing andando— y los
+// otros tres siguen con un color plano adentro de los aparatos. Los nombres,
+// rubros, años y colores de esos tres son de mentira: están para que la mecánica se
+// vea funcionando.
+//
+// ⚠️ LAS DOS MEDIDAS DE CADA CAPTURA TIENEN QUE COINCIDIR CON SU MARCO. La de
+// escritorio se saca a 16:10 porque el visor de la tablet es 16:10; la de teléfono a
+// 9:19.5 por lo mismo. Si una captura viene con otra proporción, `object-fit: cover`
+// la recorta —no la deforma— pero se come parte del diseño por los costados, que es
+// justo lo que la sección vino a mostrar.
+//
+// ⚠️ Y SE SACAN DE LA PÁGINA ANDANDO, no de un Figma. Lo que esta sección afirma es
+// "esto existe y se ve así"; una maqueta que nunca se programó diría otra cosa.
+//
+// ⚠️ EL PRIMER PROYECTO CARGA SUS CAPTURAS `eager` Y LOS OTROS `lazy`. Es el que
+// se ve al llegar: con `lazy`, el navegador las pide recién cuando la sección asoma
+// y los dos aparatos aparecen vacíos el primer segundo, que es justo cuando alguien
+// los está mirando. Los otros tres están a una, dos y tres pantallas de scroll: ahí
+// `lazy` es lo correcto y evita bajar tres capturas que quizás nadie vea.
+//
+// ⚠️ LAS PANTALLAS NO SE SCROLLEAN, y es a propósito. Un sitio dentro de un
+// aparato que además scrollea es una segunda página adentro de la página: el
+// visitante no sabe si mueve el proyecto o la sección, y en un teléfono es
+// directamente injugable. Lo que se muestra es UN pantallazo por proyecto.
+//
+// ⚠️ Y EL FONDO SE TIÑE CON EL PROYECTO ACTIVO. Arranca en el blanco de la página
+// y a medida que entra cada uno toma algo de su color, bajísimo. Es lo que hace
+// que el cambio se sienta en toda la pantalla y no sólo adentro de dos
+// rectángulos.
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+
+/**
+ * ⚠️ EL ORDEN DE ESTE ARRAY ES EL ORDEN DEL RECORRIDO, y el `--k` que se le pasa a
+ * cada capa sale del índice. Agregar o sacar un proyecto no pide tocar nada más:
+ * el alto de la sección, el reparto del scroll y los tramos del indicador salen
+ * todos de `--n`, que es el largo del array.
+ */
+const PROYECTOS = [
+  {
+    t: 'Lúmina', tipo: 'Plataforma de gestión de eventos', anio: '2025',
+    /* ⚠️ EL COLOR NO ES EL DOMINANTE DE LA CAPTURA, que medido da #180828: un
+       violeta tan oscuro que como tinte de fondo se ve gris sucio, no Lúmina. Es el
+       iris de su sistema de diseño, que es lo que alguien reconoce del producto. La
+       regla para los que vengan: el color sale de lo que IDENTIFICA al proyecto, no
+       de un promedio de píxeles. */
+    color: '#7A3BF0',
+    /* ⚠️ EL `-2` DEL NOMBRE NO ES UN DESCUIDO: ES LO QUE ROMPE LA CACHÉ. Estas dos
+       capturas se rehicieron —la de escritorio salió la primera vez sin la foto del
+       hero, la de teléfono con una franja blanca de tres píxeles en el borde— y se
+       guardaron encima de las anteriores con el mismo nombre. En disco quedaron las
+       buenas; en el navegador de quien ya había entrado, las viejas, porque la URL
+       no había cambiado y no tenía motivo para volver a pedirlas. Media hora
+       buscando el error en el CSS.
+
+       La regla: una captura corregida se guarda con OTRO nombre. Es la única manera
+       de que la vea alguien que ya vio la anterior. */
+    escritorio: '/proy-lumina-escritorio-2.webp',
+    fono: '/proy-lumina-fono-2.webp',
+  },
+  { t: 'Proyecto dos',    tipo: 'Tienda online',         anio: '2025', color: '#7A3B2E', escritorio: '', fono: '' },
+  { t: 'Proyecto tres',   tipo: 'Identidad y packaging', anio: '2024', color: '#2F5D50', escritorio: '', fono: '' },
+  { t: 'Proyecto cuatro', tipo: 'Aplicación a medida',   anio: '2024', color: '#463A6B', escritorio: '', fono: '' },
+];
+---
+
+<section class="bl-py" id="proyectos" data-px="fija" aria-labelledby="bl-py-t"
+         style={`--n:${PROYECTOS.length}`}>
+
+  {/* ⚠️ LOS FONDOS VAN APILADOS Y SE FUNDEN, no es un color que cambia. Animar el
+      `background-color` de la sección obliga al navegador a repintar una caja del
+      tamaño de la pantalla en cada cuadro; cuatro capas quietas a las que sólo se
+      les mueve la opacidad las compone la GPU sin repintar nada.
+
+      Van dentro de la sección y no dentro de la escena pegajosa: la escena mide
+      una pantalla y la sección mide cuatro, así que el color tiene que cubrir todo
+      el recorrido o se corta a mitad de camino. */}
+  <div class="bl-py-fondos" aria-hidden="true">
+    {PROYECTOS.map((p, i) => (
+      <span class="bl-py-capa" style={`--k:${i}; --c:${p.color}`} />
+    ))}
+  </div>
+
+  {/* ⚠️ ACÁ ESTÁ EL TRUCO ENTERO Y ES UNA SOLA PROPIEDAD: `position: sticky`. La
+      sección es alta, esto se queda pegado arriba mientras ella pasa, y el
+      visitante scrollea sin que se mueva nada de lo que mira. No hay JavaScript
+      moviendo cajas: el scroll es real y lo único que se calcula es en qué
+      proyecto estamos. */}
+  <div class="bl-py-escena">
+    <div class="bl-wrap bl-py-in">
+
+      <div class="bl-py-texto">
+        <header class="bl-cab-ficha">
+          <span>Proyectos</span>
+          <span class="bl-cab-fin">Trabajo reciente</span>
+        </header>
+
+        <h2 class="bl-cab-tit" id="bl-py-t">Algunos trabajos</h2>
+
+        {/* ⚠️ LAS FICHAS TAMBIÉN VAN APILADAS Y ABSOLUTAS. Si se alternaran en el
+            flujo, el bloque mediría lo que mide la más alta y las demás dejarían un
+            hueco debajo; peor: al cambiar de proyecto, el título de abajo daría un
+            salto. Superpuestas, el alto es siempre el mismo y sólo cambia el texto.
+
+            La primera queda en el flujo (ver el CSS) para que el bloque tenga alto
+            propio: si TODAS fueran absolutas, el contenedor mediría cero. */}
+        <div class="bl-py-fichas">
+          {PROYECTOS.map((p, i) => (
+            <article class="bl-py-capa bl-py-ficha" style={`--k:${i}`}
+                     aria-hidden={i > 0 ? 'true' : undefined}>
+              <h3>{p.t}</h3>
+              <p class="bl-py-tipo">{p.tipo} · {p.anio}</p>
+            </article>
+          ))}
+        </div>
+
+        {/* El indicador: un tramo por proyecto, que se pinta cuando el recorrido
+            entra en el suyo. Dice dónde estás y cuánto falta, que es lo que una
+            sección pegajosa no puede decir sola. */}
+        <div class="bl-py-pasos" aria-hidden="true">
+          {PROYECTOS.map((p, i) => (
+            <span class="bl-py-paso" style={`--k:${i}`}><i></i></span>
+          ))}
+        </div>
+      </div>
+
+      {/* ⚠️ LOS DOS APARATOS SON CAJAS CON BORDE Y RADIO, NO UN SVG NI UNA IMAGEN.
+          Un marco de teléfono es un rectángulo redondeado con un borde grueso: en
+          SVG habría que recortar la captura contra un `clipPath` para que no se
+          salga de las esquinas, y en imagen habría que servir dos PNG con
+          transparencia. Con dos cajas, la captura entra como fondo y el
+          `overflow: hidden` del marco la recorta solo.
+
+          Por ahora adentro va un color plano —el relleno que reemplaza a la
+          captura— y por eso las dos pantallas son un `<span>` vacío. */}
+      <div class="bl-py-aparatos" aria-hidden="true">
+
+        <div class="bl-py-tablet">
+          <div class="bl-py-visor">
+            {PROYECTOS.map((p, i) => (
+              <span class="bl-py-capa" style={`--k:${i}; --c:${p.color}`}>
+                {p.escritorio && (
+                  <img src={p.escritorio} alt="" width="1360" height="850"
+                       loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+                )}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div class="bl-py-fono">
+          <div class="bl-py-visor">
+            {PROYECTOS.map((p, i) => (
+              <span class="bl-py-capa" style={`--k:${i}; --c:${p.color}`}>
+                {p.fono && (
+                  <img src={p.fono} alt="" width="390" height="846"
+                       loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+                )}
+              </span>
+            ))}
+          </div>
+          {/* La barra del gesto. Es el único detalle de aparato que se dibuja:
+              alcanza para que un rectángulo redondeado se lea como un teléfono. */}
+          <span class="bl-py-barra"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

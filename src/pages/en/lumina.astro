@@ -1,0 +1,265 @@
+---
+// src/pages/en/lumina.astro
+import Base from '../../layouts/Base.astro';
+import HeaderLumina from '../../components/HeaderLumina.astro';
+import FooterLumina from '../../components/FooterLumina.astro';
+import SeoSchemaLumina from '../../components/SeoSchemaLumina.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+
+const luminaApp = 'https://lumina.labbrickell.com.ar';
+
+const features = [
+  { n: t('lm.feat.1.n'), d: t('lm.feat.1.d') },
+  { n: t('lm.feat.2.n'), d: t('lm.feat.2.d') },
+  { n: t('lm.feat.3.n'), d: t('lm.feat.3.d') },
+  { n: t('lm.feat.4.n'), d: t('lm.feat.4.d') },
+  { n: t('lm.feat.5.n'), d: t('lm.feat.5.d') },
+  { n: t('lm.feat.6.n'), d: t('lm.feat.6.d') },
+  { n: t('lm.feat.7.n'), d: t('lm.feat.7.d') },
+];
+
+const planes = ['Esencia', 'Atelier', 'Maison'];
+---
+<Base
+  title="Lúmina | End-to-end event management — Brickell Lab"
+  description="Lúmina is the platform to manage your event from start to finish: guests, RSVPs, tables, transport, schedule and more. Part of the Brickell Lab ecosystem."
+  canonical="https://labbrickell.com.ar/en/lumina"
+  schema={true}
+>
+  <SeoSchemaLumina slot="schema" lang={lang} />
+  <HeaderLumina lang={lang} />
+
+  <main class="lm">
+
+    <!-- HERO -->
+    <section class="lm-hero" aria-label="Lúmina — event management">
+      <div class="lm-hero-media">
+        <picture>
+          <source media="(max-width: 900px) and (orientation: portrait)" srcset="/luminamobile.jpg" />
+          <img src="/lumina.jpg" alt={t('lm.hero.img.alt')} fetchpriority="high" loading="eager" decoding="async" />
+        </picture>
+      </div>
+      <div class="lm-hero-content">
+        <span class="lm-eyebrow">{t('lm.hero.eyebrow')}</span>
+        <h1 class="lm-hero-title">{t('lm.hero.title.pre')}<br/><em>{t('lm.hero.title.em')}</em></h1>
+        <p class="lm-hero-lede">
+          {t('lm.hero.lede')}
+        </p>
+        <div class="lm-hero-cta">
+          <a href={luminaApp} target="_blank" rel="noopener" class="lm-btn lm-btn-p">
+            {t('lm.hero.cta')}
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- MANIFIESTO -->
+    <section class="lm-mani" aria-label="What is Lúmina">
+      <div class="lm-mani-in">
+        <span class="lm-badge lm-badge-dark lm-reveal">{t('lm.mani.badge')}</span>
+        <p class="lm-mani-text lm-reveal">
+          {t('lm.mani.pre')}<em>{t('lm.mani.em')}</em>{t('lm.mani.post')}
+        </p>
+      </div>
+    </section>
+
+    <!-- FUNCIONALIDADES -->
+    <section class="lm-feat" id="funcionalidades" aria-label="Lúmina features">
+      <div class="lm-feat-in">
+        <header class="lm-feat-head lm-reveal">
+          <span class="lm-badge lm-badge-dark">{t('lm.feat.badge')}</span>
+          <h2 class="lm-h2">{t('lm.feat.title.pre')}<em>{t('lm.feat.title.em')}</em></h2>
+        </header>
+        <div class="lm-feat-grid">
+          {features.map((f) => (
+            <article class="lm-card lm-reveal">
+              <h3 class="lm-card-t">{f.n}</h3>
+              <p class="lm-card-d">{f.d}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- PLANES -->
+    <section class="lm-planes" aria-label="Lúmina plans">
+      <div class="lm-planes-in">
+        <span class="lm-badge lm-badge-dark lm-reveal">{t('lm.planes.badge')}</span>
+        <h2 class="lm-h2 lm-reveal">{t('lm.planes.title')}</h2>
+        <p class="lm-planes-lede lm-reveal">
+          {t('lm.planes.lede')}
+        </p>
+        <div class="lm-planes-row lm-reveal">
+          {planes.map((p) => <span class="lm-plan-chip">{p}</span>)}
+        </div>
+        <p class="lm-planes-note lm-reveal">{t('lm.planes.note')}</p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="lm-cta" id="empezar" aria-label="Get started with Lúmina">
+      <div class="lm-cta-in lm-reveal">
+        <h2 class="lm-cta-title">{t('lm.cta.title')}</h2>
+        <p class="lm-cta-lede">{t('lm.cta.lede')}</p>
+        <div class="lm-cta-actions">
+          <a href={luminaApp} target="_blank" rel="noopener" class="lm-btn lm-btn-p">
+            {t('lm.cta.btn')}
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <FooterLumina lang={lang} />
+</Base>
+
+<style>
+  /* ===== Base Lúmina (fondo claro, magenta) ===== */
+  .lm{ background:var(--surface); color:var(--text-primary); }
+  .lm em{ font-style:italic; color:var(--magenta); font-weight:var(--fw-semibold); }
+
+  .lm-badge{
+    display:inline-block; margin-bottom:20px;
+    font-size:10px; font-weight:var(--fw-semibold); letter-spacing:.16em; text-transform:uppercase;
+    color:#fff; background:var(--magenta); padding:6px 13px; border-radius:var(--r-pill);
+  }
+  .lm-badge-dark{ color:#fff; background:#0B0B0B; }
+  .lm-eyebrow{
+    display:inline-block; margin-bottom:20px;
+    font-size:11px; font-weight:var(--fw-semibold); letter-spacing:.16em; text-transform:uppercase;
+    color:var(--text-muted);
+  }
+  .lm-h2{
+    margin:0; font-size:clamp(28px,3.4vw,46px); font-weight:var(--fw-bold);
+    letter-spacing:-.035em; line-height:1.05; color:var(--text-primary); text-wrap:balance;
+  }
+
+  .lm-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:14px 24px; border-radius:var(--r-md);
+    font-size:14.5px; font-weight:var(--fw-semibold); text-decoration:none;
+    transition:background var(--dur) var(--ease), transform var(--dur-fast) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  .lm-btn-p{ background:var(--magenta); color:#fff; box-shadow:var(--shadow-accent); }
+  .lm-btn-p:hover{ background:var(--magenta-600, #C4185F); transform:translateY(-2px); box-shadow:0 12px 30px -6px rgba(236,30,121,.5); }
+  .lm-btn-p svg{ transition:transform var(--dur) var(--ease); }
+  .lm-btn-p:hover svg{ transform:translate(2px,-2px); }
+
+  /* ===== HERO ===== */
+  .lm-hero{
+    position:relative; display:grid; grid-template-columns:1fr 1fr; align-items:stretch;
+    min-height:100dvh; background:var(--surface);
+  }
+  .lm-hero-media{ position:absolute; top:0; right:0; bottom:0; width:50%; overflow:hidden; }
+  .lm-hero-media img{ width:100%; height:100%; object-fit:cover; object-position:center bottom; display:block; }
+  .lm-hero-media::before{ display:none; }
+  .lm-hero-content{
+    grid-column:1; display:flex; flex-direction:column; justify-content:center;
+    padding:clamp(40px,6vh,80px) var(--gutter);
+    position:relative; z-index:2;
+  }
+  .lm-hero-title{
+    margin:0; font-size:clamp(38px,5vw,68px); font-weight:var(--fw-bold);
+    letter-spacing:-.045em; line-height:1.02; color:var(--text-primary);
+  }
+  .lm-hero-lede{
+    margin:clamp(20px,2.4vw,28px) 0 0; max-width:46ch;
+    font-size:clamp(16px,1.2vw,19px); line-height:1.6; color:var(--text-secondary);
+  }
+  .lm-hero-cta{ display:flex; flex-direction:column; align-items:flex-start; gap:14px; margin-top:clamp(28px,3.4vw,40px); }
+
+  /* ===== MANIFIESTO ===== */
+  .lm-mani{ background:var(--n-100); padding-block:clamp(64px,8vh,110px); }
+  .lm-mani-in{ width:100%; padding:0 var(--gutter); }
+  .lm-mani-text{
+    margin:0; max-width:38ch; font-size:clamp(24px,3vw,40px); font-weight:var(--fw-semibold);
+    letter-spacing:-.02em; line-height:1.28; color:var(--text-primary);
+  }
+
+  /* ===== FUNCIONALIDADES ===== */
+  .lm-feat{ padding-block:clamp(64px,8vh,110px); background:var(--surface); }
+  .lm-feat-in{ width:100%; padding:0 var(--gutter); }
+  .lm-feat-head{ margin-bottom:clamp(36px,4vw,52px); }
+  .lm-feat-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(14px,1.6vw,20px);
+  }
+  .lm-card{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:clamp(22px,2vw,28px); box-shadow:var(--shadow-sm);
+    transition:border-color var(--dur) var(--ease), transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  .lm-card:hover{ border-color:var(--border-strong); transform:translateY(-3px); box-shadow:var(--shadow-md); }
+  .lm-card-t{ margin:0 0 8px; font-size:clamp(16px,1.4vw,19px); font-weight:var(--fw-semibold); letter-spacing:-.02em; color:var(--text-primary); }
+  .lm-card-d{ margin:0; font-size:14px; line-height:1.55; color:var(--text-secondary); }
+
+  /* ===== PLANES ===== */
+  .lm-planes{ background:var(--n-100); padding-block:clamp(64px,8vh,110px); }
+  .lm-planes-in{ width:100%; padding:0 var(--gutter); }
+  .lm-planes .lm-h2{ margin-top:0; }
+  .lm-planes-lede{ margin:clamp(14px,1.8vw,20px) 0 0; max-width:52ch; font-size:clamp(16px,1.2vw,18px); line-height:1.6; color:var(--text-secondary); }
+  .lm-planes-row{ display:flex; flex-wrap:wrap; gap:12px; margin-top:clamp(24px,3vw,32px); }
+  .lm-plan-chip{
+    font-size:15px; font-weight:var(--fw-semibold); color:var(--text-primary);
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:var(--r-pill); padding:11px 24px;
+  }
+  .lm-planes-note{ margin:clamp(20px,2.4vw,26px) 0 0; font-size:13.5px; color:var(--text-muted); }
+
+  /* ===== CTA ===== */
+  .lm-cta{ padding-block:clamp(72px,9vh,120px); background:var(--surface); }
+  .lm-cta-in{ width:100%; padding:0 var(--gutter); text-align:center; }
+  .lm-cta-title{ margin:0; font-size:clamp(30px,4vw,54px); font-weight:var(--fw-bold); letter-spacing:-.04em; line-height:1.05; color:var(--text-primary); }
+  .lm-cta-lede{ margin:18px auto 0; max-width:52ch; font-size:clamp(16px,1.2vw,18px); line-height:1.6; color:var(--text-secondary); }
+  .lm-cta-actions{ display:flex; align-items:center; justify-content:center; gap:14px; margin-top:clamp(28px,3vw,38px); flex-wrap:wrap; }
+
+  /* ===== MOBILE ===== */
+  @media (max-width:900px) and (orientation:portrait){
+    .lm-hero{ display:flex; flex-direction:column; min-height:100vh; height:100vh; }
+    .lm-hero-media{ position:relative; width:100%; height:44vh; order:1; flex:0 0 auto; }
+    .lm-hero-media::before{ display:none; }
+    .lm-hero-content{ order:2; flex:1 1 auto; justify-content:flex-start; padding:clamp(28px,7vw,44px) var(--gutter) clamp(40px,9vw,56px); overflow:visible; }
+  }
+  @media (max-width:1100px){
+    .lm-feat-grid{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width:560px){
+    .lm-feat-grid{ grid-template-columns:1fr; }
+  }
+  @media (max-width:900px) and (orientation:landscape){
+    .lm-hero{ min-height:100vh; height:100vh; }
+    .lm-hero-media img{ object-position:center center; }
+    .lm-hero-content{ justify-content:center; padding-block:clamp(16px,4vh,32px); }
+    .lm-eyebrow{ margin-bottom:10px; }
+    .lm-hero-title{ font-size:clamp(24px,4.5vw,34px); }
+    .lm-hero-lede{ font-size:13.5px; line-height:1.5; margin-top:12px; }
+    .lm-hero-cta{ margin-top:16px; }
+    .lm-btn{ padding:11px 20px; font-size:13.5px; }
+  }
+
+  /* ===== Reveal ===== */
+  .lm-reveal{ opacity:0; transform:translateY(20px); }
+  .lm-reveal.is-in{ opacity:1; transform:none; transition:opacity .6s var(--ease-out), transform .6s var(--ease-out); }
+  @media (prefers-reduced-motion:reduce){
+    .lm-reveal{ opacity:1; transform:none; }
+    .lm-reveal.is-in{ transition:none; }
+    .lm-card:hover{ transform:none; }
+  }
+</style>
+
+<script is:inline>
+  (function(){
+    var els = document.querySelectorAll('.lm-reveal');
+    if(!els.length) return;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, { threshold:0, rootMargin:'0px 0px -10% 0px' });
+    els.forEach(function(el){ io.observe(el); });
+  })();
+</script>

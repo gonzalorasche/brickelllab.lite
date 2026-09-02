@@ -1,0 +1,207 @@
+---
+// src/components/Header.astro
+import LangSwitcher from './LangSwitcher.astro';
+
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+
+const links = lang === 'en'
+  ? [
+      { label: 'Ecosystem', href: '#ecosistema' },
+      { label: 'Agency', href: '#agencia' },
+      { label: 'Services', href: '#servicios' },
+    ]
+  : [
+      { label: 'Ecosistema', href: '#ecosistema' },
+      { label: 'Agencia', href: '#agencia' },
+      { label: 'Servicios', href: '#servicios' },
+    ];
+
+const contactoLabel = lang === 'en' ? 'Contact' : 'Contacto';
+const homeHref = lang === 'en' ? '/en/' : '/';
+const p = lang === 'en' ? '/en' : '';
+
+// URLs del selector: misma página en el otro idioma
+const path = Astro.url.pathname;
+const basePath = path.replace(/^\/en(\/|$)/, '/');
+const esUrl = basePath;
+const enUrl = basePath === '/' ? '/en/' : `/en${basePath}`;
+---
+<header class="site-header">
+  <div class="wrap header-bar">
+    <!-- Logo (mobile): a la izquierda, junto al hamburguesa -->
+    <a href={homeHref} class="header-logo" aria-label="Brickell Lab — inicio">
+      <img src="/logobrickell.png" alt="Brickell Lab" />
+    </a>
+
+    <!-- Contenedor 2 (desktop): links + CTA -->
+    <nav class="nav-box nav-desktop" aria-label="Navegación principal">
+      <ul class="nb-links">
+        {links.map((l) => (
+          <li><a href={l.href}>{l.label}</a></li>
+        ))}
+        <li><a href={`${p}/lumina`} class="nb-eco nb-lumina">Lúmina</a></li>
+        <li><a href={`${p}/lexa`} class="nb-eco nb-lexa">Lexa</a></li>
+      </ul>
+      <LangSwitcher lang={lang} variant="dropdown" />
+      <a href="#contacto" class="btn btn-primary btn-sm">{contactoLabel}</a>
+    </nav>
+
+    <!-- Contenedor (mobile): logo + hamburguesa en una pill -->
+    <div class="mobile-box">
+      <a href={homeHref} class="mb-logo" aria-label="Brickell Lab — inicio">
+        <img src="/logobrickell.png" alt="Brickell Lab" />
+      </a>
+      <button class="mb-burger" id="ocOpen" aria-label="Abrir menú" aria-expanded="false" aria-controls="offcanvas">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="oc-ov" id="ocOv"></div>
+
+<aside class="oc" id="offcanvas" aria-label="Menú de navegación" aria-hidden="true">
+  <div class="oc-head">
+    <a href={homeHref} class="nb-logo"><img src="/logobrickell.png" alt="Brickell Lab" /></a>
+    <button class="oc-x" id="ocClose" aria-label="Cerrar menú">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <nav class="oc-links" aria-label="Menú">
+    {links.map((l) => <a href={l.href}>{l.label}</a>)}
+  </nav>
+  <div class="oc-foot">
+    <div class="oc-sub">{lang === 'en' ? 'The ecosystem' : 'El ecosistema'}</div>
+    <div class="oc-eco">
+      <a href="/lumina">Lúmina</a>
+      <a href="/lexa">Lexa</a>
+    </div>
+    <div class="oc-lang-block">
+      <div class="oc-sub">{lang === 'en' ? 'Language' : 'Idioma'}</div>
+      <LangSwitcher lang={lang} variant="inline" />
+    </div>
+    <a href="#contacto" class="btn btn-ink" style="width:100%">{contactoLabel}</a>
+  </div>
+</aside>
+
+<style>
+  .site-header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    padding:12px 0;
+    transition: transform .5s var(--ease-out), opacity .5s var(--ease-out);
+    opacity:1;
+  }
+  .site-header.is-hidden{ transform: translateY(-130%); opacity:0; }
+
+  .header-bar{ display:flex; align-items:center; justify-content:flex-end; gap:14px; }
+  .site-header .wrap{ max-width:none; padding:0 var(--gutter); }
+
+  /* Contenedores flotantes: mismo alto */
+  .nav-box{
+    display:flex; align-items:center; height:44px;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--r-md); box-shadow:var(--shadow-sm);
+  }
+  .nb-logo{ width:44px; padding:0; justify-content:center; text-decoration:none; }
+  .nb-logo img{ height:22px; width:auto; display:block; }
+
+  .nav-desktop{ margin-left:calc(50% + var(--gutter)); flex:1; justify-content:space-between; padding:0 18px; gap:14px; }
+  .nb-links{ display:flex; gap:2px; list-style:none; margin:0; padding:0; }
+  .nb-links a{ padding:6px 12px; display:inline-flex; align-items:center; gap:7px; }
+  .nb-links a:hover{ background:var(--n-150); color:var(--text-primary); }
+  .nb-links a.nb-eco{ color:var(--text-secondary); }
+  .nb-links a.nb-eco:hover{ background:var(--ink); color:#fff; }
+
+  /* Pill mobile: logo + hamburguesa (estilo Lexa/Lúmina) */
+  .mobile-box{
+    display:none; align-items:center; gap:12px;
+    background:rgba(255,255,255,.82); backdrop-filter:blur(14px) saturate(1.2);
+    border:1px solid var(--border); border-radius:var(--r-pill);
+    padding:6px 6px 6px 16px; box-shadow:var(--shadow-sm);
+  }
+  .mb-logo{ display:inline-flex; align-items:center; text-decoration:none; }
+  .mb-logo img{ height:22px; width:auto; display:block; }
+  .mb-burger{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+    width:38px; height:38px; padding:0; cursor:pointer;
+    background:var(--n-200); border:0; border-radius:50%;
+    transition:background var(--dur) var(--ease);
+  }
+  .mb-burger:hover{ background:var(--n-300, var(--border-strong)); }
+  .mb-burger span{ height:2px; width:18px; background:var(--text-primary); border-radius:2px; }
+
+  /* Logo en el header (solo mobile) */
+  .header-logo{ display:none; align-items:center; text-decoration:none; }
+  .header-logo img{ height:24px; width:auto; display:block; }
+
+  .oc-head .nb-logo{ padding:0; background:none; border:0; box-shadow:none; height:auto; }
+  .oc-head .nb-logo img{ height:20px; }
+
+  /* Selector de idioma — escritorio */
+  .nb-lang{ display:inline-flex; align-items:center; gap:6px; padding:0 6px; }
+  .nb-lang a{
+    font-size:12px; font-weight:var(--fw-semibold); letter-spacing:.04em;
+    color:var(--text-muted); text-decoration:none; padding:4px 4px;
+    transition:color var(--dur) var(--ease);
+  }
+  .nb-lang a:hover{ color:var(--text-primary); }
+  .nb-lang a.on{ color:var(--magenta); }
+  .nb-lang-sep{ color:var(--border-strong); font-size:12px; }
+
+  /* Selector de idioma — off-canvas */
+  .oc-lang{ display:flex; gap:14px; margin:18px 0; }
+  .oc-lang a{
+    font-size:14px; font-weight:var(--fw-semibold); letter-spacing:.04em;
+    color:var(--text-secondary); text-decoration:none;
+    transition:color var(--dur) var(--ease);
+  }
+  .oc-lang a:hover{ color:var(--text-primary); }
+  .oc-lang a.on{ color:var(--magenta); }
+  .oc-lang-block{ margin:20px 0; }
+
+  @media (max-width:900px){
+    .nav-desktop{ display:none; }
+    .mobile-box{ display:flex; }
+    .header-bar{ justify-content:flex-end; }
+    .site-header .wrap{ margin-left:0; padding:0 var(--gutter); }
+  }
+</style>
+
+<script>
+  const openBtn = document.getElementById('ocOpen');
+  const closeBtn = document.getElementById('ocClose');
+  const oc = document.getElementById('offcanvas');
+  const ov = document.getElementById('ocOv');
+
+  const open = () => {
+    oc?.classList.add('open'); ov?.classList.add('open');
+    oc?.setAttribute('aria-hidden', 'false');
+    openBtn?.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  };
+  const close = () => {
+    oc?.classList.remove('open'); ov?.classList.remove('open');
+    oc?.setAttribute('aria-hidden', 'true');
+    openBtn?.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  };
+
+  openBtn?.addEventListener('click', open);
+  closeBtn?.addEventListener('click', close);
+  ov?.addEventListener('click', close);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  oc?.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+
+  const header = document.querySelector('.site-header');
+  let lastY = window.scrollY;
+  let stopTimer: ReturnType<typeof setTimeout>;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y < 80) header?.classList.remove('is-hidden');
+    else if (y > lastY) header?.classList.add('is-hidden');
+    lastY = y;
+    clearTimeout(stopTimer);
+    stopTimer = setTimeout(() => header?.classList.remove('is-hidden'), 150);
+  }, { passive: true });
+</script>

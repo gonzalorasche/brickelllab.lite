@@ -1,0 +1,158 @@
+---
+// src/components/Ecosistema.astro
+import { useTranslations } from '../i18n/utils';
+
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+const t = useTranslations(lang);
+
+const p = lang === 'en' ? '/en' : '';
+
+const items = [
+  {
+    slot:'lumina', key:'brand-lumina', name:'Lúmina',
+    logo:'/logolumina.png', img:'/slide2.jpg',
+    alt:t('eco.lumina.alt'),
+    badge:t('eco.lumina.badge'),
+    tagline:t('eco.lumina.tagline'),
+    cta:t('eco.lumina.cta'), href:`${p}/lumina`,
+  },
+  {
+    slot:'lexa', key:'brand-lexa', name:'Lexa',
+    logo:'/logolexa.png', img:'/slide3.jpg',
+    alt:t('eco.lexa.alt'),
+    badge:t('eco.lexa.badge'),
+    tagline:t('eco.lexa.tagline'),
+    cta:t('eco.lexa.cta'), href:`${p}/lexa`,
+  },
+];
+---
+<section class="eco" id="ecosistema" aria-label="Ecosistema Brickell Lab">
+  {items.map((it) => (
+    <div class={`eco-panel eco-${it.slot} ${it.key}`}>
+      <img class="eco-img" src={it.img} alt={it.alt} loading="lazy" decoding="async" />
+      <span class="eco-overlay" aria-hidden="true"></span>
+      <div class="eco-in">
+        <span class="eco-badge">{it.badge}</span>
+        <img class="eco-logo" src={it.logo} alt={it.name} decoding="async" />
+        <p class="eco-tag">{it.tagline}</p>
+        <a class="eco-cta" href={it.href}>
+          {it.cta}
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+  ))}
+</section>
+
+<style>
+  .eco{
+    position:relative;
+    width:100%; max-width:100%;
+    display:grid; grid-template-columns:1fr 1fr; height:100dvh;
+  }
+  @media (orientation:landscape) and (max-height:600px){
+    .eco{ height:auto; min-height:100svh; }
+  }
+
+  .eco-panel{
+    position:relative; overflow:hidden; text-decoration:none; color:#fff;
+    height:100%;
+    display:flex; align-items:flex-end;
+  }
+  .eco-lumina{ order:1; }  /* escritorio: izquierda */
+  .eco-lexa{ order:2; }    /* escritorio: derecha */
+
+  .eco-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;
+    transition:transform .7s var(--ease-out); will-change:transform; }
+  .eco-panel:hover .eco-img{ transform:scale(1.06); }
+
+  .eco-overlay{ position:absolute; inset:0; z-index:1;
+    background:linear-gradient(to top, rgba(10,10,12,.9), rgba(10,10,12,.42) 46%, rgba(10,10,12,.04) 100%); }
+  .eco-lumina .eco-overlay, .eco-lexa .eco-overlay{
+    background:linear-gradient(to top, rgba(10,10,12,.92) 0%, rgba(10,10,12,.82) 22%, rgba(10,10,12,.35) 42%, transparent 62%);
+  }
+
+  .eco-in{ position:relative; z-index:2; padding:var(--gutter); max-width:540px; }
+  .eco-badge{
+    display:inline-block; margin-bottom:16px;
+    font-size:8.5px; font-weight:var(--fw-semibold); letter-spacing:.13em; text-transform:uppercase;
+    color:#fff; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.28);
+    padding:4px 9px; border-radius:var(--r-pill); backdrop-filter:blur(6px);
+  }
+  .eco-lumina .eco-badge, .eco-lexa .eco-badge{
+    background:rgba(10,10,12,.2); border:1px solid rgba(255,255,255,.4);
+    color:#fff; backdrop-filter:blur(8px);
+    text-shadow:0 1px 3px rgba(0,0,0,.5);
+  }
+  .eco-logo{ display:block; height:clamp(40px,4.2vw,66px); width:auto; filter:brightness(0) invert(1); margin-bottom:18px; }
+  .eco-tag{ margin:0; font-size:clamp(16px,1.35vw,20px); line-height:1.5; color:rgba(255,255,255,.9); max-width:34ch; }
+
+  /* Botón real */
+  .eco-cta{
+    display:inline-flex; align-items:center; gap:8px; margin-top:26px;
+    padding:12px 22px; border-radius:var(--r-md);
+    font-size:14px; font-weight:var(--fw-semibold); color:#fff; text-decoration:none;
+    background:rgba(255,255,255,.06); border:1.5px solid rgba(255,255,255,.35);
+    backdrop-filter:blur(6px);
+    transition:background var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur-fast) var(--ease);
+  }
+  .eco-lumina .eco-cta, .eco-lexa .eco-cta{ color:#fff; box-shadow:none; }
+  .eco-cta:hover{ background:var(--magenta); border-color:var(--magenta); transform:translateY(-2px); }
+  .eco-cta svg{ transition:transform var(--dur) var(--ease); }
+  .eco-cta:hover svg{ transform:translateX(3px); }
+
+  /* ===== FORMA ALTA — mobile vertical + tablet vertical ===== */
+  @media (max-width:900px) and (orientation:portrait){
+    .eco{ grid-template-columns:1fr; grid-template-rows:1fr 1fr; }
+    .eco-lumina{ order:1; }  /* arriba */
+    .eco-lexa{ order:2; }    /* abajo */
+    .eco-panel{ height:50dvh; }
+    .eco-cta{ margin-top:18px; padding:9px 16px; font-size:12.5px; gap:6px; }
+    .eco-cta svg{ width:14px; height:14px; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .eco-img, .eco-cta, .eco-cta svg{ transition:none; }
+    .eco-panel:hover .eco-img{ transform:none; }
+    .eco-cta:hover{ transform:none; }
+  }
+
+  /* Entrada al scrollear */
+  .eco-in > *{ opacity:0; transform:translateY(16px); }
+  .eco-panel.in-view .eco-in > *{ opacity:1; transform:none;
+    transition:opacity .6s var(--ease-out), transform .6s var(--ease-out); }
+  .eco-panel.in-view .eco-badge{ transition-delay:.05s; }
+  .eco-panel.in-view .eco-logo{ transition-delay:.16s; }
+  .eco-panel.in-view .eco-tag{ transition-delay:.28s; }
+  .eco-panel.in-view .eco-cta{ transition-delay:.4s; }
+
+  @media (prefers-reduced-motion:reduce){
+    .eco-in > *{ opacity:1; transform:none; }
+    .eco-panel.in-view .eco-in > *{ transition:none; }
+  }
+  /* Entrada — cada tarjeta anima cuando entra en pantalla */
+  .eco-panel.animar .eco-badge{ animation:ecoRise .6s var(--ease-out) .1s both; }
+  .eco-panel.animar .eco-logo{ animation:ecoRise .6s var(--ease-out) .22s both; }
+  .eco-panel.animar .eco-tag{ animation:ecoRise .6s var(--ease-out) .34s both; }
+  .eco-panel.animar .eco-cta{ animation:ecoRise .6s var(--ease-out) .46s both; }
+  @keyframes ecoRise{ from{ opacity:0; transform:translateY(20px); } to{ opacity:1; transform:none; } }
+
+  @media (prefers-reduced-motion:reduce){
+    .eco-panel.animar .eco-badge, .eco-panel.animar .eco-logo,
+    .eco-panel.animar .eco-tag, .eco-panel.animar .eco-cta{ animation:none; }
+  }
+</style>
+
+<script is:inline>
+  (function(){
+    var panels = document.querySelectorAll('.eco-panel');
+    if(!panels.length) return;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('animar'); io.unobserve(e.target); }
+      });
+    }, { threshold:.4 });
+    panels.forEach(function(p){ io.observe(p); });
+  })();
+</script>

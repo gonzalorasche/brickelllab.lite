@@ -1,0 +1,154 @@
+---
+// src/components/Footer.astro
+import { useTranslations } from '../i18n/utils';
+
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+const t = useTranslations(lang);
+
+// Prefijo de idioma para links internos
+const p = lang === 'en' ? '/en' : '';
+
+const waText = lang === 'en'
+  ? 'Hi, I would like to get in touch with Brickell Lab'
+  : 'Hola, quiero contactarme con Brickell Lab';
+const waBrickell = `https://wa.me/5491162770800?text=${encodeURIComponent(waText)}`;
+const email = 'info@labbrickell.com.ar';
+const linkedin = 'https://www.linkedin.com/company/brickell-lab';
+const instagram = 'https://www.instagram.com/brickell.lab/';
+const x = 'https://x.com/LabBrickell';
+const founded = 2024;
+const now = new Date().getFullYear();
+const year = now > founded ? `${founded}–${now}` : `${founded}`;
+
+const nav = [
+  { label: t('footer.nav.eco'), href: `${p}/#ecosistema` },
+  { label: t('footer.nav.agency'), href: `${p}/#agencia` },
+  { label: t('footer.nav.services'), href: `${p}/#servicios` },
+  { label: t('footer.nav.contact'), href: `${p}/#contacto` },
+];
+const marcas = [
+  { label: 'Lúmina', href: `${p}/lumina` },
+  { label: 'Lexa', href: `${p}/lexa` },
+];
+---
+<footer class="ft">
+  <div class="ft-in">
+
+    <div class="ft-top">
+      <div class="ft-brand">
+        <img class="ft-logo" src="/logofooter.png" alt="Brickell Lab" decoding="async" />
+        <p class="ft-tagline">
+          {t('footer.tagline')}
+        </p>
+        <div class="ft-social">
+          <a href={instagram} target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href={linkedin} target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21h-4z"/></svg>
+          </a>
+          <a href={x} target="_blank" rel="noopener" aria-label="X">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.9 2.5h3.3l-7.2 8.24L23.5 21.5h-6.6l-5.18-6.77-5.93 6.77H2.48l7.7-8.8L2 2.5h6.78l4.68 6.19L18.9 2.5Zm-1.16 17h1.83L8.35 4.4H6.38l11.36 15.1Z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <nav class="ft-col" aria-label={t('footer.nav.title')}>
+        <span class="ft-col-t">{t('footer.nav.title')}</span>
+        {nav.map((l) => <a href={l.href}>{l.label}</a>)}
+      </nav>
+
+      <nav class="ft-col" aria-label={t('footer.eco.title')}>
+        <span class="ft-col-t">{t('footer.eco.title')}</span>
+        {marcas.map((l) => (
+          <a href={l.href}>{l.label}</a>
+        ))}
+      </nav>
+
+      <div class="ft-col">
+        <span class="ft-col-t">{t('footer.contact.title')}</span>
+        <a href={waBrickell} target="_blank" rel="noopener">WhatsApp</a>
+        <a href={`mailto:${email}`}>{email}</a>
+      </div>
+    </div>
+
+    <div class="ft-bottom">
+      <span>© {year} Brickell Lab. {t('footer.rights')}</span>
+      <div class="ft-legal">
+        <a href={`${p}/terminos`}>{t('footer.legal.terms')}</a>
+        <a href={`${p}/privacidad`}>{t('footer.legal.privacy')}</a>
+        <button type="button" id="ftCookies" class="ft-cookies">{t('footer.legal.cookies')}</button>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+  .ft{ width:100%; background:var(--ink); color:#EDEDF0; }
+  .ft-in{ width:100%; padding:clamp(56px,7vw,88px) var(--gutter) clamp(28px,3vw,36px); }
+
+  .ft-top{
+    display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:clamp(32px,4vw,56px);
+    padding-bottom:clamp(40px,5vw,56px);
+  }
+
+  /* Marca */
+  .ft-logo{ height:26px; width:auto; display:block; filter:brightness(0) invert(1); }
+  .ft-tagline{ margin:18px 0 0; max-width:38ch; font-size:14.5px; line-height:1.6; color:rgba(255,255,255,.6); }
+  .ft-social{ display:flex; gap:10px; margin-top:22px; }
+  .ft-social a{
+    display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px;
+    border:1px solid rgba(255,255,255,.18); border-radius:50%; color:#fff;
+    transition:background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .ft-social a:hover{ background:var(--magenta); border-color:var(--magenta); }
+
+  /* Columnas de links */
+  .ft-col{ display:flex; flex-direction:column; }
+  .ft-col-t{ font-size:11px; font-weight:var(--fw-semibold); letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.4); margin-bottom:16px; }
+  .ft-col a{
+    font-size:14.5px; color:rgba(255,255,255,.75); text-decoration:none; padding:6px 0;
+    transition:color var(--dur) var(--ease);
+  }
+  .ft-col a:hover{ color:#fff; }
+  .ft-tag{ font-size:11px; color:rgba(255,255,255,.4); }
+
+  /* Barra inferior */
+  .ft-bottom{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    padding-top:clamp(24px,3vw,30px); border-top:1px solid rgba(255,255,255,.12);
+    font-size:13px; color:rgba(255,255,255,.5);
+  }
+  .ft-legal{ display:flex; gap:20px; flex-wrap:wrap; }
+  .ft-legal a{ color:rgba(255,255,255,.5); text-decoration:none; transition:color var(--dur) var(--ease); }
+  .ft-legal a:hover{ color:#fff; }
+  .ft-cookies{
+    font-family:inherit; font-size:13px; color:rgba(255,255,255,.5);
+    background:none; border:0; padding:0; cursor:pointer;
+    transition:color var(--dur) var(--ease);
+  }
+  .ft-cookies:hover{ color:#fff; }
+
+  /* ===== MOBILE ===== */
+  @media (max-width:900px){
+    .ft-top{ grid-template-columns:1fr 1fr; gap:clamp(28px,6vw,40px); }
+    .ft-brand{ grid-column:1 / -1; }
+  }
+  @media (max-width:520px){
+    .ft-top{ grid-template-columns:1fr; }
+    .ft-bottom{ flex-direction:column; align-items:flex-start; gap:8px; }
+  }
+</style>
+
+<script>
+  // @ts-nocheck
+  const ftCookies = document.getElementById('ftCookies');
+  if (ftCookies) {
+    ftCookies.addEventListener('click', () => {
+      try { localStorage.removeItem('bl_cookie_consent'); } catch(e){}
+      location.reload();
+    });
+  }
+</script>

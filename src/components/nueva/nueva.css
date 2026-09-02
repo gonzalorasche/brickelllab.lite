@@ -1,0 +1,3556 @@
+/* ==========================================================================
+   HOME NUEVA · Brickell Lab
+   ==========================================================================
+
+   PREFIJO `bl-` EN TODO. Esta hoja convive con `components.css`, que sigue
+   vistiendo la home actual y las páginas de Lúmina y Lexa. Mientras las dos
+   versiones estén vivas, una clase compartida es una corrección que se filtra a
+   la página que no estabas mirando. Ni una regla de acá toca nada de afuera.
+
+   ────────────────────────────────────────────────────────────
+   LA TESIS DEL REDISEÑO
+   ────────────────────────────────────────────────────────────
+
+   ⚠️ NO HAY FOTOS DE STOCK, Y NO ES UNA PREFERENCIA: ES EL ARGUMENTO. El
+   producto de Brickell es invisible —una web no se fotografía— así que la
+   versión anterior lo tapaba con imágenes compradas: una notebook con código, un
+   escritorio con marcadores. Esa es exactamente la foto que ya tienen las otras
+   cuarenta agencias, y en una página que vende criterio visual trabaja en contra.
+
+   Acá cada sección DEMUESTRA en vez de describir, que es el sistema de la
+   landing de Lúmina y no su parallax:
+
+     · el hero levanta un skyline dibujado en vivo, sin una sola imagen
+     · los servicios son un índice tipográfico, no seis tarjetas con foto
+     · los planes se comparan en vivo, con un control que cambia la lista
+     · la sección de visibilidad muestra el marcado de ESTA página
+
+   Las únicas dos imágenes de todo el documento son Lúmina y Lexa, porque son
+   productos reales y mostrarlos ES la prueba.
+
+   ────────────────────────────────────────────────────────────
+   CÓMO FUNCIONA EL PARALLAX DESDE ACÁ
+   ────────────────────────────────────────────────────────────
+
+   El motor (`scripts/nuevaParallax.ts`) escribe dos números en cada `[data-px]`:
+   `--p` de 0 a 1 y `--pc` de −1 a 1. Esta hoja decide qué hacer con ellos.
+
+   ⚠️ TODA REGLA DE MOVIMIENTO VA DETRÁS DE `[data-px-listo]`, y el valor por
+   defecto de cada pieza es SIEMPRE EL ESTADO FINAL: en su lugar, opacidad 1. Si
+   el motor no arranca —sin JavaScript, o con `prefers-reduced-motion`— la página
+   se ve entera y quieta. Al revés, una visita sin JS vería una sucesión de
+   secciones invisibles.
+   ========================================================================== */
+
+.bl {
+  --bl-ancho: 1240px;
+  --bl-gutter: 24px;
+
+  /* ⚠️ EL AIRE BAJÓ A LA MITAD PORQUE YA NO ES ÉL EL QUE SEPARA. Cuando cada
+     sección ocupa una pantalla (ver `.bl-sec`), el hueco entre una y otra son
+     los dos paddings SUMADOS más lo que sobre de las dos alturas: con los 168px
+     de antes, entre el final de un bloque y el título del siguiente quedaban
+     casi cuatrocientos píxeles de nada y había que scrollear a ciegas.
+
+     Esto es ahora un colchón de seguridad —que el contenido no toque el borde—
+     y no el recurso de composición. El respiro lo da la pantalla. */
+  --bl-aire: clamp(44px, 6vh, 88px);
+  --bl-aire-in: clamp(32px, 4vw, 56px);
+
+  --bl-sal: cubic-bezier(.22, 1, .36, 1);
+  --bl-dur: .5s;
+
+  --bl-fondo: var(--n-0);
+  --bl-fondo-2: var(--n-25);
+
+  background: var(--bl-fondo);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+}
+
+.bl-wrap {
+  width: 100%;
+  max-width: var(--bl-ancho);
+  margin-inline: auto;
+  padding-inline: max(var(--bl-gutter), env(safe-area-inset-left))
+                  max(var(--bl-gutter), env(safe-area-inset-right));
+}
+
+/* ⚠️ CADA SECCIÓN OCUPA UNA PANTALLA, Y SU CONTENIDO VA CENTRADO. Antes las
+   secciones medían lo que midiera su contenido y se separaban con padding: una
+   con cuatro líneas quedaba de 300px, la siguiente de 900, y la página se leía
+   como una lista de bloques de alturas al azar con huecos enormes en el medio.
+
+   Con `min-height` —no `height`— la sección que necesita más, crece: el índice
+   de servicios y el comparador pasan de largo los 100svh y está bien. Lo que se
+   fija es el PISO, no el techo.
+
+   ⚠️ `dvh`, Y ES UN CAMBIO DE OPINIÓN: acá decía `svh` y estaba mal para lo que
+   esta página necesita. `svh` es el viewport CHICO, el que mide la pantalla con la
+   barra del navegador desplegada. Se había elegido porque no cambia nunca y así
+   la página no salta al scrollear —que es cierto— pero el precio se paga en el
+   teléfono: apenas Safari esconde su barra, la pantalla visible crece y cada
+   sección queda unos sesenta píxeles corta, con la de abajo asomando por el
+   borde. Y a Servicios se llega scrolleando, o sea siempre con la barra
+   escondida: nunca se veía entera.
+
+   `dvh` se re-mide con la barra, así que la sección mide una pantalla de verdad
+   en todo momento. Lo que se acepta a cambio es el reacomodo del momento en que
+   la barra se esconde, que pasa una sola vez, en el primer scroll.
+
+   ⚠️ LA LÍNEA DE `svh` QUEDA DEBAJO COMO RESPALDO, no por costumbre: un
+   navegador que no entienda `dvh` descarta esa declaración y se queda con la
+   anterior. Al revés no funcionaría, así que el orden importa.
+
+   ⚠️ Y LOS `svh` DE ADENTRO NO SE TOCAN. Los `clamp(…svh…)` de los padding y las
+   separaciones tienen que quedarse quietos justamente porque la caja ahora se
+   mueve: si el alto y el ritmo interno se re-midieran los dos, el contenido
+   respiraría distinto según si la barra está o no. Crece la caja, no el ritmo. */
+.bl-sec {
+  position: relative;
+  min-height: 100svh;
+  min-height: 100dvh;
+  /* ⚠️ `flex-start` Y NO `center`. Centrado, el sobrante del hero se repartía
+     mitad arriba y mitad abajo: el cuadro quedaba despegado de la nav y el aire
+     de abajo se desperdiciaba en un margen que no sostenía nada. Pegando el
+     contenido arriba, todo ese sobrante queda de un solo lado —abajo— que es
+     donde vive la bajada y donde hace falta. */
+  display: flex; flex-direction: column; justify-content: flex-start;
+  padding-block: var(--bl-aire);
+}
+.bl-sec--gris { background: var(--bl-fondo-2); }
+
+/* ⚠️ ACÁ VIVÍA EL EMPALME ENTRE EL HERO Y LA PÁGINA: el hero en `sticky` y la
+   primera sección subiéndole por encima con una sombra. Se sacó entero.
+
+   Lo que SÍ queda de aquello, y conviene que quede: las secciones y el pie tienen
+   fondo propio y opaco. No es decorativo. Hasta entonces sólo lo llevaban las
+   grises y las demás mostraban el blanco de la página, que daba el mismo
+   resultado visual; pero cualquier cosa que en el futuro quede DETRÁS de una
+   sección se vería a través de ella. */
+.bl-sec,
+.bl-pie {
+  position: relative; z-index: 1;
+  background: var(--bl-fondo);
+}
+.bl-sec--gris { background: var(--bl-fondo-2); }
+.bl-pie { background: var(--ink); }
+
+/* ══════════════════════════════════════════════════════════
+   LOS BLOQUES OSCUROS SE APOYAN SOBRE LOS CLAROS
+   ══════════════════════════════════════════════════════════
+
+   La página son dos materiales: dos pantallas negras —la portada y Servicios— y
+   el resto en blanco. Sin nada más, las negras se leen como un cambio de color
+   del mismo plano. Con sombra, pasan a ser piezas apoyadas ENCIMA del documento,
+   que es lo que son: la página sigue abajo y ellas la tapan.
+
+   ⚠️ EL `z-index` NO ES OPCIONAL Y ES LA MITAD DEL TRUCO. Una sombra se pinta
+   junto con el elemento que la tira, así que si el bloque oscuro se pinta ANTES
+   que su vecino —y en el orden normal se pinta antes todo lo que viene primero en
+   el documento— la sección de abajo se dibuja encima y se la come entera. Subirlo
+   un escalón por arriba del `z-index: 1` que llevan todas las secciones es lo que
+   deja la sombra a la vista.
+
+   ⚠️ SON DOS SOMBRAS Y NO UNA. Una sola, ancha y difusa, se lee como una mancha;
+   una sola, corta y marcada, como un borde gris. Juntas hacen lo que hace una
+   sombra de verdad: un contacto oscuro y ajustado contra el canto, y una caída
+   larga y suave que se pierde. El `-22px` de expansión negativa es lo que impide
+   que la difusa asome por los costados de la pantalla, donde no hay nada que la
+   justifique.
+
+   ⚠️ Y NO LLEVA `blur` NI FILTROS: `box-shadow` la compone la GPU sin volver a
+   dibujar nada. Es una sombra permanente sobre dos elementos del tamaño de la
+   pantalla, así que tiene que ser barata o se paga en cada scroll. */
+.bl-hero,
+.bl-sv {
+  z-index: 2;
+}
+
+/* La portada sólo tira hacia abajo: arriba no hay página, hay borde de ventana. */
+.bl-hero {
+  box-shadow: 0 12px 26px -14px rgba(10, 10, 12, .5),
+              0 34px 70px -22px rgba(10, 10, 12, .45);
+}
+
+/* Servicios está en el medio del documento, así que tira para los dos lados. La
+   de arriba es más corta: una pieza apoyada tapa más de lo que tiene abajo que de
+   lo que tiene arriba, y una sombra alta y pareja la haría ver flotando en el
+   aire en vez de apoyada. */
+.bl-sv {
+  box-shadow: 0 -10px 22px -14px rgba(10, 10, 12, .45),
+              0 -26px 56px -22px rgba(10, 10, 12, .38),
+              0 12px 26px -14px rgba(10, 10, 12, .5),
+              0 34px 70px -22px rgba(10, 10, 12, .45);
+}
+
+/* La línea encendida sube un escalón más, y el motivo está escrito en su propio
+   bloque, más abajo. */
+
+/* ══════════════════════════════════════════════════════════
+   EL SEPARADOR
+   ══════════════════════════════════════════════════════════
+
+   Una línea encendida entre la portada y el documento. Es la misma pieza que
+   cierra Contacto contra el pie, puesta acá para abrir: el hero queda clavado
+   detrás y esto es el primer borde del documento que le pasa por encima.
+
+   ⚠️ MIDE UN PÍXEL Y ESO ES TODO LO QUE OCUPA. Acá hubo una franja de foto de
+   ciento quince píxeles y se sacó: era una tercera imagen de Brickell en una
+   página que ya tiene dos, y sobre todo le robaba el gesto al empalme. El hero
+   quedándose mientras el documento le sube por encima ES la profundidad; con una
+   franja en el medio, lo que se montaba sobre la portada era una imagen y no la
+   página.
+
+   ⚠️ VA COMO ELEMENTO PROPIO Y NO COMO UN `::before` DE LA SECCIÓN, y hay una
+   razón técnica: la sección lleva `overflow: clip`, así que un pseudo suyo tendría
+   el halo recortado contra su propio borde y la luz no saldría hacia arriba, que
+   es justo hacia donde tiene que salir. Suelto, el resplandor cae sobre el hero.
+
+   ⚠️ TENÍA UNA SEGUNDA SOMBRA OSCURA, la del empalme, que decía que había un
+   plano detrás. Se fue con el `sticky`: sin nada detrás, una sombra proyectada
+   hacia arriba es la sombra de nada. Queda sólo el resplandor.
+
+   ⚠️ EL DEGRADÉ NACE Y MUERE EN TRANSPARENTE, igual que el del cierre. Una línea
+   magenta pareja de borde a borde es una raya de neón que se lleva toda la
+   atención; así, lo que se ve es un resplandor en el centro que se apaga hacia
+   los costados. */
+/* ⚠️ EL `z-index: 3` VA ACÁ Y NO EN UNA REGLA APARTE, Y NO ES CAPRICHO: la línea
+   está pegada al borde de abajo de la portada, justo donde cae su sombra, y con el
+   mismo escalón que las secciones el magenta se apaga debajo de la mancha y queda
+   una línea sucia. Un escalón más arriba y se mantiene encendida.
+
+   Se intentó primero con una regla `.bl-sep { z-index: 3 }` escrita junto a las
+   sombras, doscientas líneas más arriba, y no hizo nada: misma especificidad, y
+   ésta viene después en el archivo. Es la tercera vez que el orden de las reglas
+   decide algo en esta hoja sin que nada lo delate. Si el valor tiene que cambiar,
+   se cambia acá. */
+.bl-sep {
+  position: relative; z-index: 3;
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent 0%,
+    rgba(236, 30, 121, .12) 18%,
+    rgba(236, 30, 121, .85) 50%,
+    rgba(236, 30, 121, .12) 82%,
+    transparent 100%);
+  box-shadow: 0 0 14px 1px rgba(236, 30, 121, .38);
+}
+
+/* ⚠️ EN PANTALLA ANGOSTA EL HALO BAJA. El degradé cierra sobre mucho menos ancho,
+   así que con el mismo resplandor la línea queda casi maciza de borde a borde. */
+@media (max-width: 760px) {
+  .bl-sep { box-shadow: 0 0 10px 1px rgba(236, 30, 121, .3); }
+}
+
+/* ── El gesto de entrada, uno solo para toda la página ──
+   Deliberadamente el MISMO en todos lados: si cada sección entrara distinto, la
+   página se leería como seis páginas pegadas. */
+/* ⚠️ SIN `will-change`. Estaba puesto —es lo que "se pone" para que una
+   animación vaya fluida— y acá jugaba en contra: le pide al motor que promueva
+   el elemento a su propia capa de composición y la MANTENGA, y desde que cada
+   sección mide una pantalla son siete capas del tamaño del viewport, permanentes
+   y a la vez, en memoria de GPU.
+
+   Sin el hint, el navegador promueve lo que necesita mientras dura el movimiento
+   y lo suelta después, que es lo que corresponde con siete piezas grandes.
+   `will-change` sirve para algo chico que se va a mover ya; como decoración de
+   "esto se anima" es contraproducente. */
+[data-px-listo] .bl-sube {
+  opacity: var(--p, 1);
+  transform: translate3d(0, calc((1 - var(--p, 1)) * 26px), 0);
+}
+
+/* ══════════════════════════════════════════════════════════
+   TIPOGRAFÍA
+   ══════════════════════════════════════════════════════════ */
+
+.bl-eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 11.5px; font-weight: var(--fw-semibold);
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--magenta); margin: 0 0 14px;
+}
+.bl-eyebrow::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--magenta); flex: none;
+}
+
+/* ⚠️ EL TECHO BAJÓ DE 58 A 50. Medido: el bloque de título —copete, h2 y bajada—
+   pesaba 223px en CADA sección, y son siete. Un título de dos líneas a 58px son
+   120px él solo; a 50 son 104 y no se nota que sea más chico, se nota que la
+   sección entra en la pantalla. */
+.bl-h2 {
+  font-size: clamp(30px, 4.4vw, 50px);
+  font-weight: var(--fw-bold);
+  letter-spacing: -.042em; line-height: 1.03;
+  margin: 0;
+  /* ⚠️ 26ch Y NO 18: con 18 los títulos largos caían en TRES renglones y la
+     sección perdía el aire —tres líneas de 50px son 155px de alto sólo de
+     título—. Con 26 entran en dos, que es la medida en la que un título de
+     sección se lee de un golpe.
+
+     Sigue habiendo un tope: sin él, en una pantalla ancha el título se estira a
+     los 1240px de la columna y una línea de noventa caracteres deja de ser un
+     título para ser un párrafo grande. `text-wrap: balance` reparte las dos
+     líneas parejas en vez de dejar una larga y una corta. */
+  max-width: 26ch; text-wrap: balance;
+}
+
+.bl-lede {
+  font-size: clamp(15.5px, 1.4vw, 17px); line-height: 1.55;
+  color: var(--text-secondary); margin: 16px 0 0; max-width: 54ch;
+}
+
+/* ⚠️ EL `padding-right` NO ES DECORACIÓN: EVITA QUE SE CORTE LA ÚLTIMA LETRA.
+   `background-clip: text` recorta el degradé exactamente contra la caja de
+   avance de los glifos, y el `letter-spacing` negativo de los títulos (−.042em)
+   se aplica TAMBIÉN después del último carácter: la caja termina antes que la
+   tinta de esa letra y se le come el borde derecho. Se nota siempre en la misma
+   —la última— y parece un error de fuente.
+
+   El padding devuelve ese espacio a la caja del fondo. Va en `em` para que
+   acompañe al tamaño del título, que es `clamp()` y cambia con la pantalla.
+
+   El `display: inline-block` es lo que hace que ese padding se respete: en un
+   inline puro el fondo se recorta igual al saltar de renglón. */
+.bl-grad {
+  display: inline-block;
+  padding-right: .08em; margin-right: -.08em;
+  background: var(--grad-2);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+
+/* ══════════════════════════════════════════════════════════
+   BOTONES
+   ══════════════════════════════════════════════════════════ */
+
+.bl-btn {
+  font-family: inherit; font-weight: var(--fw-semibold);
+  font-size: 14.5px; letter-spacing: -.01em; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 48px; padding-inline: 26px;
+  border-radius: var(--r-pill); border: 1px solid transparent;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: transform .18s var(--bl-sal), box-shadow var(--bl-dur) var(--bl-sal),
+              background var(--bl-dur) var(--bl-sal), border-color var(--bl-dur) var(--bl-sal),
+              color var(--bl-dur) var(--bl-sal);
+}
+.bl-btn:hover { transform: translateY(-2px); }
+.bl-btn:active { transform: translateY(0); }
+.bl-btn:focus-visible { outline: 2px solid var(--magenta); outline-offset: 3px; }
+.bl-btn svg { width: 16px; height: 16px; flex: none; }
+
+.bl-btn--acento { background: var(--magenta); color: #fff; box-shadow: var(--shadow-accent); }
+.bl-btn--acento:hover { background: var(--magenta-600); }
+
+/* ── LA LUZ QUE CRUZA EL BOTÓN ───────────────────────────
+   Portada de los botones de Lúmina. Una franja clara que lo atraviesa cada
+   tantos segundos: no pide nada, sólo avisa que el botón está vivo.
+
+   ⚠️ NO SE RECORTA CON `overflow: hidden` SOLO, Y SE VE. La franja es un
+   rectángulo con un `transform` animado y `mix-blend-mode`: las dos cosas la
+   sacan del recorte redondeado del padre —el blend tiene que resolverse contra
+   el fondo, así que el navegador la saca de la capa recortada— y aparece con las
+   puntas CUADRADAS asomando por los costados de la cápsula. Es un defecto que ya
+   se corrigió una vez en Lúmina y viene con su arreglo puesto.
+
+   Hacen falta las dos cosas juntas:
+     · `isolation: isolate` cierra el grupo de composición en el botón, así el
+       blend se resuelve adentro y no contra la página;
+     · `clip-path` recorta de verdad, con radio, y le gana a cualquier capa
+       compuesta — que es lo que `overflow` no garantiza. */
+.bl-btn--acento {
+  position: relative; overflow: hidden;
+  isolation: isolate;
+  clip-path: inset(0 round var(--r-pill));
+}
+/* El contenido por encima de la franja: si no, la luz le pasa por delante al
+   texto y lo lava en cada barrido. */
+.bl-btn--acento > *:not(.bl-luz) { position: relative; z-index: 1; }
+.bl-luz {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 42%;
+  pointer-events: none; z-index: 0;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+  mix-blend-mode: overlay;
+  animation: bl-luz 4.2s ease-in-out infinite;
+}
+/* Cruza rápido y tarda en volver: el 55% del ciclo es el barrido y el resto es
+   la espera. Un barrido continuo se lee como una barra de carga, no como un
+   destello. */
+@keyframes bl-luz {
+  0%        { transform: translateX(-130%); }
+  55%, 100% { transform: translateX(230%); }
+}
+.bl-btn--solid { background: var(--ink); color: #fff; box-shadow: 0 10px 24px -12px rgba(10,10,12,.5); }
+.bl-btn--linea { background: transparent; color: var(--text-primary); border-color: var(--border-strong); }
+.bl-btn--linea:hover { border-color: var(--ink); background: var(--n-50); }
+
+.bl-btn .bl-fl { transition: transform .3s var(--bl-sal); }
+.bl-btn:hover .bl-fl { transform: translate(2px, -2px); }
+
+/* ══════════════════════════════════════════════════════════
+   LA BARRA
+   ══════════════════════════════════════════════════════════ */
+
+.bl-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+  height: 72px; display: flex; align-items: center;
+  padding-top: env(safe-area-inset-top);
+  background: transparent; border-bottom: 1px solid transparent;
+  transition: background .3s var(--bl-sal), border-color .3s var(--bl-sal);
+}
+.bl-nav.is-scroll {
+  background: rgba(255,255,255,.82);
+  backdrop-filter: saturate(1.6) blur(14px);
+  -webkit-backdrop-filter: saturate(1.6) blur(14px);
+  border-bottom-color: var(--border);
+}
+.bl-nav-in {
+  width: 100%; max-width: var(--bl-ancho); margin-inline: auto;
+  padding-inline: max(var(--bl-gutter), env(safe-area-inset-left))
+                  max(var(--bl-gutter), env(safe-area-inset-right));
+  display: flex; align-items: center; gap: 20px;
+}
+.bl-logo { display: flex; align-items: center; flex: none; text-decoration: none; }
+.bl-logo img { height: 25px; width: auto; display: block; }
+.bl-links { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.bl-link {
+  font-size: 14.5px; font-weight: var(--fw-medium);
+  color: var(--text-secondary); text-decoration: none;
+  padding: 9px 14px; border-radius: var(--r-md);
+  transition: color .2s var(--bl-sal), background .2s var(--bl-sal);
+}
+.bl-link:hover { color: var(--text-primary); background: var(--n-100); }
+.bl-nav-cta { margin-left: 8px; height: 40px; padding-inline: 20px; font-size: 14px; }
+
+.bl-burger {
+  display: none; margin-left: auto;
+  width: 42px; height: 42px; border-radius: var(--r-md);
+  align-items: center; justify-content: center;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-primary); cursor: pointer;
+}
+.bl-burger:hover { background: var(--n-100); }
+
+.bl-panel { position: fixed; inset: 0; z-index: 70; visibility: hidden; pointer-events: none; }
+.bl-panel[data-abierto] { visibility: visible; pointer-events: auto; }
+.bl-panel-velo {
+  position: absolute; inset: 0; background: rgba(10,10,12,.42);
+  opacity: 0; transition: opacity .32s var(--bl-sal);
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+}
+.bl-panel[data-abierto] .bl-panel-velo { opacity: 1; }
+.bl-panel-caja {
+  position: absolute; top: 0; right: 0; bottom: 0; width: min(86vw, 340px);
+  background: var(--bl-fondo);
+  padding: calc(20px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; gap: 6px;
+  transform: translateX(100%); transition: transform .36s var(--bl-sal);
+  box-shadow: -24px 0 60px -30px rgba(10,10,12,.4);
+}
+.bl-panel[data-abierto] .bl-panel-caja { transform: translateX(0); }
+.bl-panel-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+.bl-panel-top img { height: 24px; width: auto; }
+.bl-cerrar {
+  width: 40px; height: 40px; border-radius: var(--r-md);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid var(--border); color: var(--text-primary); cursor: pointer;
+}
+.bl-cerrar:hover { background: var(--n-100); }
+.bl-panel-link {
+  font-size: 19px; font-weight: var(--fw-semibold); letter-spacing: -.02em;
+  color: var(--text-primary); text-decoration: none;
+  padding: 13px 0; border-bottom: 1px solid var(--border);
+}
+.bl-panel-link:last-of-type { border-bottom: none; }
+.bl-panel .bl-btn { margin-top: 20px; width: 100%; }
+
+/* ══════════════════════════════════════════════════════════
+   HERO · el skyline se levanta con el scroll
+   ══════════════════════════════════════════════════════════ */
+
+/* ⚠️ EL GRÁFICO VA AL COSTADO, NO ABAJO. Apilado ocupaba alto propio y empujaba
+   el hero a más de una pantalla: el texto arriba, la pieza abajo, y el conjunto
+   sin entrar. Puesto en la mitad derecha usa el espacio que ya estaba vacío y el
+   hero cierra en 100svh sin recortar nada.
+
+   En teléfono vuelve a apilarse —una columna, gráfico abajo— porque al costado
+   quedaría de la mitad del ancho de la pantalla y la flecha no se leería. */
+/* ══════════════════════════════════════════════════════════
+   EL HERO · Brickell, Miami — a sangre, en negativo
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ ES LA ÚNICA PANTALLA OSCURA DE LA PÁGINA. Las siete secciones que siguen son
+   blancas. El corte entre ésta y la que sigue es el gesto: se abre con una pieza
+   y después empieza el documento.
+
+   ⚠️ MIDE EXACTAMENTE UNA PANTALLA, como todas, y con el mismo `dvh` que ellas:
+   el viewport que se re-mide cuando el navegador esconde su barra. El motivo
+   largo está arriba, en `.bl-sec`. */
+.bl-hero {
+  /* ⚠️ ACÁ EL HERO ESTUVO EN `sticky`, quedándose clavado arriba mientras el
+     documento le subía por encima. Se sacó: el gesto estaba bien resuelto pero no
+     sumaba, y a cambio dejaba la portada presente durante toda la primera
+     sección. Scrollea como cualquier otra.
+
+     De aquello queda una advertencia por si vuelve: `overflow-x: clip` en `.bl` no
+     rompe un `sticky` (a diferencia de `hidden`, `clip` no crea contenedor de
+     scroll), pero cambiar esa propiedad sí lo rompería, y sin avisar. */
+  position: relative;
+  min-height: 100svh;
+  min-height: 100dvh;
+  display: flex; flex-direction: column;
+  /* ⚠️ EL FONDO ES TINTA Y NO NEGRO PURO, y no es un matiz de gusto: es el color
+     que ya usa el pie de la página. Dos negros distintos en el mismo sitio se
+     notan justo cuando uno cree que no. Además es lo que se ve mientras la foto
+     viaja — sin esto, el primer cuadro es un destello blanco y después la
+     pantalla se apaga de golpe. */
+  background: var(--ink);
+  color: #fff;
+  /* ⚠️ `clip` Y NO `hidden`: la marquesina corre por dentro y el titular puede
+     llegar al canto. `hidden` crearía un contenedor de scroll y cualquier ancla
+     de la página podría desplazarlo por dentro. */
+  overflow: clip;
+}
+
+/* ── LA FOTO ──────────────────────────────────────────────
+   ⚠️ ABSOLUTA, Y NO ES OPCIONAL. En flujo normal la imagen ocupa su alto real y
+   empuja todo hacia abajo: el hero deja de medir una pantalla. Un `<picture>`
+   además es `inline` por defecto, así que necesita `display: block` para no
+   arrastrar el espacio de la línea base. */
+.bl-hero-foto,
+.bl-hero-foto img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block; z-index: 0;
+}
+
+/* ⚠️ EL TRATAMIENTO ESTÁ MEDIDO, NO ELEGIDO A OJO, Y ES LO QUE HACE POSIBLE TODA
+   LA COMPOSICIÓN. Sin tocar, la foto tiene rango completo justo donde va el
+   texto: el agua trae reflejos casi negros y el cielo nubes grises, así que un
+   titular en tinta encima medía 1,00:1 en su peor punto —invisible— y uno en
+   blanco, lo mismo del otro lado. No hay lugar bueno donde ponerlo, porque debajo
+   de cualquier lugar hay de todo.
+
+   Recorriendo la superficie entera píxel por píxel contra blanco puro:
+
+       sin tratar        peor 1,02:1   ·  el más claro llega a 253
+       brightness .60    peor 2,81:1   ·  154
+       brightness .50    peor 4,04:1   ·  126
+       brightness .46    peor 4,76:1   ·  115   ← éste
+       brightness .38    peor 6,91:1   ·   90
+
+   A .46 el blanco tiene 4,76:1 EN TODAS PARTES —por encima del mínimo de 4,5— y
+   el píxel más claro queda en 115, o sea que la foto conserva rango y no se
+   aplasta a una mancha negra. Bajar más la mata sin necesidad.
+
+   ⚠️ Y RECIÉN CON ESO EL TEXTO PUEDE IR DONDE LA COMPOSICIÓN LO PIDA y no donde
+   la foto lo permita. Ésa es la razón real del hero oscuro: no es un efecto, es
+   lo que compra la libertad de componer.
+
+   El `contrast` compensa lo que el brillo aplana: bajar la exposición sin subir
+   el contraste deja una foto gris y sin nervio, no una foto oscura. */
+/* ⚠️ LA FOTO SE FUNDE A TINTA HACIA ABAJO, Y NO ES UN EFECTO: ES LO QUE HACE
+   LEGIBLE EL PIE DEL HERO. El tratamiento general de la imagen (`brightness .46`)
+   garantiza 4,76:1 para el blanco en toda la superficie, pero el pie no es todo
+   blanco: la bajada va al 72% y los rótulos de los números al 50%, y a esas
+   opacidades el mismo fondo ya no alcanza. Medido en la franja del pie, sin velo:
+
+       rótulos (50%)     2,49:1
+       bajada  (72%)     3,46:1
+       números (blanco)  4,99:1
+
+   Los dos primeros por debajo del mínimo. Con el velo, la bajada pasa a 5,61 y
+   los números a más de 8.
+
+   ⚠️ ARRANCA EN EL 48% PARA NO TOCAR EL TITULAR. Arriba vive el título, que ya
+   tiene su contraste resuelto por el tratamiento general y no necesita ayuda:
+   oscurecer también esa mitad sería apagar la foto sin motivo.
+
+   ⚠️ Y ES UN DEGRADÉ, NO UNA CAPA PAREJA. Un velo uniforme baja la foto entera un
+   escalón; así, la imagen se ve como es en la mitad de arriba y sólo cede donde
+   hay texto encima. */
+.bl-hero-foto::after {
+  content: ""; position: absolute; inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom,
+    rgba(10, 10, 12, 0) 48%,
+    rgba(10, 10, 12, .6) 100%);
+}
+
+.bl-hero-foto img {
+  object-fit: cover;
+  /* La ciudad ocupa la mitad derecha y la parte de abajo; anclando el encuadre un
+     poco por debajo del centro entran los rascacielos enteros y se recorta cielo,
+     que es la zona que menos dice. */
+  object-position: 50% 62%;
+  filter: brightness(.46) contrast(1.15);
+}
+
+/* ── LA GRILLA ────────────────────────────────────────────
+   Seis columnas dibujadas a la vista. En la portada de un estudio de diseño,
+   mostrar la grilla no es decoración: es la firma del oficio.
+
+   ⚠️ SE DIBUJA CON UN SOLO DEGRADÉ REPETIDO POR `background-size`, no con seis
+   elementos. Una línea de un píxel y el resto transparente, en una baldosa que
+   mide un sexto del ancho: el navegador la repite solo y no hay nada que
+   mantener sincronizado si mañana son cinco columnas en vez de seis.
+
+   ⚠️ EL `background-origin: content-box` ES LO QUE LA ALINEA DE VERDAD. Sin él la
+   baldosa arranca en el borde del elemento —incluido el padding del envoltorio— y
+   las seis líneas caen corridas respecto de la columna real del contenido, que es
+   justo lo que la grilla tiene que estar mostrando. */
+.bl-hero-grilla {
+  position: absolute; inset: 0; z-index: 1;
+  pointer-events: none;
+  background-image: linear-gradient(to right, rgba(255,255,255,.09) 1px, transparent 1px);
+  background-size: calc(100% / 6) 100%;
+  background-origin: content-box;
+  background-clip: content-box;
+  background-repeat: repeat-x;
+}
+
+/* ── LA ESCENA ────────────────────────────────────────────
+   ⚠️ TRES BLOQUES REPARTIDOS CON `space-between`, y de ahí sale la composición
+   entera: la ficha arriba, el titular al medio y el pie apoyado en el piso. El
+   aire sobrante se va a los huecos, así que el hero se llena solo en cualquier
+   alto de pantalla sin un número mágico que ajustar.
+
+   ⚠️ LOS 72px DEL PADDING SON LA BARRA Y NO SE TOCAN: es lo que mide, y por
+   debajo la ficha le quedaría abajo. Lo único que se regula es el colchón. */
+.bl-hero-esc {
+  position: relative; z-index: 2;
+  flex: 1;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding-block: calc(72px + clamp(20px, 3svh, 40px)) clamp(24px, 4svh, 44px);
+}
+
+/* ── LA FICHA ─────────────────────────────────────────────
+   ⚠️ EL CONTRASTE DE ESCALA ES EL EFECTO, no un detalle de estilo. Once píxeles
+   de mono al lado de ciento veinte de grotesca es lo que hace que el titular se
+   lea ENORME: sin nada chico cerca, "grande" no tiene con qué compararse. Sacar
+   esta línea no quita un renglón, achica el titular sin tocarle el tamaño.
+
+   El filete de abajo la ata a la grilla: es la primera horizontal de la página. */
+.bl-ficha {
+  display: flex; flex-wrap: wrap;
+  gap: 6px clamp(18px, 3vw, 44px);
+  padding-bottom: clamp(12px, 1.8svh, 18px);
+  border-bottom: 1px solid rgba(255,255,255,.14);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: clamp(9.5px, 1.05vw, 11px);
+  letter-spacing: .2em; text-transform: uppercase;
+  color: rgba(255,255,255,.62);
+}
+
+/* ── EL TITULAR ───────────────────────────────────────────
+   ⚠️ ES EL HERO ENTERO. Todo lo demás —la ficha, la grilla, el pie— está para que
+   esto se lea grande; si el titular no manda, no hay composición.
+
+   ⚠️ EL TAMAÑO VA EN `vw` Y NO EN `svh`, al revés que casi todo lo demás de esta
+   hoja. El titular tiene que LLENAR EL ANCHO: atado al alto, en una pantalla baja
+   y ancha queda una tipografía chica flotando en una banda enorme. El `clamp` le
+   pone piso para el teléfono y techo para que en un monitor de 2560 no se salga
+   de la columna.
+
+   ⚠️ INTERLÍNEA POR DEBAJO DE 1 —.84— Y TRACKING NEGATIVO. A esta escala el
+   espacio que el tipo trae de fábrica está pensado para texto de lectura y deja
+   tres renglones sueltos uno del otro; apretados, las tres líneas se leen como un
+   BLOQUE, que es lo que tiene peso. Es la diferencia entre un título grande y una
+   composición tipográfica. */
+.bl-titular {
+  margin: 0;
+  font-size: clamp(34px, 8.6vw, 124px);
+  font-weight: 800;
+  line-height: .84;
+  letter-spacing: -.045em;
+  text-transform: uppercase;
+}
+.bl-titular-in { display: block; }
+/* Cada línea es un bloque propio: es lo que permite cortar donde se decidió y
+   correr la tercera. Va como elemento y no como un `<br>` porque un `<br>` cae en
+   otro lado en cuanto cambia el idioma. */
+.bl-titular em,
+.bl-titular em i {
+  display: block;
+  font-style: normal;
+}
+/* ⚠️ EN ESCRITORIO EL `<i>` VUELVE A SER PARTE DE LA LÍNEA. Arriba se declara
+   `block` junto al `em` para que ninguno de los dos herede la cursiva; acá se le
+   devuelve el `inline`, que es lo que hace que "lo que tu marca" sea UNA línea.
+   El corte en dos vive sólo en el tramo de teléfono. */
+.bl-titular em i { display: inline; }
+
+/* ⚠️ LA TERCERA LÍNEA SE CORRE Y ES LO ÚNICO ASIMÉTRICO DEL BLOQUE. Tres líneas a
+   bandera izquierda son un bloque prolijo y mudo; una que rompe el eje le da
+   dirección a la lectura y deja el ángulo abierto abajo a la izquierda, que es
+   donde la foto tiene el agua. La sangría es de una columna de la grilla —un
+   sexto— así que no es un desplazamiento cualquiera: cae sobre una línea que se
+   está viendo.
+
+   ⚠️ Y ES EL ÚNICO COLOR DE LA PANTALLA. La foto es blanco y negro y el texto es
+   blanco: el magenta de la marca queda como la única tinta de todo el hero. Ése
+   es el motivo de que la foto vaya en blanco y negro — no es un filtro de estilo,
+   es lo que le deja el color libre a la marca. */
+.bl-titular-eco {
+  margin-left: calc(100% / 6);
+  color: var(--magenta);
+}
+
+/* ── EL PIE ───────────────────────────────────────────────
+   Qué hace el estudio, cuánto lleva hecho y por dónde se empieza — en un renglón,
+   bajo un filete que lo separa del titular y repite la horizontal de la ficha.
+
+   ⚠️ `align-items: end` Y NO `center`: los tres bloques tienen alturas muy
+   distintas —un párrafo de tres líneas, unos números de 36px y un botón de 46— y
+   centrados quedan los tres flotando a distinta altura. Apoyados en una misma
+   línea de base se leen como un renglón. */
+.bl-hero-pie {
+  display: flex; align-items: end; flex-wrap: wrap;
+  gap: clamp(20px, 3vw, 48px);
+  padding-top: clamp(14px, 2.2svh, 22px);
+  border-top: 1px solid rgba(255,255,255,.14);
+}
+
+/* ⚠️ LA BAJADA VA CHICA A PROPÓSITO, Y ES LA MITAD DEL EFECTO. Subida de cuerpo
+   compite con el titular y los dos pierden. Acá su trabajo es explicar en voz
+   baja lo que el titular dice gritando.
+
+   El `max-width` en `ch` corta por medida de lectura y no por donde termine la
+   columna: entre 45 y 75 caracteres por línea es lo que se lee cómodo. */
+.bl-hero-lede {
+  flex: 1 1 22ch;
+  margin: 0; max-width: 44ch;
+  font-size: clamp(13.5px, 1.15vw, 15.5px);
+  line-height: 1.6;
+  color: rgba(255,255,255,.72);
+  text-wrap: pretty;
+}
+
+/* Los números, en versión nocturna. */
+.bl-datos {
+  display: grid; grid-template-columns: repeat(3, auto);
+  justify-content: start; width: fit-content;
+  column-gap: clamp(20px, 2.6vw, 42px);
+  margin: 0; flex: none;
+}
+.bl-dato { display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+/* ⚠️ EN MONO, Y NO ES UN CAPRICHO DE ESTILO: son datos, y acá los datos se
+   escriben con la tipografía de datos. Además `tabular-nums` importa más que
+   nunca mientras el contador sube — con cifras de ancho variable las tres
+   columnas bailarían sesenta veces por segundo. */
+.bl-dato-n {
+  display: flex; align-items: center; gap: .05em;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: clamp(24px, 2.4vw, 36px);
+  font-weight: 700; line-height: 1; letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+}
+/* ⚠️ EL "+" NO ES UN CARÁCTER MÁS DEL NÚMERO: es un modificador, y por eso va
+   chico y en el color de la marca. A cuerpo completo se lee como un dígito y "+70"
+   parece un número de cuatro trazos. */
+.bl-dato-n .mas {
+  font-style: normal;
+  font-size: .5em; font-weight: 700; letter-spacing: 0;
+  line-height: 1; color: var(--magenta);
+  transform: translateY(-.06em);
+}
+.bl-dato-l {
+  display: block; margin-top: 9px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: clamp(8.5px, .82vw, 10px);
+  letter-spacing: .18em; text-transform: uppercase;
+  /* ⚠️ AL 78% Y NO AL 50%. A media opacidad la mezcla nunca despega del fondo por
+     más oscuro que sea: con velo y todo, los rótulos se quedaban en 3,81:1. Este
+     valor y el del velo están calculados juntos contra el peor píxel de la foto en
+     la franja del pie, y dan 6,25:1. Si uno cambia, hay que recalcular el otro. */
+  color: rgba(255,255,255,.78);
+}
+
+/* El botón, empujado al extremo derecho del renglón. */
+.bl-hero-cta { margin-left: auto; flex: none; }
+
+/* ── LA MARQUESINA ────────────────────────────────────────
+   ⚠️ ACÁ SÍ SE DIBUJA EN ESCRITORIO, al revés que en el hero anterior. Sobre una
+   pantalla blanca era un renglón suelto que había que justificar; sobre una
+   oscura, a sangre y en el borde de abajo, cierra la composición y le pone piso.
+
+   ⚠️ VA FUERA DE LA ESCENA Y PEGADA AL CANTO: no lleva el margen de la columna
+   porque tiene que salirse por los dos lados. Eso es lo que la vuelve una cinta. */
+.bl-cinta {
+  display: block;
+  position: relative; z-index: 2;
+  flex: none;
+  padding-block: clamp(9px, 1.4svh, 13px);
+  border-top: 1px solid rgba(255,255,255,.12);
+  overflow: hidden;
+
+  /* ⚠️ EL ESPACIADO VIVE EN UNA SOLA VARIABLE, Y ARREGLA EL TIRÓN DE CADA VUELTA.
+     Antes el hueco ENTRE ítems era el `gap` (60px) y el hueco entre la última
+     palabra de una copia y la primera de la siguiente era el `padding` (30px):
+     la mitad. Cada vez que el bucle pasaba por esa unión, el ritmo de la cinta
+     se rompía y se leía como un salto —como si la marquesina se recargara—
+     aunque la posición fuera matemáticamente exacta. Con un solo número para los
+     dos, el espaciado es parejo de punta a punta y la unión deja de existir. */
+  --cinta-gap: clamp(26px, 4vw, 60px);
+
+  /* Se difumina en los dos cantos en vez de cortarse en seco: una marquesina que
+     termina de golpe delata que hay un borde y no un movimiento continuo. */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+          mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+
+/* ⚠️ LA PISTA NO LLEVA `gap`, Y NO ES UN OLVIDO: ES LO QUE HACE QUE EL BUCLE
+   CIERRE. Con `gap` entre las tres copias, el ancho total sería `3U + 2G` y un
+   tercio de eso NO es `U + G` — el desplazamiento quedaría corrido por un pelo en
+   cada vuelta y la cinta iría acumulando el error. Poniendo la separación como
+   `padding-right` DENTRO de cada copia, cada una mide exactamente `U + G`, el
+   total es `3(U + G)` y un tercio cae justo. */
+.bl-cinta-pista {
+  display: flex; width: max-content;
+  animation: bl-cinta-corre 46s linear infinite;
+}
+.bl-cinta ul {
+  display: flex; align-items: center;
+  gap: var(--cinta-gap);
+  list-style: none; margin: 0;
+  padding: 0 var(--cinta-gap) 0 0;
+}
+.bl-cinta li {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: clamp(9.5px, 1vw, 11px);
+  letter-spacing: .22em; text-transform: uppercase;
+  color: rgba(255,255,255,.46);
+  white-space: nowrap;
+}
+
+/* ⚠️ UN TERCIO, PORQUE LAS COPIAS SON TRES. El desplazamiento tiene que valer
+   exactamente UNA copia: al terminar, lo que se ve es idéntico a lo que se veía
+   al empezar y volver a cero no se nota. Si cambia la cantidad de copias en el
+   markup, este número cambia con ella —dos copias, 50%; cuatro, 25%— o aparece
+   un salto en cada vuelta. */
+@keyframes bl-cinta-corre {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(calc(-100% / 3), 0, 0); }
+}
+
+/* ── LA BARRA, MIENTRAS ESTÁ SOBRE EL HERO ────────────────
+   ⚠️ LOS LINKS SON BLANCOS HASTA QUE SE SCROLLEA. La barra es transparente y ahora
+   tiene una foto oscura debajo: con el gris de siempre medían 1,06:1 — invisibles.
+   Al scrollear entra `is-scroll`, la barra se pone blanca y translúcida y los
+   colores de siempre vuelven solos, sin que haya que apagar nada.
+
+   ⚠️ EL `:has()` NO SOBRA. Sin él, esta regla pintaría de blanco los links de
+   CUALQUIER página que use esta barra, y las otras abren en fondo claro: ahí los
+   links desaparecerían. Atado a que exista un hero nocturno, sólo aplica donde hay
+   un hero nocturno.
+
+   ⚠️ Y EL LOGO SE INVIERTE. El archivo es negro y está pensado para fondo claro;
+   sobre la foto tratada se pierde entero. `brightness(0) invert()` lo da vuelta a
+   blanco — la misma técnica que ya usa el pie de la página. */
+.bl:has(.bl-hero--noche) .bl-nav:not(.is-scroll) .bl-link { color: rgba(255,255,255,.78); }
+.bl:has(.bl-hero--noche) .bl-nav:not(.is-scroll) .bl-link:hover {
+  color: #fff; background: rgba(255,255,255,.14);
+}
+.bl:has(.bl-hero--noche) .bl-nav:not(.is-scroll) .bl-logo img { filter: brightness(0) invert(); }
+.bl:has(.bl-hero--noche) .bl-nav:not(.is-scroll) .bl-burger {
+  color: #fff; border-color: rgba(255,255,255,.28);
+}
+
+/* ⚠️ EL BOTÓN DE LA BARRA SE DA VUELTA: BLANCO CON TEXTO TINTA. Es negro sólido
+   —pensado para destacar sobre la página blanca— y sobre la foto tratada se funde
+   con ella: queda un rectángulo oscuro sobre un fondo oscuro, o sea el elemento
+   más importante de la barra convertido en el menos visible.
+
+   Invertido pasa a ser lo único blanco y macizo de la pantalla junto al titular,
+   que es exactamente el peso que le corresponde. Al scrollear vuelve a negro solo,
+   porque la regla muere con `is-scroll`.
+
+   ⚠️ EL `::after` TAMBIÉN. Ese botón trae un degradé propio en su pseudo —es lo
+   que le da el brillo sobre fondo claro— y encima del blanco lo ensucia. Se apaga
+   sólo mientras dura la inversión. */
+.bl:has(.bl-hero--noche) .bl-nav:not(.is-scroll) .bl-nav-cta {
+  background: #fff;
+  color: var(--ink);
+  border-color: #fff;
+}
+.bl:has(.bl-hero--noche) .bl-nav:not(.is-scroll) .bl-nav-cta::after { opacity: 0; }
+.bl:has(.bl-hero--noche) .bl-nav:not(.is-scroll) .bl-nav-cta:hover {
+  background: rgba(255,255,255,.86);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   LA ENTRADA DEL HERO
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ NO ES UN FADE GENERAL, Y ESA ES TODA LA DIFERENCIA. Un `opacity: 0 → 1` de
+   toda la pantalla dice "esto tardó en cargar". Acá la pantalla se ARMA en el
+   orden en que se lee: abre la foto, se dibuja la grilla, se traza la primera
+   regla, entra la ficha, se revelan las tres líneas del titular una por una, se
+   traza la segunda regla y aparece el pie. Es una página componiéndose, que es lo
+   que un estudio de diseño tiene para mostrar en su portada.
+
+   ⚠️ ES CSS PURO, SIN UNA LÍNEA DE JS. Arranca sola al parsear la hoja: no espera
+   a que descargue un script ni depende de un observador. Si el JS falla o tarda,
+   la entrada corre igual — y el texto está completo en el HTML desde el primer
+   byte, así que un buscador no ve nunca un hero vacío.
+
+   ⚠️ SÓLO SE ANIMAN `opacity`, `transform` y `clip-path`. Las tres las resuelve el
+   compositor sin volver a calcular el layout: la entrada corre en su propio hilo y
+   no compite con el resto de la carga, que es justo el momento de la página en que
+   menos margen hay.
+
+   ⚠️ EL ESTADO EN REPOSO DE CADA REGLA ES EL VISIBLE, y no es un detalle de
+   escritura: el estado inicial vive ÚNICAMENTE en el `from` del `@keyframes`. Así,
+   apagar la animación —por preferencia del sistema o porque alguien la saca—
+   devuelve la pantalla terminada y no una en blanco. Si el `opacity: 0` viviera en
+   la regla base, un `animation: none` dejaría el hero invisible para siempre.
+
+   La línea de tiempo completa, de un vistazo:
+
+       foto           0ms ─────────────────────────── 1500ms
+       grilla            200ms ──────── 900ms
+       regla ficha         340ms ────── 900ms
+       ficha                 460ms ──── 1000ms
+       titular 1               580ms ──────── 1300ms
+       titular 2                 680ms ──────── 1400ms
+       titular 3                   780ms ──────── 1500ms
+       regla pie                      1000ms ───── 1560ms
+       bajada · números · botón         1100ms ────── 1760ms
+       marquesina                          1300ms ─── 1900ms                     */
+
+/* ── LA FOTO ABRE ─────────────────────────────────────────
+   Sube desde el fondo tinta de la sección y se asienta desde un 5,5% de más. No
+   es un zoom: es lo mínimo para que la imagen llegue en movimiento y frene, en
+   vez de aparecer clavada. Es la más larga de todas —un segundo y medio— porque
+   es el fondo: si termina junto con el texto, se nota como un efecto.
+
+   ⚠️ EL `scale` SE SALE DE LA CAJA Y LO RECORTA `.bl-hero`, que ya lleva
+   `overflow: clip`. Sin ese recorte, la foto agrandada asomaría por los cuatro
+   costados durante la animación. */
+.bl-hero-foto img {
+  animation: bl-hero-abre 1.5s var(--bl-sal) both;
+}
+@keyframes bl-hero-abre {
+  from { opacity: 0; transform: scale(1.055); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── LA GRILLA SE DIBUJA ──────────────────────────────────
+   De arriba hacia abajo, como si se estuviera trazando. Va segunda y rápida: es
+   el andamio sobre el que se apoya todo lo demás, así que tiene que estar antes
+   de que llegue el contenido. */
+.bl-hero-grilla {
+  animation: bl-hero-traza-grilla .7s var(--bl-sal) .2s both;
+}
+@keyframes bl-hero-traza-grilla {
+  from { opacity: 0; clip-path: inset(0 0 100% 0); }
+  to   { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+
+/* ── LAS DOS REGLAS SE TRAZAN ─────────────────────────────
+   ⚠️ LOS FILETES PASARON DE `border` A PSEUDO-ELEMENTO, Y ES POR LA ANIMACIÓN. Un
+   borde no se puede escalar sin escalar la caja entera —el texto se estiraría con
+   él—; un pseudo absoluto de un píxel se escala solo. Se trazan de izquierda a
+   derecha, que es el sentido de lectura y el gesto de una regla dibujada a mano.
+
+   El color y la posición son los mismos que tenían como borde: visualmente no
+   cambia nada en reposo. */
+.bl-ficha { position: relative; border-bottom: 0; }
+.bl-ficha::after,
+.bl-hero-pie::before {
+  content: ""; position: absolute; left: 0; right: 0;
+  height: 1px; background: rgba(255,255,255,.14);
+  transform-origin: left center;
+  pointer-events: none;
+}
+.bl-ficha::after  { bottom: 0; animation: bl-hero-traza-regla .56s var(--bl-sal) .34s both; }
+
+.bl-hero-pie { position: relative; border-top: 0; }
+.bl-hero-pie::before { top: 0; animation: bl-hero-traza-regla .56s var(--bl-sal) 1s both; }
+
+@keyframes bl-hero-traza-regla {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* ── LA FICHA ─────────────────────────────────────────────
+   Baja apenas, colgada de su propia regla. Seis píxeles: lo justo para que se lea
+   como que llega, sin que parezca que se cayó. */
+.bl-ficha { animation: bl-hero-ficha .54s var(--bl-sal) .46s both; }
+@keyframes bl-hero-ficha {
+  from { opacity: 0; transform: translate3d(0, -6px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── EL TITULAR ───────────────────────────────────────────
+   Las tres líneas entran de a una, de arriba hacia abajo, con un desplazamiento
+   corto. Nada más. Es la entrada que el resto del hero ya usa —la ficha y el pie
+   hacen lo mismo— así que la pantalla se compone con un solo gesto repetido en
+   vez de con tres efectos distintos peleándose.
+
+   ⚠️ EL ESCALONADO ES DE 120ms: la línea siguiente arranca cuando la anterior va
+   por la mitad. Encadenadas se leen como un bloque que entra; más separadas, como
+   tres animaciones sueltas, y el titular se desarma.
+
+   ⚠️ ACÁ HUBO UN PANEL SOLARI —cada letra partida al medio, en su propio span,
+   con las dos mitades como pseudo-elementos girando sobre una bisagra— y SE
+   DESCARTÓ. No por complejidad: funcionaba y estaba medido. Se descartó porque a
+   esta escala no se lee como un letrero de aeropuerto, se lee como ruido: treinta
+   y cuatro celdas girando de a dos mitades tapan lo que el titular dice, que es
+   lo único que este hero tiene que hacer.
+
+   De aquel intento vale guardar el costo que tenía, por si a alguien se le ocurre
+   volver: partir el titular en letras OBLIGA a un `inline-block` por carácter, y
+   eso PIERDE EL KERNING entre pares —el kerning sólo actúa dentro de un mismo run
+   de texto—. Medido acá: las tres líneas crecían 1, 8 y 11px. Con el titular
+   entero, ese costo no existe. */
+.bl-titular em {
+  animation: bl-hero-titular .72s var(--bl-sal) calc(.58s + var(--i, 0) * .12s) both;
+}
+@keyframes bl-hero-titular {
+  from { opacity: 0; transform: translate3d(0, 20px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── EL PIE ───────────────────────────────────────────────
+   Los tres bloques del renglón, escalonados en el orden en que se leen: qué hace
+   el estudio, cuánto lleva hecho, por dónde se empieza. */
+.bl-hero-pie > * {
+  animation: bl-hero-pie-entra .66s var(--bl-sal) calc(1.1s + var(--d, 0) * .09s) both;
+}
+@keyframes bl-hero-pie-entra {
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── LA MARQUESINA ────────────────────────────────────────
+   Última, y sólo un fundido: ya se está moviendo sola, así que sumarle un
+   desplazamiento de entrada la haría entrar dos veces. */
+.bl-cinta { animation: bl-hero-cinta .6s var(--bl-sal) 1.3s both; }
+@keyframes bl-hero-cinta {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── SI ALGUIEN PIDIÓ MENOS MOVIMIENTO ────────────────────
+   ⚠️ ACÁ NO ALCANZA CON LA REGLA GLOBAL DE LA HOJA. Esa acorta las animaciones a
+   .01ms pero NO toca los retardos: con ella sola, la marquesina seguiría
+   apareciendo un segundo y pico después de cargar, sólo que de golpe. Y un
+   elemento que aparece tarde y de golpe es peor que uno que aparece animado.
+
+   `animation: none` las apaga de raíz. Como el estado en reposo de cada regla es
+   el visible —el estado inicial vive únicamente en el `from`— la pantalla queda
+   terminada y completa desde el primer cuadro, que es exactamente lo que esta
+   preferencia pide. */
+@media (prefers-reduced-motion: reduce) {
+  .bl-hero-foto img,
+  .bl-hero-grilla,
+  .bl-ficha,
+  .bl-ficha::after,
+  .bl-hero-pie::before,
+  .bl-titular em,
+  .bl-hero-pie > *,
+  .bl-cinta {
+    animation: none;
+  }
+}
+
+/* ── EN TELÉFONO ──────────────────────────────────────────
+   ⚠️ EL TITULAR MANDA IGUAL, pero el ancho es otro: a 8,6vw en una pantalla de
+   390px darían 33px, que no es un titular. El piso del `clamp` lo sostiene y acá
+   se le sube el techo relativo para que siga llenando la columna.
+
+   ⚠️ Y EL PIE SE APILA. En un renglón, tres bloques en 390px dejan el botón
+   partido y los números en dos filas. Apilados ocupan más alto, y por eso también
+   se achica el titular: los dos cambios van juntos o el hero no entra. */
+@media (max-width: 720px) {
+  .bl-titular { font-size: clamp(30px, 11.5vw, 62px); letter-spacing: -.035em; }
+  /* El corte extra del titular. El porqué está en el markup, junto al `<i>`. */
+  .bl-titular em i { display: block; font-style: normal; }
+  /* ⚠️ EN TELÉFONO EL TITULAR VA TODO A BANDERA IZQUIERDA. La tercera línea se
+     corre en escritorio porque ahí la sangría cae sobre una columna de la grilla y
+     rompe el eje a propósito; en una pantalla angosta ese mismo desplazamiento no
+     tiene sobre qué apoyarse y sólo deja una palabra descolgada. Con cuatro líneas
+     apiladas, el eje limpio pesa más que el quiebre. */
+  .bl-titular-eco { margin-left: 0; }
+
+  .bl-hero-pie { flex-direction: column; align-items: stretch; gap: 18px; }
+
+  /* ⚠️ `flex: none` Y NO ES COSMÉTICO: EN COLUMNA, `flex-grow` ESTIRA EL ALTO. En
+     escritorio la bajada lleva `flex: 1 1 22ch` para repartirse el ancho del
+     renglón con los números y el botón; al girar el pie a columna, ese mismo
+     `grow` pasa a aplicar sobre la altura y el párrafo se infla hasta llenar todo
+     el sobrante — medido: 187px de alto para un texto de 65. No se ve como un
+     error, se ve como si el hero tuviera un hueco raro en el medio.
+
+     Es la trampa clásica de `flex-direction: column`: las propiedades no cambian
+     de nombre, cambian de eje. */
+  /* Sube de cuerpo respecto de escritorio, al revés de lo habitual: allá la
+     bajada comparte renglón con los números y el botón, así que tiene que ceder
+     tamaño; acá tiene la línea entera para ella sola. */
+  .bl-hero-lede { max-width: none; flex: none; font-size: clamp(14.5px, 4vw, 17px); }
+  /* El botón deja de estar empujado a la derecha —no hay derecha— y pasa a ocupar
+     el ancho, que en un teléfono es lo que se toca sin apuntar. */
+  .bl-hero-cta { margin-left: 0; width: 100%; justify-content: center; }
+
+  /* ⚠️ LOS TRES DATOS JUNTOS Y A LA IZQUIERDA, no repartidos a todo el ancho.
+     Estaban con `space-between` sobre el 100%, así que quedaban los tres separados
+     por huecos enormes y el conjunto se leía como tres cosas sueltas en un
+     renglón, no como un grupo. Pegados y alineados con el resto del texto, son un
+     solo bloque de datos. */
+  /* ⚠️ `align-self: start` Y NO ALCANZA CON `width: auto`. El pie en teléfono es
+     un flex en columna, y ahí manda `align-items: stretch` (el valor por defecto,
+     que no hace falta escribir para que actúe): estira a todos los hijos a lo
+     ancho del contenedor y el `width` del elemento deja de importar. Es lo mismo
+     que le pasaba al selector de planes.
+
+     El botón sí se queda estirado, que es lo que se quiere en un teléfono, así que
+     el `align-items` del pie no se toca: se corrige sólo este hijo. */
+  .bl-datos {
+    align-self: start;
+    width: auto; justify-content: start;
+    column-gap: clamp(20px, 6.5vw, 34px);
+  }
+
+  /* La grilla baja a tres columnas: seis líneas en un teléfono son un rayado. */
+  .bl-hero-grilla { background-size: calc(100% / 3) 100%; }
+
+  /* ⚠️ EL VELO SE INTENSIFICA EN TELÉFONO, sobre el que ya trae la regla base. En
+     escritorio el pie es un renglón sobre la parte más oscura de la imagen;
+     apilado en vertical ocupa el tercio inferior de la pantalla y le toca
+     cualquier zona de la foto, así que necesita más. Arranca antes (35% contra
+     48%) y llega más profundo (.78 contra .6): con eso los rótulos dan 8,46:1
+     contra los 6,25 de escritorio.
+
+     Los tres valores de este bloque —dónde arranca, cuánto llega y la opacidad de
+     los rótulos— se calcularon juntos. Si cambia uno, se recalculan los otros. */
+  .bl-hero-foto::after {
+    background: linear-gradient(to bottom,
+      rgba(10, 10, 12, 0) 35%,
+      rgba(10, 10, 12, .78) 100%);
+  }
+  .bl-dato-l { color: rgba(255, 255, 255, .8); }
+}
+
+/* ⚠️ SI ALGUIEN PIDIÓ MENOS MOVIMIENTO, LA MARQUESINA SE QUEDA QUIETA. Es el único
+   elemento del hero que se mueve solo y en bucle infinito, que es exactamente lo
+   que la preferencia viene a apagar. Se queda visible y legible, sin correr. */
+@media (prefers-reduced-motion: reduce) {
+  .bl-cinta-pista { animation: none; }
+}
+
+/* ── LAS PIEZAS DEL HERO ─────────────────────────────────────
+   Un iPad Pro a todo el ancho de la columna con el sitio abierto y, entrando
+   desde abajo a la izquierda por encima de él, un iPhone con el panel de Lúmina.
+   El porqué de cada decisión está en `Piezas.astro`. */
+
+.bl-piezas {
+  /* El ancho del teléfono vive acá y no en el markup porque lo necesita en dos
+     lugares: el aparato y el sello, que se monta sobre uno de sus cantos.
+
+     ⚠️ VA SIN UNIDAD (el porqué, más abajo en `.bl-fono`). */
+  /* ⚠️ EL ANCHO NO ES LIBRE: SALE DE UNA CUENTA. El aparato tiene que caber en el
+     alto del cuadro MÁS lo que asoma por abajo, o sale también por arriba — a 238
+     con un cuadro de 310 se le iban 112px por encima, invadiendo la barra de
+     navegación. La condición es `alto ≤ --cuadro-h + --fono-sale - margen`, y
+     como el alto es ancho × 980/464, el ancho queda acotado.
+
+     Para agrandarlo de 182 a 214 no alcanzó con subir este número: hubo que subir
+     también el alto del cuadro (52→58svh) y lo que asoma (14→16svh). Los tres
+     valores se mueven juntos. */
+  /* ⚠️ SE DECLARA EN `.bl-hero-esc`, NO ACÁ, Y NO ES UN CAPRICHO DE ORDEN: el pie
+     del hero también la necesita —su ancho máximo es "todo menos donde empieza el
+     teléfono"— y el pie es HERMANO de este bloque, no descendiente. Declarada
+     acá, no la hereda: el `calc` del pie se queda sin el valor, `max-width` cae a
+     un largo inválido y la fila de botones y números vuelve a partirse en dos.
+     Vive en el ancestro que los contiene a los dos. */
+  /* El alto del bloque, en una variable porque lo usa el `min-height` de abajo
+     y cualquier cosa que necesite centrarse contra él. */
+  --piezas-h: 502px;
+
+  /* Dónde arranca el iPad dentro del bloque. En píxeles y no en porcentaje:
+     un porcentaje resuelve contra el contenedor de cada elemento, y la ventana y
+     el teléfono no comparten el mismo. El margen izquierdo es lo que deja al
+     aparato cruzarle el canto en vez de quedar apoyado al lado; el de arriba es
+     lo que le deja abajo la franja por la que el teléfono sobresale. */
+  --win-x: clamp(40px, 4.6vw, 68px);
+  --win-y: clamp(52px, 6.4svh, 72px);
+
+  /* Cuánto del aparato queda por DEBAJO del panel. Es el gesto entero: sin esto
+     el teléfono es una foto dentro de un recuadro; con esto, un objeto que cruza
+     el borde y separa el panel del fondo de la página.
+
+     ⚠️ SUBIÓ DE 16svh A 27svh AL VOLVER EL PANEL, y no es un retoque de gusto:
+     sale de la misma cuenta que el ancho. El aparato mide 452px y el panel bajó a
+     48svh; si lo que sobresale no crece en la misma proporción, el teléfono no
+     entra por arriba y se le sube a la barra de navegación. Los tres números
+     —`--fono-w`, `--cuadro-h` y éste— se mueven juntos o no se mueve ninguno. */
+  /* ⚠️ 25,5svh Y NO 27: A 27 EL APARATO SE COMÍA EL PISO DE LA SECCIÓN POR 6px.
+     El teléfono tiene que verse ENTERO —es el astronauta del ejemplo, que se
+     apoya sobre el blanco de la página y no queda cortado por el borde de la
+     pantalla—, así que el tope no es estético: es `top + alto ≤ piso del hero`. */
+  --fono-sale: clamp(110px, 25.5svh, 200px);
+
+  /* ⚠️ ABSOLUTO Y COLGADO DEL BORDE DE ABAJO DEL PANEL. Era una columna de la
+     grilla, al lado del texto, y ahí no había forma de que cruzara nada. Con
+     `bottom` negativo, lo que sobresale es exactamente `--fono-sale` y no depende
+     de ningún otro alto.
+
+     A la derecha porque el título ocupa la izquierda: son las dos mitades del
+     panel, y el aparato entra justo donde el velo deja ver la ciudad. */
+  position: absolute; z-index: 3;
+  /* En teléfono no hay con qué alinearse: la barra muestra el hamburguesa y el
+     botón no existe. Este valor es el de siempre; el centrado vive abajo, en el
+     tramo de escritorio. */
+  right: clamp(20px, 4.5vw, 76px);
+  width: calc(var(--fono-w) * 1px);
+  height: calc(var(--fono-w) * 980 / 464 * 1px);
+
+  /* ⚠️ SE CUELGA DEL BORDE DE ABAJO DEL PANEL, NO DEL PISO DE LA SECCIÓN, y ésa
+     es la diferencia entre cruzar algo y estar apoyado en algo. Anclado al piso
+     del hero —como estuvo mientras la foto era el fondo de toda la sección— el
+     aparato quedaba cortado por el borde de la pantalla: se leía como un recorte
+     mal hecho, no como un objeto que atraviesa un borde.
+
+     El borde de abajo del panel está a `--cuadro-h` del techo de este contenedor,
+     porque el panel es su primer hijo y arranca pegado arriba. De ahí sale todo:
+
+         top = --cuadro-h + --fono-sale − altoDelAparato
+
+     o sea, bajar hasta el borde, sumarle lo que tiene que sobresalir y restarle
+     su propio alto. Lo que queda POR ENCIMA del borde es el resto, y es lo que
+     tiene que caber dentro del panel sin treparse a la barra de navegación.
+
+     ⚠️ VA POR `top` Y NO POR `bottom`. Un `bottom` mide contra el piso del
+     contenedor, que se estira con la sección: el aparato se movería cada vez que
+     cambie el alto de la pantalla aunque el panel no se haya movido. */
+  top: calc(var(--cuadro-h) + var(--fono-sale) - var(--fono-w) * 980 / 464 * 1px);
+  pointer-events: none;
+}
+
+/* ⚠️ ACÁ VIVÍA LA ILUSTRACIÓN DEL LABORATORIO DE FONDO —suelta sobre el blanco—
+   y el foco que la desenfocaba detrás del teléfono. Se fueron las dos con el
+   panel: el fondo ahora es la foto de Brickell y va DENTRO de un contenedor
+   recortado, no suelta en la página.
+
+   Con ellas se fue casi todo su andamiaje, que era compensación de estar sueltas:
+   el `-50%` que corregía dónde caía el centroide de la tinta dentro del archivo,
+   la máscara lateral, el `backdrop-filter` con su degradé de nueve paradas y su
+   `farthest-side`. Dentro de un panel nada de eso hace falta: la foto llena su
+   caja y el recorte lo da el `overflow`. Los archivos siguen en `public/`. */
+
+/* ⚠️ TODO LO QUE SIGUE —EL IPAD Y SU PANTALLA— ESTÁ SIN USO. El markup se fue de
+   `Piezas.astro`, donde quedó comentado entero para poder devolverlo. Estas
+   reglas se dejan a propósito: son la mitad cara de recuperar. Si la prueba de
+   la animación queda, esto se borra de una vez.
+   ──────────────────────────────────────────────────────────
+
+   ── EL IPAD PRO ──────────────────────────────────────────
+   ⚠️ ERA UNA VENTANA DE NAVEGADOR SIN APARATO —fondo blanco, borde de un píxel y
+   nada más— y sobre una página blanca no tenía con qué recortarse: se leía como
+   una caja dibujada encima, no como una pantalla. El marco oscuro es lo que le
+   faltaba, y además lo empareja con el iPhone que se le cruza por delante: dos
+   aparatos de la misma familia en vez de un teléfono apoyado sobre un
+   rectángulo.
+
+   ⚠️ EL MARCO VA COMO `padding` Y NO COMO `border`. Con `border` el radio de
+   afuera y el de adentro los reparte el navegador solo y no siempre quedan
+   concéntricos; con padding, los dos radios se declaran a mano y la resta es
+   exacta: 26 afuera menos 13 de marco dan los 13 de la pantalla. Ese detalle es
+   lo único que separa un marco de aparato de un rectángulo con borde grueso. */
+.bl-ipad {
+  --pad-m: 13px;
+  position: relative; z-index: 1;
+  margin-left: var(--win-x); margin-top: var(--win-y);
+  padding: var(--pad-m);
+  border-radius: 26px;
+  /* El mismo lenguaje que el canto del iPhone —un degradado, no un gris plano—
+     con la inclinación cambiada para que las dos piezas no reflejen igual. Un
+     borde liso se lee como una lámina; el aluminio tiene un reflejo que recorre
+     el marco. */
+  background: linear-gradient(125deg, #6d6a75 0%, #2a2830 20%, #17151c 52%, #2f2d36 80%, #7a7783 100%);
+  /* Sombra propia y no la del sistema: una capa amplia y difusa para la
+     distancia, otra corta y cerrada para el canto, y un hilo de luz por dentro
+     que es lo que le da el brillo del metal. */
+  box-shadow:
+    0 42px 80px -28px rgba(10, 10, 12, .40),
+    0 10px 26px -14px rgba(10, 10, 12, .22),
+    inset 0 0 0 1.5px rgba(255, 255, 255, .15);
+}
+/* La pantalla: 4:3 exactos, los 1376×1032 del aparato. Por `aspect-ratio` y no
+   por alto fijo — así el alto sale del ancho de la columna y no hay un número
+   que quede desfasado cuando el hero cambia de medida. */
+.bl-ipad-pant {
+  aspect-ratio: 1376 / 1032;
+  border-radius: calc(26px - var(--pad-m));
+  overflow: hidden; background: var(--bl-fondo);
+  display: flex; flex-direction: column;
+}
+/* Centrada en el borde LARGO, que es donde la puso Apple en el iPad Pro M4: con
+   el aparato acostado queda arriba. Es el detalle que termina de decir qué
+   aparato es. */
+.bl-ipad-cam {
+  position: absolute; top: 4.5px; left: 50%; transform: translateX(-50%);
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #0b0a0e; box-shadow: 0 0 0 1px rgba(255, 255, 255, .10);
+}
+
+/* ── LO QUE SE VE EN LA PANTALLA ──────────────────────────
+   ⚠️ SIN LOS TRES PUNTITOS DE macOS: un iPad no los tiene, y dejarlos era la
+   contradicción que hacía que el aparato se leyera como una captura pegada
+   adentro de un marco. Queda la píldora de la URL, que es lo único que dice
+   "esto es una web" y no una app cualquiera. */
+.bl-win-barra {
+  height: 34px; background: var(--n-50); flex: none;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 14px;
+}
+/* Centrada, no pegada a los puntitos: el teléfono cruza el borde izquierdo de la
+   ventana y le tapaba la mitad —se leía "rickell.com.ar", que parece un error de
+   maquetado—. Y es donde la ponen Safari y Chrome. */
+.bl-win-url {
+  margin-inline: auto; font-size: 11px; color: var(--text-muted);
+  background: var(--bl-fondo); border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 14px; font-family: var(--font-mono);
+}
+.bl-win-cuerpo { display: flex; flex: 1; min-height: 0; }
+.bl-win-lat {
+  width: 60px; background: var(--n-25); border-right: 1px solid var(--border);
+  padding: 16px 0; display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.bl-win-lat b { width: 26px; height: 26px; border-radius: 9px; background: var(--n-100); }
+.bl-win-lat b.on { background: var(--grad-2); }
+.bl-win-main { flex: 1; padding: 18px; }
+/* La banda de color es lo único con marca de todo el interior, y alcanza para
+   que se lea "esto es una web" sin inventarle un cliente. */
+/* ⚠️ LAS MEDIDAS DE ACÁ ABAJO TIENEN QUE DEJAR AIRE. La pantalla del iPad saca
+   su alto del ancho de la columna vía `aspect-ratio`, así que en un viewport más
+   angosto se achica sola; el contenido, en cambio, está en píxeles fijos. Estuvo
+   midiendo exactamente lo mismo que la pantalla —294 y 294— y en cuanto la
+   ventana se angostaba, la última fila se cortaba contra el marco. Ahora sobran
+   unos cuarenta píxeles, que es el colchón. */
+.bl-win-hero {
+  height: 76px; border-radius: 12px; background: var(--grad);
+  padding: 15px 18px; box-shadow: var(--shadow-md);
+}
+.bl-win-hero .l { display: block; border-radius: 5px; background: rgba(255,255,255,.9); height: 10px; width: 46%; margin-bottom: 9px; }
+.bl-win-hero .l2 { background: rgba(255,255,255,.55); width: 66%; height: 8px; }
+/* Tres tarjetas: lo que convierte una banda de color en "una web con secciones". */
+.bl-win-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.bl-win-cards span { height: 42px; border-radius: 9px; background: var(--n-100); }
+.bl-win-fila { display: flex; align-items: center; gap: 12px; padding: 10px 2px; border-bottom: 1px solid var(--n-100); }
+.bl-win-fila .d { width: 24px; height: 24px; border-radius: 8px; background: var(--n-100); flex: none; }
+.bl-win-fila .t { height: 9px; border-radius: 5px; background: var(--n-150); }
+.bl-win-fila .t.a { width: 50%; }
+.bl-win-fila .t.b { width: 34%; }
+
+/* ══════════════════════════════════════════════════════════
+   LA ESTAMPA Y LOS FLOTANTES
+   ══════════════════════════════════════════════════════════ */
+
+/* ── LA ESTAMPA ──
+   Un círculo inclinado, como el "best seller" de la tapa de un libro.
+
+   ⚠️ QUE SEA UN CÍRCULO INCLINADO NO ES CAPRICHO. Todo lo demás de la
+   composición es rectangular y está alineado: el teléfono, los flotantes, el
+   texto. Una etiqueta rectangular más se habría perdido entre ellos. Lo redondo
+   y torcido es lo único que rompe la grilla, y por eso el ojo lo encuentra.
+
+   ⚠️ VA CLARO Y NO EN TINTA, y lo que lo sostiene es la sombra. Estuvo en tinta
+   plena: se despegaba solo pero le abría un agujero negro al hero, que es una
+   página clara con un único bloque oscuro (el pie). Un sello blanco se integra,
+   pero sin sombra queda flotando sin peso sobre el chasis del teléfono —que
+   también es claro por dentro—. La sombra es lo que lo apoya.
+
+   Tampoco en magenta: sobre una ilustración que ya es magenta, un sello magenta
+   desaparece. El magenta queda para el anillo, en un hilo. */
+.bl-sello {
+  position: absolute; z-index: 3;
+  /* ⚠️ SOBRE EL CANTO IZQUIERDO DEL TELÉFONO, y calculado a partir de él y no
+     del bloque: el aparato está centrado, así que un `left` fijo lo dejaría
+     flotando lejos. Es la misma cuenta que la del teléfono menos lo que el sello
+     se monta encima.
+
+     Ese solape de 42px no es capricho: montado sobre el canto se lee como un
+     sello PUESTO sobre el aparato; alineado con el borde parecería parte del
+     chasis. */
+  left: calc(var(--fono-w) * -.18px);
+  /* Abajo y no arriba: arriba caía sobre el encabezado de la app —el logo de
+     Lúmina y el título de la pantalla— y tapaba justamente lo que hay que ver
+     para entender de qué app se trata. Abajo se apoya sobre la lista, que es
+     repetitiva y no pierde nada. */
+  bottom: 16%;
+  /* ⚠️ EL TAMAÑO SALE DE `--fono-w`, NO ES FIJO. Estuvo en 96px cuando el
+     teléfono medía 238 de ancho; al achicarlo a 182 el mismo sello pasó a ser
+     más de la mitad del aparato y le tapaba media pantalla. Atado a la variable,
+     la proporción se mantiene si el teléfono vuelve a cambiar. */
+  width: calc(var(--fono-w) * .4px); height: calc(var(--fono-w) * .4px);
+  border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; text-align: center;
+  background: #fff; color: var(--text-primary);
+  /* Tres capas: una amplia para la distancia, una media para el volumen y un
+     hilo de contacto en el canto. Con una sola, un objeto claro sobre un fondo
+     claro se lee pegado. */
+  box-shadow:
+    0 22px 44px -14px rgba(10,10,12,.30),
+    0 8px 16px -8px rgba(10,10,12,.16),
+    0 0 0 1px rgba(10,10,12,.05);
+  transform: rotate(-11deg);
+}
+/* ⚠️ ACÁ HUBO UNA VERSIÓN CON LA ACUARELA DE `sello.png` DE FONDO y volvió atrás
+   por pedido. Queda anotado lo que se aprendió, porque son dos trampas de CSS que
+   no perdonan y que van a reaparecer:
+
+   1. UN `::before` POSICIONADO SE PINTA ENCIMA DEL CONTENIDO. El disco estuvo en
+      un `::before` con `position: absolute` y tapó el texto y el logo. "Un pseudo
+      se pinta antes que el contenido" vale para contenido en flujo normal; al
+      posicionarlo pasa a la capa de elementos posicionados, que va después. El
+      anillo de acá abajo sí puede seguir siendo un `::before` porque es un borde
+      de un píxel en el perímetro: se pinta encima, pero no hay nada debajo.
+
+   2. UN `radial-gradient` NO DIBUJA UN CÍRCULO, DIBUJA SU TILE RECTANGULAR.
+      Pasado el último stop, ese color se extiende hasta llenar las esquinas de la
+      caja. Con un último stop no transparente aparecía un cuadrado blanquecino
+      alrededor del círculo. Si alguna vez se dibuja un disco así, el último stop
+      va en `transparent` sí o sí.
+
+   La acuarela sigue en `public/sello-mancha.webp` (32 KB, optimizada desde el
+   `sello.png` de 1,86 MB) por si vuelve. */
+
+/* ── LA ORLA ──────────────────────────────────────────────
+   Los dos anillos, el texto en arco y los tres puntos, todo en un SVG. Antes el
+   anillo era un `::before` con un `border` — servía para una línea, pero no
+   podés curvar texto contra un borde de CSS.
+
+   ⚠️ VA EN `position: absolute` Y NO ENTRA EN EL FLEX. El contenedor centra a sus
+   hijos, y la orla no es un hijo que haya que centrar: es la superficie entera.
+   Como hija del flex, empujaría al logo fuera del medio. */
+.bl-sello-orla {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  overflow: visible; pointer-events: none;
+}
+.bl-sello-orla .aro {
+  fill: none; stroke: rgba(236, 30, 121, .42); stroke-width: 1;
+}
+.bl-sello-orla .aro--fino { stroke: rgba(236, 30, 121, .20); stroke-width: .7; }
+.bl-sello-orla .pts { fill: rgba(236, 30, 121, .5); }
+/* ⚠️ EL TAMAÑO DEL TEXTO ESTÁ EN UNIDADES DEL `viewBox`, NO EN PÍXELES DE
+   PANTALLA. El `viewBox` es de 96×96 y el sello se dibuja a 96px, así que hoy
+   coinciden — pero si el sello cambia de tamaño, este número escala solo con él
+   y no hay que tocarlo. Es la ventaja de tener la orla en SVG.
+
+   El `letter-spacing` en cambio SÍ se nota en un arco: separa las letras a lo
+   largo de la curva, y de más las despega tanto que se pierde la palabra. */
+.bl-sello-orla .txt {
+  font-family: inherit; font-size: 7.6px; font-weight: var(--fw-bold);
+  letter-spacing: 1.3px; text-transform: uppercase;
+  fill: var(--text-secondary);
+}
+/* El isotipo, ahora solo en el centro. Con el rótulo curvado contra el borde, el
+   medio quedó libre y el logo puede crecer y centrarse de verdad: antes era la
+   mitad de abajo de una pila de dos.
+
+   ⚠️ ALTO FIJO Y ANCHO AUTOMÁTICO, y 34 no es lo mismo que 34 de glifo: el
+   archivo es cuadrado pero el signo que trae adentro es vertical y no lo llena
+   —mide 61×86 sobre un lienzo de 96— así que lo que se ve es un 10% más chico de
+   lo que dice el número. */
+.bl-sello-logo {
+  display: block; height: 34px; width: auto;
+  object-fit: contain;
+}
+
+/* ⚠️ ACÁ VIVÍAN TRES PASTILLAS FLOTANTES con lo que hace el estudio —branding,
+   packaging, soluciones digitales—, sobre la ilustración de la ciudad. Se fueron
+   con ella: eran tres etiquetas de texto encima de una imagen encima de una
+   ventana encima de un teléfono, todo en la mitad derecha del hero. La lista de
+   servicios ya vive en su sección, entera y sin competir con nada. */
+
+/* ── EL TELÉFONO ─────────────────────────────────────────────
+   Medidas reales del aparato: pantalla 440×956, bisel 12, esquinas 55, isla
+   125×36. Se dibuja a tamaño real y se achica con `scale`. Dibujarlo chico de
+   entrada da un rectángulo redondeado que se PARECE a un teléfono; con las
+   proporciones del aparato, es un teléfono.
+
+   ⚠️ `--fono-w` VA SIN UNIDAD: el `scale` sale de dividirlo por 464 y una
+   división entre dos longitudes no es válida en `calc()`. Con una unidad, el
+   `calc()` queda inválido, el `scale` no se aplica y el teléfono se dibuja a
+   980px de alto. Ya pasó en Lúmina. */
+.bl-fono {
+  position: absolute; z-index: 2;
+  /* Ya no se coloca dentro de un bloque: `.bl-piezas` es su posición y esto sólo
+     lo hace llenarla. */
+  left: 0; bottom: 0;
+  width: calc(var(--fono-w) * 1px);
+  height: calc(var(--fono-w) * 980 / 464 * 1px);
+}
+.bl-fono-cuerpo {
+  position: relative; width: 464px; height: 980px;
+  transform-origin: top left;
+  transform: scale(calc(var(--fono-w) / 464));
+  padding: 12px; border-radius: 68px;
+  /* El canto es un degradado y no un gris plano: un borde liso se lee como una
+     lámina; el titanio tiene un reflejo que recorre el marco. */
+  background: linear-gradient(150deg, #6d6a75 0%, #2a2830 22%, #17151c 50%, #2f2d36 78%, #7a7783 100%);
+  box-shadow:
+    0 40px 80px rgba(10, 10, 12, .34),
+    0 8px 20px rgba(10, 10, 12, .16),
+    inset 0 0 0 1.5px rgba(255, 255, 255, .16);
+}
+.bl-fono-pant {
+  position: relative; width: 440px; height: 956px;
+  border-radius: 56px; overflow: hidden; background: #F5F4FB; text-align: left;
+}
+.bl-fono-isla {
+  position: absolute; z-index: 9; top: 12px; left: 50%; transform: translateX(-50%);
+  width: 125px; height: 36px; border-radius: 20px; background: #000;
+}
+.bl-fono-barrita {
+  position: absolute; z-index: 9; bottom: 9px; left: 50%; transform: translateX(-50%);
+  width: 144px; height: 5px; border-radius: 3px; background: rgba(0,0,0,.32);
+}
+/* Los botones sobresalen 2px del canto, como en el aparato: sin ellos el chasis
+   se lee como un rectángulo redondeado. */
+.bl-fono-btn {
+  position: absolute; width: 3px; border-radius: 2px;
+  background: linear-gradient(90deg, #5f5c68, #322f3a);
+}
+.bl-fono-btn.es-accion { left: -2px; top: 168px; height: 34px; }
+.bl-fono-btn.es-volup  { left: -2px; top: 232px; height: 66px; }
+.bl-fono-btn.es-voldn  { left: -2px; top: 314px; height: 66px; }
+.bl-fono-btn.es-power  { right: -2px; top: 254px; height: 104px; }
+
+/* ══════════════════════════════════════════════════════════
+   LA PANTALLA · el panel de Lúmina
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ LOS COLORES SON LOS DE LÚMINA, NO LOS DE BRICKELL, y es a propósito: acá
+   adentro se muestra OTRO producto. Pintarlo con el magenta de la agencia haría
+   que la app se viera como una maqueta de Brickell en vez de como Lúmina.
+   Por eso van escritos en crudo y no con los tokens de esta hoja: son la paleta
+   Aura —perla #F5F4FB, tinta #19162A, iris #7A3BF0— y no tienen por qué existir
+   como variables de este proyecto.
+
+   La tipografía sí es Inter, la de acá: Lúmina escribe en Plus Jakarta Sans y
+   Bricolage, y cargar dos familias más para un mockup de 224px de ancho —donde
+   el texto mide tres píxeles— es pagar dos fuentes por una diferencia que no se
+   ve. */
+
+.bl-pa {
+  position: relative; width: 100%; height: 100%; overflow: hidden;
+  background: #F5F4FB; color: #19162A;
+}
+
+/* El header: 52 de alto MÁS la zona segura de arriba (62 en este aparato), que
+   es exactamente lo que hace el layout de la app. */
+.bl-pa-head {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 6;
+  height: 114px; padding: 62px 16px 0;
+  display: flex; align-items: center;
+  background: rgba(255,255,255,.9);
+  border-bottom: 1px solid #EDECF4;
+}
+.bl-pa-head img { height: 22px; width: auto; display: block; }
+
+.bl-pa-body { position: absolute; inset: 0; padding: 130px 16px 0; }
+
+.bl-pa-top { margin-bottom: 20px; }
+.bl-pa-top .mig { font-size: 11px; font-weight: 500; color: #8D89A6; margin-bottom: 2px; }
+.bl-pa-top .fila { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.bl-pa-top h4 { font-weight: 300; font-size: 24px; line-height: 1.2; letter-spacing: -.02em; margin: 0; }
+.bl-pa-top h4 em { font-style: normal; color: #7A3BF0; }
+.bl-pa-top .cfg { width: 18px; height: 18px; color: #8D89A6; flex: none; }
+
+/* La franja de contadores: informa, no filtra. Sin cajas, para no robar alto. */
+.bl-pa-stats {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px 10px;
+  font-size: 13px; color: #8D89A6; margin-bottom: 16px;
+}
+.bl-pa-stats b { font-weight: 700; color: #19162A; font-variant-numeric: tabular-nums; }
+.bl-pa-stats b.wa { color: #E8890C; }
+.bl-pa-stats i { font-style: normal; font-variant-numeric: tabular-nums; }
+.bl-pa-stats .pt { color: #D9D7E4; }
+
+.bl-pa-buscar {
+  height: 46px; border-radius: 12px; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px; padding: 0 12px;
+  background: #fff; border: 1px solid #E4E2EE;
+  color: #8D89A6; font-size: 15px;
+}
+.bl-pa-buscar svg { width: 16px; height: 16px; flex: none; }
+
+.bl-pa-filtros { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.bl-pa-filtros .fl {
+  height: 46px; border-radius: 12px; padding: 0 14px;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  font-size: 13px; font-weight: 600;
+  background: #fff; border: 1px solid #E4E2EE; color: #46425F;
+}
+.bl-pa-filtros .fl .n { color: #8D89A6; font-variant-numeric: tabular-nums; }
+/* El filtro activo va con el gradiente aura, igual que los botones primarios. */
+.bl-pa-filtros .fl[data-on] {
+  background-image: linear-gradient(120deg, #7A3BF0, #C44FE0, #FF7A59);
+  border-color: transparent; color: #fff;
+}
+.bl-pa-filtros .fl[data-on] .n { color: rgba(255,255,255,.85); }
+
+.bl-pa-lista { background: #fff; border: 1px solid #E4E2EE; border-radius: 12px; overflow: hidden; }
+.bl-pa-lista .fila {
+  height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 14px;
+  border-bottom: 1px solid #EDECF4;
+}
+.bl-pa-lista .nm {
+  flex: 1; min-width: 0; font-size: 15px; font-weight: 500;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.bl-pa-lista .chip {
+  display: inline-flex; align-items: center; flex-shrink: 0;
+  height: 30px; padding: 0 9px; border-radius: 999px;
+  font-size: 11px; font-weight: 500;
+}
+.bl-pa-lista .chip.ok  { background: rgba(15,169,104,.14); color: #0FA968; }
+.bl-pa-lista .chip.inv { background: rgba(46,124,246,.14); color: #2E7CF6; }
+.bl-pa-lista .chip.sin { background: #F1F0F6; color: #8D89A6; }
+.bl-pa-lista .ac {
+  font-size: 11px; font-weight: 600; min-width: 28px; text-align: right; flex-shrink: 0;
+  color: #8D89A6; font-variant-numeric: tabular-nums;
+}
+.bl-pa-lista .ac.ok { color: #0FA968; }
+
+/* El botón flotante de la acción primaria: 56, a 16 del borde y arriba del nav. */
+.bl-pa-fab {
+  position: absolute; z-index: 7; right: 16px; bottom: 114px;
+  width: 56px; height: 56px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; background-image: linear-gradient(120deg, #7A3BF0, #C44FE0, #FF7A59);
+  box-shadow: 0 8px 24px rgba(122, 59, 240, .34);
+}
+.bl-pa-fab svg { width: 24px; height: 24px; }
+
+/* El bottom nav: cinco ítems de 64 más la zona segura de abajo (34). */
+.bl-pa-nav {
+  position: absolute; z-index: 7; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: stretch; padding-bottom: 34px;
+  background: #fff; border-top: 1px solid #EDECF4;
+}
+.bl-pa-nav .it {
+  flex: 1; height: 64px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px; color: #8D89A6;
+}
+.bl-pa-nav .it svg { width: 22px; height: 22px; }
+.bl-pa-nav .it em { font-style: normal; font-size: 11px; }
+.bl-pa-nav .it[data-on] { color: #7A3BF0; }
+.bl-pa-nav .it[data-on] em { font-weight: 500; }
+
+/* ── El parallax ──
+   La ventana baja más que el teléfono, así que las dos capas se separan al
+   scrollear. Son DOS transformaciones por cuadro, no una por pieza interna. */
+[data-px-listo] .bl-fono { transform: translateY(calc(var(--p, 0) * 6px)); }
+
+/* ── La entrada ──
+   ⚠️ EL `transform` DE LA ENTRADA Y EL DEL PARALLAX SON LA MISMA PROPIEDAD, y se
+   pisan: mientras corre la animación manda ella, y cuando termina —con `both`—
+   el valor final queda fijado y el parallax vuelve a mandar. Funciona porque la
+   entrada dura menos de un segundo y el parallax recién importa al scrollear.
+
+   El teléfono entra desde MÁS abajo que la ventana: es el gesto de "aparecer
+   desde abajo" que da nombre a la composición. */
+.bl-fono { animation: bl-pieza-fono 1s var(--bl-sal) .55s both; }
+@keyframes bl-pieza-fono {
+  from { opacity: 0; transform: translateY(80px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════════════════════════════════
+   ENTRADAS Y ESCALONADOS
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Al cargar: el hero entra por partes ──
+   `--d` es el orden, no el retardo en segundos: multiplicarlo acá deja que se
+   cambie el ritmo de toda la entrada tocando un número. */
+.bl-ent { animation: bl-entra .7s var(--bl-sal) calc(var(--d, 0) * .09s) both; }
+@keyframes bl-entra {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Al scrollear: las listas entran escalonadas ──
+   Mismo principio que `.bl-sube` pero corriendo el comienzo de cada hijo según
+   su posición: el segundo empieza cuando el primero va por la mitad. El `--i` lo
+   pone cada componente.
+
+   ⚠️ EL DIVISOR ES `--n` (cuántos hijos hay) para que el escalonado dure lo
+   mismo tenga dos elementos o seis: con un retardo fijo por hijo, una lista de
+   seis terminaría de aparecer mucho después de que la sección ya está quieta. */
+[data-px-listo] .bl-esc > * {
+  opacity: clamp(0, calc((var(--p, 1) - var(--i, 0) / var(--n, 1) * .45) * 2.4), 1);
+  transform: translate3d(0, calc((1 - clamp(0, calc((var(--p, 1) - var(--i, 0) / var(--n, 1) * .45) * 2.4), 1)) * 22px), 0);
+}
+
+/* ══════════════════════════════════════════════════════════
+   LA CABECERA DE SECCIÓN · un patrón para todas
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ ES GENÉRICO A PROPÓSITO. La primera sección se resolvió con clases propias
+   —`.bl-pr-ficha`, `.bl-pr-tit`, `.bl-pr-lede`— y a la segunda ya había que
+   copiarlas con otro prefijo. Tres secciones más y son cinco juegos de reglas
+   idénticas que hay que acordarse de cambiar juntas. Acá vive una sola vez.
+
+   El patrón son tres piezas, siempre en el mismo orden:
+
+       ficha    mono, versalitas, filete abajo — el rótulo de la sección
+       título   caja normal, con una parte en magenta
+       bajada   debajo del título, con su propia medida de lectura
+
+   ⚠️ LA CAJA ALTA ES DEL HERO Y NO BAJA ACÁ. El titular de la portada va en
+   mayúsculas porque es una pieza y se lee de un golpe; un título de sección en
+   versales se lee más lento —no hay ascendentes ni descendentes que le den
+   silueta a las palabras— y grita donde ya no hace falta.
+
+   ⚠️ Y NO SE NUMERA. Las secciones de esta página no son un índice. */
+
+/* ⚠️ EL PADDING DE ARRIBA INCLUYE LOS 72px DE LA BARRA, Y ES LO QUE EVITA QUE "SE
+   CORTE ALGO". Una sección de 100svh con la barra `fixed` encima deja 602px
+   visibles para 674 de contenido: al frenar el scroll siempre hay algo debajo de
+   la barra o pasado el borde de abajo. Descontándola, lo que se ve entra completo.
+
+   Si algún día la barra cambia de alto, este número cambia con ella. */
+.bl-secpad {
+  padding-top: calc(72px + clamp(18px, 2.6svh, 34px));
+  padding-bottom: clamp(24px, 3.4svh, 44px);
+}
+
+/* ══════════════════════════════════════════════════════════
+   EL PISO DE LAS SECCIONES EN TELÉFONO
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ LA BARRA DE SAFARI EN iOS NO OCUPA LUGAR: SE MONTA ENCIMA. Cuando el
+   navegador la achica a la píldora flotante, el viewport crece hasta el borde de
+   la pantalla y la barra queda FLOTANDO sobre los últimos cincuenta píxeles del
+   documento. Como la sección mide `100dvh`, o sea todo lo que hay, lo último que
+   dibuja —en Servicios, los puntitos— termina debajo de esa barra. En Chrome de
+   Android no pasa: ahí la barra que se esconde es la de arriba.
+
+   ⚠️ LA MEDIDA QUE FALTA LA SABE EL NAVEGADOR, Y ES `100dvh - 100svh`. `svh` es
+   la pantalla con todas las barras desplegadas, `dvh` es la de este momento: la
+   resta ES el alto de lo que se replegó, calculado por el navegador y no
+   estimado por nosotros. Cuando la barra está desplegada la resta da cero y no se
+   reserva nada; cuando se achica, da exactamente lo que la barra pasó a tapar.
+   Sirve igual en iOS y en Android, sin detectar el navegador ni medir en
+   JavaScript, y sigue sirviendo el día que alguno cambie el alto de su barra.
+
+   ⚠️ Y VA EN `max()` CON EL ÁREA SEGURA, NO SUMADO. `env(safe-area-inset-bottom)`
+   cubre el otro caso: la barra del gesto del iPhone cuando no hay barra de
+   navegador que la tape —una página instalada en la pantalla de inicio—. Los dos
+   protegen la misma franja, así que hay que reservar la mayor de las dos, no las
+   dos: sumadas dejarían treinta píxeles de vacío de más en el caso normal.
+
+   ⚠️ Y DE PASO ARREGLA EL AIRE DE ARRIBA, que parecía un problema aparte y era el
+   mismo. En Servicios el contenido se apoya abajo, así que todo el sobrante de la
+   sección se juntaba arriba: cien píxeles de nada entre el rótulo y el número del
+   servicio. Al reservar el piso, el bloque sube y ese sobrante se reparte. Un
+   contenido pegado al borde de abajo y demasiado aire arriba son siempre la misma
+   sección midiendo más de lo que se puede usar. */
+@media (max-width: 720px) {
+  .bl-secpad {
+    /* Arriba también se ajusta: los 72px de la barra son intocables porque está
+       `fixed` encima, pero el respiro que venía después se acorta. En una pantalla
+       de teléfono ese aire vale más abajo, donde está el contenido. */
+    padding-top: calc(72px + clamp(10px, 1.6svh, 18px));
+    /* ⚠️ LA BASE ES LA MISMA DE SIEMPRE Y LA RESERVA SE SUMA APARTE. Bajarla
+       “porque la reserva ya da aire” rompería el único caso donde no hay reserva:
+       un navegador sin barras que se replieguen: la resta da cero, y la sección se
+       quedaría con menos piso del que tenía. Lo que se reserva es un extra, no un
+       reemplazo. */
+    padding-bottom: calc(clamp(24px, 3.4svh, 44px)
+                         + max(env(safe-area-inset-bottom, 0px), 100dvh - 100svh));
+  }
+}
+
+/* ⚠️ LA FICHA VA ADENTRO DE `.bl-cab`, NO COMO HERMANA SUYA, y en una sección que
+   reparte su alto con `space-between` la diferencia se ve: como hermana, es un
+   tercer hijo del contenedor y se lleva su propia porción del sobrante — medido
+   en Cómo trabajamos, quedaban 155px de vacío entre el rótulo y el título, como
+   si fueran dos bloques sin relación. Adentro, la cabecera es UN objeto y el aire
+   sobrante queda donde tiene que quedar: entre ella y lo que sigue. */
+.bl-cab {
+  display: flex; flex-direction: column;
+  gap: clamp(9px, 1.4svh, 16px);
+  align-items: flex-start;
+}
+
+.bl-cab-ficha {
+  align-self: stretch;
+  display: flex; align-items: baseline;
+  gap: 6px clamp(14px, 2.4vw, 32px);
+  padding-bottom: clamp(9px, 1.4svh, 14px);
+  margin-bottom: clamp(4px, .8svh, 10px);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: clamp(9.5px, 1.05vw, 11px);
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+/* El dato de la derecha, empujado al extremo. */
+.bl-cab-fin { margin-left: auto; }
+
+/* ⚠️ SIN `flex`, Y ESTA TRAMPA YA MORDIÓ DOS VECES EN ESTE ARCHIVO. En un
+   contenedor en COLUMNA, `flex-basis` y `flex-grow` dejan de operar sobre el
+   ancho y pasan a operar sobre el ALTO: un `flex: 1 1 22ch` heredado de cuando el
+   título estaba en una fila le infló la caja a 731px para un texto de dos
+   renglones. El ancho se acota con `max-width`, que es lo que corresponde. */
+.bl-cab-tit {
+  margin: 0;
+  font-size: clamp(26px, 4.1vw, 48px);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -.035em;
+  color: var(--text-primary);
+  max-width: 22ch;
+}
+/* ⚠️ MAGENTA PLANO Y NO EL DEGRADÉ DE MARCA. El hero fijó que el acento de esta
+   página es UN color, y un degradé al lado de un magenta plano se lee como dos
+   marcas distintas. El degradé sigue existiendo para donde haga falta. */
+.bl-cab-tit em,
+.bl-cab-tit .bl-grad {
+  font-style: normal;
+  color: var(--magenta);
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+
+.bl-cab-lede {
+  margin: 0; max-width: 58ch;
+  font-size: clamp(13px, 1.1vw, 15px);
+  line-height: 1.55;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+@media (max-width: 760px) {
+  .bl-cab-tit { font-size: clamp(26px, 7.2vw, 40px); max-width: none; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   LA PRUEBA · el ecosistema
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ SE PARECE AL HERO EN LO QUE IMPORTA Y NO EN LO DECORATIVO. Comparte la ficha
+   en mono con filete y el magenta como único acento. NO comparte dos cosas, y las
+   dos por el mismo motivo —lo que funciona en una portada no funciona en un
+   documento—:
+
+     · LA GRILLA DIBUJADA. En el hero es la firma del oficio sobre una foto; acá,
+       encima de dos fotos y cuatro bloques de texto, era una reja de fondo que
+       competía con todo lo que tenía arriba.
+
+     · LA CAJA ALTA. El titular del hero va en mayúsculas porque es una pieza y se
+       lee de un golpe. Un título de sección en caja alta se lee más lento —no hay
+       ascendentes ni descendentes que le den silueta a las palabras— y encima
+       grita en un lugar donde ya no hace falta gritar. La caja alta es del hero.
+
+   ⚠️ Y NO SE NUMERA NADA. Hubo un `(01)` en la ficha y un 01/02 en cada tarjeta:
+   sobraban los tres. Las secciones de esta página no son un índice numerado, y
+   dos marcas propias no necesitan que les digan cuál va primero.
+
+   ⚠️ EL ALTO DESCUENTA LA BARRA, Y ES LO QUE ARREGLA QUE "SE CORTE ALGO". La
+   sección medía exactamente 100svh, pero la barra es `fixed` y tapa los primeros
+   72px: quedaban 602px reales para 674 de contenido, así que al frenar el scroll
+   siempre había algo debajo de la barra o pasado el borde de abajo. */
+
+.bl-pr { position: relative; overflow: clip; }
+
+.bl-pr-esc {
+  position: relative; z-index: 1;
+  flex: 1;
+  display: flex; flex-direction: column;
+  gap: clamp(16px, 2.4svh, 30px);
+}
+
+/* ⚠️ LA CABECERA DE ESTA SECCIÓN YA NO VIVE ACÁ: usa el patrón genérico
+   `.bl-cab` de más arriba, igual que las demás. Tuvo su propio juego de reglas
+   —`.bl-pr-ficha`, `.bl-pr-tit`, `.bl-pr-lede`— y eran una copia exacta de lo que
+   necesitaba la sección siguiente. */
+
+/* ── LAS DOS TARJETAS ─────────────────────────────────────
+   ⚠️ LA FOTO NO ES EL ENCABEZADO DE LA TARJETA: ES LA TARJETA. Adentro va todo lo
+   que identifica a la marca —logo, rol, qué es y el botón— y afuera quedan sólo
+   los números. Antes la información estaba repartida entre la imagen y una ficha
+   colgando abajo, y ninguna de las dos partes se bastaba sola.
+
+   ⚠️ POR ESO NO HAY BORDE NI FONDO. La foto ya delimita el objeto; una caja
+   alrededor sería un marco sobre un marco. */
+.bl-pr-casos {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(16px, 2.2vw, 32px);
+  flex: 1; min-height: 0;
+}
+.bl-pr-caso {
+  display: flex; flex-direction: column;
+  min-height: 0;
+}
+
+/* ⚠️ YA NO HACE FALTA `subgrid`, Y CONVIENE SABER POR QUÉ ESTUVO. Mientras cada
+   tarjeta tenía una fila de números DEBAJO de la foto, los textos de Lúmina y de
+   Lexa —que no miden lo mismo— hacían que cada una repartiera su propio sobrante
+   y las imágenes salían con veintiún píxeles de diferencia. Ahora la foto es la
+   tarjeta entera: las dos celdas del grid miden igual por definición y no hay
+   nada que sincronizar. Si algún día vuelve a haber algo bajo la foto, vuelve el
+   problema y `subgrid` es la respuesta. */
+
+/* ⚠️ LA FOTO SE QUEDA CON LO QUE SOBRE, y no lleva alto propio. Con un `clamp`
+   atado al viewport, el título se llevaba más alto que las imágenes — la prueba
+   más chica que el título que la anuncia. Con `flex: 1` absorbe todo el sobrante
+   y crece sola en una pantalla grande.
+
+   ⚠️ NO LLEVA `aspect-ratio`: con una proporción fija crece con el ANCHO y en un
+   monitor panorámico la sección deja de entrar en una pantalla. */
+.bl-pr-foto {
+  position: relative; overflow: hidden;
+  border-radius: var(--r-xl);
+  background: var(--n-900);
+  /* ⚠️ EL MÍNIMO BAJÓ AL APILARSE EL TÍTULO Y LA BAJADA: ese bloque pasó a ocupar
+     unos setenta píxeles más de alto, y en una sección que tiene que entrar en una
+     pantalla ese espacio sale de acá. Si el mínimo se subiera sin tocar el bloque
+     de arriba, la sección deja de cerrar. */
+  flex: 1; min-height: clamp(170px, 23svh, 320px);
+}
+/* ⚠️ `>` Y NO UN DESCENDIENTE, Y ESTO YA ROMPIÓ LA SECCIÓN UNA VEZ. Desde que el
+   contenido vive DENTRO de la foto, el logo también es un `<img>` acá abajo: con
+   `.bl-pr-foto img` esta regla se lo aplicaba a él —absoluto, al 100% de ancho y
+   alto, con `object-fit: cover`— y el logo salía del tamaño de la tarjeta entera,
+   tapando el texto y el botón. El `height` de su propia regla no alcanzaba porque
+   perdía contra el `100%` de acá.
+
+   Con el hijo directo, la regla es sólo para la foto de fondo. Toda regla que
+   apunte a `img` dentro de esta caja tiene que ser específica o va a agarrar el
+   logo. */
+.bl-pr-foto > img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .7s var(--bl-sal);
+}
+.bl-pr-caso:hover .bl-pr-foto > img { transform: scale(1.04); }
+
+/* ⚠️ EL VELO NO ES DECORATIVO Y SUS CUATRO PARADAS ESTÁN MEDIDAS. Las dos fotos
+   son interiores luminosos —hay ventanas y luz justo en la mitad de abajo, que es
+   donde va el texto— así que el blanco encima medía 1,00:1 sin velo: invisible.
+   Recorriendo la zona del contenido píxel por píxel en las dos imágenes:
+
+       sin velo                    peor 1,00:1
+       velo plano al 80%           peor 2,76:1
+       0 / .45 / .82 / .92         peor 5,64:1   ← éste
+       0 / .55 / .88 / .95         peor 8,85:1
+       0 / .62 / .90 / .96         peor 11,58:1
+
+   Se eligió el primero que pasa el mínimo de 4,5 y no el más oscuro: cada escalón
+   de más tapa más foto, y la foto es la mitad del argumento de esta sección.
+
+   ⚠️ Y ARRANCA EN TRANSPARENTE ARRIBA. Un velo parejo apagaría la imagen entera;
+   así, la mitad de arriba se ve limpia y la de abajo sostiene el texto. */
+.bl-pr-foto::after {
+  content: ""; position: absolute; inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom,
+    rgba(10, 10, 12, 0) 0%,
+    rgba(10, 10, 12, .45) 45%,
+    rgba(10, 10, 12, .82) 78%,
+    rgba(10, 10, 12, .92) 100%);
+}
+
+/* ⚠️ EL CONTENIDO SE APOYA EN EL PISO DE LA FOTO Y VA EN UNA FILA: el texto a la
+   izquierda, el botón a la derecha. Apilado —con el botón debajo del párrafo— el
+   bloque medía cuatro renglones y empujaba el logo hasta el medio de la imagen.
+   En fila, todo baja y la foto recupera la mitad de arriba, que es donde está lo
+   que tiene para mostrar.
+
+   `align-items: end` los apoya en la misma línea: el bloque de texto tiene tres
+   piezas y el botón una sola, y centrados quedarían desalineados contra el borde
+   de abajo. */
+.bl-pr-sobre {
+  position: absolute; z-index: 1;
+  inset: auto 0 0 0;
+  display: flex; align-items: end; justify-content: space-between;
+  gap: clamp(12px, 1.6vw, 24px);
+  padding: clamp(16px, 2.2vw, 26px);
+}
+.bl-pr-info {
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: clamp(6px, 1svh, 11px);
+  min-width: 0;
+}
+/* El botón no se encoge ni se estira: mide lo que dice su texto. */
+.bl-pr-cta { flex: none; }
+
+/* ⚠️ EL LOGO SE INVIERTE A BLANCO. Los dos archivos son negros —están hechos para
+   fondo claro— y sobre la foto velada se pierden enteros. `brightness(0) invert()`
+   los da vuelta, la misma técnica que ya usan el pie de la página y la barra
+   sobre el hero. */
+.bl-pr-logo {
+  display: block;
+  height: clamp(19px, 2.1vw, 26px); width: auto;
+  filter: brightness(0) invert();
+}
+
+.bl-pr-rol {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: clamp(8px, .85vw, 9.5px);
+  letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(255, 255, 255, .66);
+}
+
+.bl-pr-txt {
+  margin: 0;
+  font-size: clamp(12.5px, 1vw, 14.5px);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, .9);
+  max-width: 34ch;
+  text-wrap: pretty;
+}
+
+/* ⚠️ EL BOTÓN ES EL COMPONENTE `.bl-btn` DEL HERO, en versión clara. No es una
+   variante nueva del sistema: hereda alto, radio, tipografía y transiciones, y
+   acá sólo se le cambian los colores porque está sobre una foto oscura. Blanco
+   sólido con texto en tinta, igual que el botón de la barra mientras está sobre
+   el hero — es el mismo problema y la misma solución.
+
+   Va sólido y no de contorno: sobre una imagen, un botón de contorno depende de
+   lo que tenga detrás para leerse, y detrás hay una foto que cambia. */
+.bl-pr-cta {
+  background: #fff;
+  color: var(--ink);
+  border-color: #fff;
+}
+.bl-pr-cta::after { opacity: 0; }
+.bl-pr-cta:hover { background: rgba(255, 255, 255, .88); color: var(--ink); }
+.bl-pr-cta .bl-fl { width: 16px; height: 16px; transition: transform .3s var(--bl-sal); }
+.bl-pr-caso:hover .bl-pr-cta .bl-fl { transform: translateX(3px); }
+
+/* ⚠️ ACÁ VIVÍA UNA FILA DE NÚMEROS bajo cada foto —7 funciones, 3 planes, 20
+   años— y se sacó entera: la tarjeta ya dice qué es la marca y por dónde se
+   entra, y esa segunda lectura agregaba un renglón sin agregar un argumento. De
+   dónde salía cada cifra quedó anotado en `Prueba.astro`, por si vuelven. */
+
+/* ── EN TELÉFONO ──────────────────────────────────────────
+   ⚠️ LAS DOS TARJETAS SE APILAN Y LA SECCIÓN DEJA DE ENTRAR EN UNA PANTALLA. Dos
+   fotos con su contenido adentro no caben en 700px de alto por más que se
+   achiquen: forzarlo obligaría a recortar las imágenes hasta que no se vea nada,
+   que es peor que scrollear.
+
+   ⚠️ Y LA FOTO VUELVE A TENER ALTO PROPIO. Apiladas ya no hay sobrante que
+   repartir —la sección crece con el contenido— así que `flex: 1` no tendría de
+   dónde tomar y las dejaría en su mínimo. */
+@media (max-width: 760px) {
+  .bl-pr-casos { grid-template-columns: 1fr; }
+  /* Apilado: en 390px de ancho, el texto y el botón en la misma fila dejan al
+     botón partido o al párrafo en dos palabras por renglón. */
+  .bl-pr-sobre { flex-direction: column; align-items: stretch; gap: 14px; }
+  .bl-pr-foto { flex: none; height: clamp(300px, 52svh, 420px); }
+  .bl-pr-top { gap: 14px; }
+  /* A todo el ancho: en un teléfono lo que se toca sin apuntar. */
+  .bl-pr-cta { width: 100%; justify-content: center; }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   QUÉ HACEMOS · el índice tipográfico
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ SEIS SERVICIOS, CERO IMÁGENES. Antes eran cuatro tarjetas con foto de
+   stock y dos planes aparte; el resultado era que el ojo miraba fotos genéricas
+   en vez de leer qué hacen. Un índice se LEE, que es lo que uno quiere hacer con
+   una lista de servicios, y de paso es lo que un motor generativo puede citar.
+
+   El número al costado no es decoración: da orden de lectura a una lista que si
+   no es una pila de nombres sueltos. */
+
+/* Mismo criterio que el comparador: seis filas debajo del título son mucho
+   contenido, y el aire estándar de "título → contenido" sobra. */
+/* ══════════════════════════════════════════════════════════
+   SERVICIOS · la sección es el carrusel
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ ACÁ HUBO UN ÍNDICE DE SEIS FILAS Y UN MODAL. Se fueron los dos: lo que el
+   modal mostraba es lo que ahora está a la vista. El panel de aquel modal y esta
+   sección eran la misma pieza, sólo que una escondida detrás de un click.
+
+   ⚠️ ES LA SEGUNDA SECCIÓN CON FOTO DE FONDO Y TEXTO ENCIMA, como el hero, y por
+   eso repite su tratamiento: imagen a sangre, degradé que sostiene la lectura del
+   lado donde va el texto, y el contenido acotado a la otra mitad.
+
+   ⚠️ EL GESTO ES DESLIZAR EN LAS DOS PANTALLAS. Lo hace `scroll-snap` sobre una
+   pista con `overflow-x: auto`, o sea scroll de verdad: el dedo, el trackpad y la
+   rueda funcionan sin JavaScript. Las flechas y los puntos son atajos y señales. */
+
+.bl-sv {
+  position: relative;
+  overflow: clip;
+  background: var(--ink);
+  color: #fff;
+}
+
+/* ── LAS SEIS FOTOS ───────────────────────────────────────
+   Apiladas, y sólo se ve la activa. Reemplazar el `src` al cambiar de servicio
+   dispararía una descarga por salto y el fondo parpadearía mientras llega;
+   apiladas, el cambio es un fundido entre dos que ya están en memoria. */
+.bl-sv-fondo,
+.bl-sv-fondo picture,
+.bl-sv-fondo img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+}
+.bl-sv-fondo { z-index: 0; overflow: hidden; pointer-events: none; }
+.bl-sv-fondo picture {
+  opacity: 0;
+  transition: opacity .6s var(--bl-sal);
+}
+.bl-sv-fondo picture.es-activa { opacity: 1; }
+.bl-sv-fondo img {
+  object-fit: cover;
+  object-position: 50% 50%;
+  /* El blanco y negro y el desenfoque están horneados en el archivo. Acá queda
+     sólo el brillo, que es lo único que puede querer ajustarse sin regenerar. */
+  filter: brightness(.46);
+}
+
+/* ⚠️ EL DEGRADÉ VA DE IZQUIERDA A DERECHA porque el texto vive en la mitad
+   izquierda. Es la misma construcción que usa Contacto, al revés: allá la foto
+   está a la derecha y el degradé la funde hacia el texto; acá la foto ocupa todo
+   y el degradé le abre lugar al texto.
+
+   El segundo degradé, el vertical, es para los mandos de abajo: sin él, los
+   puntos y las flechas caen sobre cualquier parte de la foto. */
+.bl-sv::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(to right,
+      rgba(10, 10, 12, .92) 0%,
+      rgba(10, 10, 12, .72) 42%,
+      rgba(10, 10, 12, .12) 78%,
+      rgba(10, 10, 12, 0) 100%),
+    linear-gradient(to bottom,
+      rgba(10, 10, 12, 0) 62%,
+      rgba(10, 10, 12, .55) 100%);
+}
+
+.bl-sv-esc {
+  position: relative; z-index: 2;
+  flex: 1;
+  display: flex; flex-direction: column;
+  gap: clamp(14px, 2.2svh, 26px);
+}
+
+/* ── LA CABECERA ──────────────────────────────────────────
+   El rótulo de la sección a la izquierda y la posición a la derecha. El `<h2>`
+   está en el markup pero oculto: la jerarquía lo necesita, la pantalla no. */
+.bl-sv-cab {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 16px;
+  padding-bottom: clamp(9px, 1.4svh, 14px);
+  border-bottom: 1px solid rgba(255, 255, 255, .16);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: clamp(9.5px, 1.05vw, 11px);
+  letter-spacing: .2em; text-transform: uppercase;
+  flex: none;
+}
+/* Es un `<h2>`, así que hay que apagarle lo que un encabezado trae de fábrica:
+   tamaño propio, peso y márgenes. Todo lo demás lo hereda de la cabecera. */
+.bl-sv-rotulo {
+  margin: 0;
+  font-size: inherit; font-weight: inherit; letter-spacing: inherit;
+  color: rgba(255, 255, 255, .72);
+}
+.bl-sv-pos {
+  color: rgba(255, 255, 255, .55);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── LA PISTA ─────────────────────────────────────────────
+   ⚠️ `scroll-snap-type: x mandatory` ES LO QUE HACE QUE SE SIENTA COMO TARJETAS.
+   Sin él es un scroll horizontal cualquiera y se puede quedar a mitad de camino
+   entre dos servicios.
+
+   ⚠️ `overscroll-behavior` VA SÓLO EN X, Y EL EJE IMPORTA MUCHO. Escrito sin eje
+   —`overscroll-behavior: contain` a secas— vale para los dos, y el vertical es
+   justo el que NO hay que contener: la pista es contenedor de scroll también en Y
+   por tener `overflow-y: hidden`, así que una rueda vertical encima suyo busca
+   scrollearla, no encuentra sobrante, y con `contain` se queda ahí en lugar de
+   pasarle el movimiento a la página. El síntoma es exacto: con el puntero sobre
+   las tarjetas la página deja de bajar y hay que sacarlo afuera para seguir. En X
+   sí hay que frenarlo del todo, y por eso va en `none` y no en `contain`. Los dos
+   evitan que el movimiento se le pase a la página, pero `contain` deja el rebote
+   elástico del propio contenedor: en el primer servicio, tirar hacia atrás
+   despega igual las tarjetas del borde, y en el último, seguir deslizando las
+   corre hasta dejar la pantalla cortada, mostrando media tarjeta y una franja
+   vacía. `none` saca también ese rebote: en las dos puntas el gesto no mueve
+   nada, que es exactamente lo que tiene que pasar cuando no hay a dónde ir.
+
+   ⚠️ Y LA BARRA DE SCROLL SE OCULTA PERO EL SCROLL QUEDA. No es cosmética pura:
+   una barra horizontal atravesando la sección delataría el mecanismo, y la
+   posición ya la dicen los puntos y el rótulo "3 / 6". */
+.bl-sv-pista {
+  flex: 1; min-height: 0;
+
+  /* ⚠️ LOS SEIS PANELES COMPARTEN LAS MISMAS FILAS, Y ESO ES LO QUE ALINEA TODO.
+     La pista declara cinco filas —número, título, bajada, precio o nota, listas—
+     y cada panel se estira sobre las cinco con `subgrid`, así que no tiene filas
+     propias: usa las de acá. El alto de cada fila lo fija el panel más alto de
+     los seis, y todos los demás lo respetan. El título del servicio 06 queda a
+     la misma altura que el del 01 aunque su bajada sea más corta, y la línea de
+     las listas arranca en el mismo punto en los seis.
+
+     La alternativa era escribir a mano un `min-height` por fila, medido a ojo
+     sobre el texto de hoy: el día que alguien agrega un renglón a una
+     descripción, el cálculo queda viejo y la alineación se rompe sin que nadie
+     lo note. Con `subgrid` la medida la saca el navegador de lo que hay.
+
+     ⚠️ `align-content` ES LO QUE UBICA EL BLOQUE, no un `justify-content` en cada
+     panel. Las filas suman menos que la pista, y ese sobrante se reparte acá una
+     sola vez para los seis: centrado en escritorio, apoyado abajo en teléfono.
+     Puesto en el panel, cada uno lo repartiría según su propio contenido, que es
+     exactamente lo que desalinea. */
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 100%;
+  grid-template-rows: repeat(5, auto);
+  align-content: center;
+  row-gap: clamp(9px, 1.5svh, 15px);
+
+  overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: auto;
+  scrollbar-width: none;
+}
+.bl-sv-pista::-webkit-scrollbar { display: none; }
+/* Sin contorno propio al recibir foco: la pista es un contenedor, y el recuadro
+   del navegador alrededor de media pantalla es más ruido que ayuda. El foco se
+   nota igual porque las flechas del teclado empiezan a mover los servicios. */
+.bl-sv-pista:focus { outline: none; }
+.bl-sv-pista:focus-visible { outline: 2px solid rgba(255, 255, 255, .5); outline-offset: -2px; }
+
+/* ⚠️ `scroll-snap-stop: always` ES LO QUE HACE QUE UN GESTO PASE UNA SOLA CARD. Sin
+   él, el valor por defecto es `normal`: un swipe con algo de impulso atraviesa
+   dos o tres paneles y frena donde le toque, que en un teléfono es lo más común
+   porque el gesto natural es rápido. Con `always`, el scroll está obligado a
+   detenerse en cada punto de anclaje aunque venga con velocidad.
+
+   ⚠️ Y NO LLEVA `overflow-y`, QUE ERA LA OTRA MITAD DEL PROBLEMA. Un contenedor
+   con scroll vertical propio adentro de una pista con scroll horizontal obliga al
+   navegador a decidir, en cada gesto, cuál de los dos ejes le corresponde: los
+   swipes que salen apenas diagonales se los lleva el eje vertical y el horizontal
+   queda a medio camino. Sin scroll propio, todo gesto sobre el panel es
+   horizontal y no hay nada que interpretar. El contenido entra; si algún día
+   dejara de entrar, la solución es achicarlo, no devolverle el scroll. */
+.bl-sv-panel {
+  grid-row: 1 / -1;
+  display: grid;
+  grid-template-rows: subgrid;
+  min-width: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+/* ⚠️ EL CONTENIDO SE ACOTA A LA MITAD IZQUIERDA porque la derecha es de la foto.
+   Va en un elemento de adentro y no en el panel: el panel tiene que medir el
+   ancho completo de la pista para que el `scroll-snap` calce.
+
+   ⚠️ Y ESTE ELEMENTO TAMBIÉN ES `subgrid`, no un contenedor cualquiera. Es el
+   segundo eslabón de la cadena: el panel toma las filas de la pista y este toma
+   las del panel, así que los cinco bloques de adentro caen en las filas
+   compartidas y no en filas propias. Si acá se pusiera un `flex` o un `grid`
+   normal, la cadena se corta y cada panel vuelve a medirse solo. */
+.bl-sv-panel-in {
+  grid-row: 1 / -1;
+  display: grid;
+  grid-template-rows: subgrid;
+  justify-items: start;
+  width: min(54%, 620px);
+}
+/* La primera fila se pide explícita y el resto se acomoda detrás. Sin esto, el
+   número podría caer en cualquier fila según el orden de colocación. */
+.bl-sv-panel-n { grid-row: 1; }
+
+/* ⚠️ EL NÚMERO VA EN BLANCO Y EL MAGENTA ES UN FILETE. Sobre este fondo el
+   magenta da poco más de 3:1, que alcanza para texto grande pero no para un
+   rótulo de once píxeles. En lugar de aclarar el color de la marca, el acento se
+   mueve a donde no es texto: un filete no tiene que cumplir contraste de
+   lectura. */
+.bl-sv-panel-n {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px; letter-spacing: .16em;
+  color: rgba(255, 255, 255, .66);
+}
+.bl-sv-panel-n::before {
+  content: ""; display: block;
+  width: 22px; height: 2px;
+  background: var(--magenta);
+}
+
+/* En caja alta, como el hero y como el cierre: las tres piezas de la página que
+   se miran antes de leerse. Las secciones de documento van en caja mixta. */
+.bl-sv-panel-t {
+  margin: 0;
+  font-size: clamp(26px, 3.6vw, 46px);
+  font-weight: 800; letter-spacing: -.038em; line-height: .96;
+  text-transform: uppercase;
+  color: #fff;
+}
+.bl-sv-panel-d {
+  margin: 0; max-width: 46ch;
+  font-size: clamp(13px, 1.1vw, 14.5px);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, .76);
+}
+
+/* ── EL PRECIO Y LA NOTA ──────────────────────────────────
+   Sólo los dos planes tienen precio. Los otros llevan una nota que dice que se
+   cotizan por proyecto: no es un botón, porque comunica un hecho y no una
+   acción. */
+/* ⚠️ EL PRECIO Y LA NOTA COMPARTEN LA CUARTA FILA: los dos planes muestran el
+   número, los otros cuatro la nota de cotización. Como es la misma fila, el alto
+   lo fija el más alto de los dos y el otro se acomoda dentro con `align-self`,
+   sin que la fila de abajo se mueva. */
+.bl-sv-precio { display: flex; align-items: baseline; gap: 10px; margin: 0; align-self: center; }
+.bl-sv-desde {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(255, 255, 255, .58);
+}
+.bl-sv-num {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: clamp(24px, 2.8vw, 34px);
+  font-weight: 700; letter-spacing: -.04em;
+  color: #fff;
+}
+
+.bl-sv-cotiza {
+  display: flex; align-items: center; gap: 9px; align-self: center;
+  margin: 0; padding: 9px 13px;
+  border: 1px solid rgba(255, 255, 255, .16); border-radius: var(--r-md);
+  background: rgba(255, 255, 255, .06);
+  font-size: clamp(11.5px, .95vw, 12.5px);
+  color: rgba(255, 255, 255, .8);
+}
+.bl-sv-cotiza svg { flex: none; color: rgba(255, 255, 255, .5); }
+
+/* ── LAS LISTAS ───────────────────────────────────────────
+   ⚠️ LA COLUMNA DE "NO INCLUYE" SÓLO EXISTE EN LOS PLANES, así que la grilla no
+   puede ser dos columnas fijas: en los otros cuatro dejaría media caja vacía. */
+.bl-sv-listas {
+  align-self: start;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: clamp(14px, 2vw, 30px);
+  width: 100%;
+  padding-top: clamp(9px, 1.4svh, 15px);
+  border-top: 1px solid rgba(255, 255, 255, .14);
+}
+.bl-sv-lista-t {
+  margin: 0 0 9px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase;
+  color: rgba(255, 255, 255, .5);
+}
+.bl-sv-listas ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.bl-sv-listas li {
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: clamp(12px, .98vw, 13px); line-height: 1.4;
+  color: rgba(255, 255, 255, .84);
+}
+/* ⚠️ EL VERDE DE FONDO CLARO NO SIRVE ACÁ. `--success` está calculado para leerse
+   sobre blanco; sobre este fondo se apaga. */
+.bl-sv-listas li svg { width: 15px; height: 15px; flex: none; margin-top: 2px; color: #4ADE80; }
+.bl-sv-no li { color: rgba(255, 255, 255, .52); }
+.bl-sv-no li svg { color: rgba(255, 255, 255, .35); }
+
+/* ── LOS MANDOS ───────────────────────────────────────────
+   Las flechas para el mouse, los puntos para el dedo. Cada uno se dibuja donde
+   sirve: en teléfono las flechas se van y quedan los puntos, en escritorio al
+   revés. */
+.bl-sv-mandos {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+  flex: none;
+}
+
+.bl-sv-puntos { display: flex; align-items: center; gap: 7px; }
+.bl-sv-puntos span {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255, 255, 255, .3);
+  transition: background .3s var(--bl-sal), width .3s var(--bl-sal);
+}
+/* El activo se alarga además de encenderse: en una fila de seis, un cambio de
+   opacidad solo es difícil de ver de reojo. */
+.bl-sv-puntos span.es-activo {
+  width: 18px; border-radius: var(--r-pill);
+  background: var(--magenta);
+}
+
+.bl-sv-flechas { display: flex; align-items: center; gap: 8px; }
+.bl-sv-nav {
+  display: grid; place-items: center;
+  width: 38px; height: 38px;
+  border: 1px solid rgba(255, 255, 255, .2); border-radius: 50%;
+  background: rgba(255, 255, 255, .06);
+  color: rgba(255, 255, 255, .82);
+  cursor: pointer;
+  transition: background .2s var(--bl-sal), color .2s var(--bl-sal);
+}
+.bl-sv-nav:hover { background: rgba(255, 255, 255, .16); color: #fff; }
+
+/* ══════════════════════════════════════════════════════════
+   EN TELÉFONO
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ EL TEXTO PASA DE LA IZQUIERDA AL PISO, y con él el degradé. En una pantalla
+   angosta no hay "mitad izquierda" que reservar: el contenido ocupa el ancho
+   entero y lo que se reserva es el alto de abajo, que es donde llega el pulgar y
+   donde la imagen suele tener menos que mostrar. */
+@media (max-width: 720px) {
+  .bl-sv::after {
+    background: linear-gradient(to bottom,
+      rgba(10, 10, 12, 0) 22%,
+      rgba(10, 10, 12, .62) 52%,
+      rgba(10, 10, 12, .92) 100%);
+  }
+
+  /* El bloque entero se apoya abajo, que es donde llega el pulgar y donde el
+     degradé lo sostiene. Va en la pista y no en el panel: es el reparto del
+     sobrante de las filas compartidas, uno solo para los seis. */
+  .bl-sv-pista { align-content: end; }
+  .bl-sv-panel-in { width: 100%; }
+
+  /* ⚠️ EN TELÉFONO LOS TAMAÑOS CEDEN PARA QUE EL PANEL NO NECESITE SCROLL PROPIO.
+     Es la contrapartida de haberle sacado el `overflow-y`: si el contenido no
+     entra, ya no hay forma de alcanzarlo. Los dos servicios con lista de "no
+     incluye" son los más altos y son los que mandan la medida. */
+  .bl-sv-panel-d { font-size: 13px; line-height: 1.5; }
+  .bl-sv-num { font-size: clamp(22px, 7vw, 28px); }
+  .bl-sv-listas { gap: 11px; padding-top: 10px; }
+  .bl-sv-listas ul { gap: 6px; }
+  .bl-sv-listas li { font-size: 12px; line-height: 1.35; }
+  .bl-sv-cotiza { padding: 8px 11px; font-size: 11.5px; }
+
+  .bl-sv-panel-t { font-size: clamp(28px, 8.6vw, 40px); }
+  .bl-sv-panel-d { font-size: 13.5px; max-width: none; }
+
+  /* Una sola columna: dos listas de 160px en 356 de ancho son dos tiras. */
+  .bl-sv-listas { grid-template-columns: 1fr; gap: 13px; }
+
+  /* ⚠️ LAS FLECHAS SE VAN Y QUEDA EL SWIPE. Dos botones de 38px son un blanco
+     difícil de acertar con el pulgar y quedan lejos de donde descansa la mano. El
+     gesto que corresponde acá es deslizar, que la pista ya resuelve sola.
+
+     Los puntos se centran al quedar solos: alineados a la izquierda parecerían
+     esperar algo al lado. */
+  .bl-sv-flechas { display: none; }
+  .bl-sv-mandos { justify-content: center; }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   EN UN TELÉFONO CORTO
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ ACÁ NO SE MIDE EL ANCHO SINO EL ALTO, y es la única regla de la página que
+   lo hace. Un iPhone SE tiene el mismo ancho que uno grande y doscientos píxeles
+   menos de pantalla: con las medidas de arriba, el panel más alto —los planes,
+   que son los únicos con lista de "no incluye"— pasa unos cuarenta píxeles y la
+   sección deja de entrar en una pantalla.
+
+   ⚠️ LO QUE CEDE ES EL AIRE, NO EL TEXTO. Se achican las separaciones entre
+   filas y entre ítems, que es espacio que sobra cuando la pantalla es corta, y
+   los cuerpos quedan donde estaban: bajar el tamaño de letra en la pantalla más
+   chica es empeorar la lectura justo donde ya cuesta.
+
+   ⚠️ Y NO SE VUELVE AL SCROLL DENTRO DEL PANEL, que sería la solución fácil: un
+   contenedor con scroll vertical adentro de una pista horizontal se come la
+   mitad de los gestos de deslizar. Por eso la salida es apretar el aire. */
+@media (max-width: 720px) and (max-height: 720px) {
+  .bl-sv-pista { row-gap: 8px; }
+  .bl-sv-panel-t { font-size: clamp(26px, 7.6vw, 34px); }
+  .bl-sv-listas { gap: 9px; padding-top: 8px; }
+  .bl-sv-listas ul { gap: 4px; }
+  .bl-sv-lista-t { margin-bottom: 6px; }
+  .bl-sv-cotiza { padding: 7px 10px; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   CÓMO TRABAJAMOS · la línea que avanza
+   ══════════════════════════════════════════════════════════
+
+   Una línea cruza la pantalla de lado a lado y se pinta de izquierda a derecha
+   con el scroll. Cada paso está apagado hasta que la línea llega a su marca.
+
+   ⚠️ ES LA ÚNICA SECCIÓN DE LA PÁGINA QUE NO MIDE UNA PANTALLA, y por eso no
+   lleva `.bl-sec`: esa clase trae el `min-height: 100dvh`. Trae también el fondo
+   opaco y el escalón de apilado, que sí hacen falta —la sombra de las dos
+   secciones oscuras cae sobre ésta— así que se escriben acá a mano. Es la única
+   excepción del archivo y es a propósito: una línea de tiempo se lee a lo ancho,
+   y estirada a pantalla completa lo único que crece es el vacío del medio. */
+.bl-pc {
+  position: relative; z-index: 1;
+  background: var(--bl-fondo);
+  padding-block: clamp(64px, 11svh, 118px);
+  overflow: clip;
+
+  /* ⚠️ EL PROGRESO PROPIO DE LA SECCIÓN, RECORTADO DEL PROGRESO CRUDO. El motor
+     escribe `--p` de 0 a 1 sobre TODO el recorrido de `cruza`: desde que el borde
+     de arriba asoma por abajo hasta que el de abajo sale por arriba. Las dos
+     puntas de ese recorrido son tiempo en el que la franja está fuera de la
+     pantalla o entrando, y gastar ahí la mitad del avance significa que el lector
+     se pierde el arranque y llega cuando la línea ya iba por la mitad.
+
+     Este recorte se queda con el tramo del medio —de 0,22 a 0,64— que es cuando
+     la franja está efectivamente a la vista. Ahí adentro pasa todo: la línea sale
+     de cero y llega a la punta.
+
+     ⚠️ Y EL VALOR EN REPOSO ES 1, NO 0. Sin JavaScript no hay `--p` y no hay
+     recorrido: lo que tiene que verse es la sección terminada, con los cuatro
+     pasos encendidos, no una franja en blanco. Todo lo que se anima acá abajo
+     cuelga de esta variable justamente para que apagarla deje la página entera. */
+  --q: 1;
+}
+[data-px-listo] .bl-pc {
+  /* ⚠️ LA VENTANA TERMINA EN 0,46 Y NO EN 0,64, Y ESA CORRECCIÓN ES DE TIEMPO, NO
+     DE GUSTO. Con el tramo largo, el cuarto paso recién se encendía cuando la
+     franja ya se estaba yendo por arriba y la sección oscura de abajo ocupaba
+     media pantalla: el recorrido terminaba fuera de la vista y daba la sensación
+     de que no llegaba.
+
+     Los números salen de la geometría, no de probar. En modo `cruza` el recorrido
+     entero mide `alto + pantalla`, o sea unos 1200px de scroll para esta franja.
+     El 0,20 cae cuando el riel está por asomar desde abajo, y el 0,46 cuando el
+     borde inferior de la sección termina de entrar: en ese instante la franja
+     está completa en pantalla y el avance llega justo a la punta. Todo el
+     recorrido pasa mientras hay algo para mirar. */
+  --q: clamp(0, calc((var(--p, 1) - .20) / .26), 1);
+}
+
+/* ⚠️ LA CABECERA NECESITA SU PROPIA CUENTA, Y ES POR EL MODO DE ESTA SECCION.
+   `.bl-sube` —el fundido compartido de la pagina— mapea la opacidad directo
+   contra `--p`, y eso funciona con el modo `entra`, donde `--p` llega a 1 apenas
+   la seccion termina de subir. Con `cruza`, `--p` recien vale 1 cuando la seccion
+   YA SE FUE por arriba: el titulo se pasaba toda su vida en pantalla a media
+   opacidad y terminaba de aparecer cuando nadie lo estaba mirando.
+
+   Este tramo es anterior al de la linea a proposito: el titulo tiene que estar
+   entero ANTES de que el recorrido arranque. Se lee primero de que se trata y
+   despues pasan los cuatro pasos. */
+[data-px-listo] .bl-pc .bl-sube {
+  opacity: clamp(0, calc((var(--p, 1) - .06) / .1), 1);
+  transform: translate3d(0, calc((1 - clamp(0, calc((var(--p, 1) - .06) / .1), 1)) * 26px), 0);
+}
+
+.bl-pc-cab {
+  display: flex; flex-direction: column;
+  gap: clamp(9px, 1.4svh, 16px);
+  align-items: flex-start;
+  margin-bottom: clamp(38px, 6svh, 76px);
+}
+
+/* ── EL RIEL ──────────────────────────────────────────────
+   ⚠️ VA A SANGRE Y LOS PASOS NO. Si la línea empezara y terminara donde empieza y
+   termina el texto sería el borde de una tabla; saliéndose por los dos costados,
+   es un recorrido que venía de antes y sigue después, y la sección es apenas el
+   tramo que se ve. */
+.bl-pc-banda { position: relative; }
+.bl-pc-riel {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ⚠️ EL TRAMO ENCENDIDO CRECE CON `scaleX` Y NO CON `width`, y no es un detalle
+   de gusto: el ancho pasa por layout y el motor lo recalcularía en cada cuadro
+   mientras la sección esté en pantalla. `scaleX` sobre el borde izquierdo se ve
+   idéntico y sólo compone. */
+.bl-pc-avance {
+  position: absolute; inset: 0;
+  background: var(--magenta);
+  transform: scaleX(var(--q));
+  transform-origin: 0 50%;
+}
+
+/* ⚠️ LA MARCA DEL FRENTE ES LO QUE CONVIERTE UNA BARRA DE PROGRESO EN UN
+   RECORRIDO. Sin ella se ve una línea que se alarga; con ella se ve algo que va
+   avanzando y deja la línea atrás. Es un trazo vertical corto con resplandor, en
+   el punto exacto donde llegó el avance.
+
+   ⚠️ Y SE APAGA EN LAS DOS PUNTAS. En reposo —sin JavaScript, o con el recorrido
+   terminado— no hay frente que mostrar: no hay nada avanzando. El `min()` da cero
+   en los dos extremos y uno en el medio, así que la marca aparece cuando arranca
+   el movimiento y se apaga cuando llega. */
+.bl-pc-frente {
+  position: absolute; top: 50%; left: calc(var(--q) * 100%);
+  width: 2px; height: 15px;
+  transform: translate(-1px, -50%);
+  background: var(--magenta);
+  box-shadow: 0 0 12px 2px rgba(236, 30, 121, .55);
+  opacity: clamp(0, calc(min(var(--q), 1 - var(--q)) * 7), 1);
+}
+
+/* ── LOS CUATRO PASOS ─────────────────────────────────────
+   Cada uno arranca donde está su marca: cuatro columnas iguales, así que la marca
+   del paso k cae en el cuarto k del ancho. Eso es lo que permite que el encendido
+   se calcule con una cuenta y no con cuatro retardos escritos a mano. */
+.bl-pc-pasos {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: clamp(20px, 2.6vw, 44px);
+  /* ⚠️ `margin: 0 auto` Y NO `margin: 0`. Este `<ol>` es también `.bl-wrap`, y un
+     wrapper se centra con `margin-inline: auto`: poner `margin: 0` para sacarle el
+     margen que las listas traen de fábrica le saca también el centrado, y la
+     rejilla entera se va contra el borde izquierdo mientras el título, que sí
+     está centrado, queda ciento cuarenta píxeles más adentro. */
+  list-style: none; margin: 0 auto;
+  padding-top: clamp(26px, 3.6svh, 44px);
+}
+
+/* ⚠️ ACÁ ESTÁ EL ESCALONADO, Y ES UNA SOLA CUENTA PARA LOS CUATRO. `--i` es la
+   posición del paso, y su marca está en `--i / 4` del ancho: multiplicando por 4
+   lo que le sobra al avance sobre ese punto, se obtiene un valor que va de 0 a 1
+   justo mientras la línea recorre SU cuarto. O sea que cada paso se enciende
+   exactamente cuando la línea le pasa por encima, ni antes ni después, y sin un
+   solo retardo escrito a mano: si mañana son cinco pasos, la cuenta sigue
+   valiendo cambiando el 4 por el `--n` que ya está en el markup.
+
+   ⚠️ APAGADO NO ES INVISIBLE. Los pasos que faltan se ven al 16%: lo que viene
+   está insinuado, y el encendido se lee como algo que llega y no como algo que
+   aparece de la nada. Con `opacity: 0` la sección se lee vacía y el texto entra a
+   los saltos.
+
+   ⚠️ Y ENTRAN DESDE LA IZQUIERDA, que es la dirección en la que va la línea. Un
+   desplazamiento chico —doce píxeles— alcanza: lo que tiene que quedar claro es
+   el sentido, no el viaje. */
+.bl-pc-paso {
+  display: flex; flex-direction: column; align-items: flex-start;
+  min-width: 0;
+  position: relative;
+  opacity: clamp(.16, calc((var(--q) - var(--i, 0) / 4) * 4), 1);
+  transform: translate3d(calc((1 - clamp(0, calc((var(--q) - var(--i, 0) / 4) * 4), 1)) * -12px), 0, 0);
+}
+
+/* La marca del paso, sentada sobre el riel. El `-4px` de arriba la sube media
+   marca para que quede centrada en la línea y no colgando de ella. */
+.bl-pc-paso::before {
+  content: ""; position: absolute;
+  top: calc(-1 * clamp(26px, 3.6svh, 44px) - 4px);
+  left: 0;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--magenta);
+}
+
+/* ⚠️ EL NÚMERO ES GRANDE Y VA EN MONO. Es lo único de la sección que se mira
+   antes de leerse, y en una tipografía de ancho fijo los cuatro ocupan lo mismo,
+   así que la fila de números queda pareja aunque los nombres midan distinto.
+
+   ⚠️ Y NO ES MAGENTA. El acento ya está gastado en la línea y en las marcas, que
+   es donde informa; repetirlo acá deja la sección teñida y ninguna de las tres
+   cosas destaca. El número va en el gris de apoyo. */
+.bl-pc-n {
+  font-family: var(--font-mono);
+  font-size: clamp(30px, 3.4vw, 46px);
+  font-weight: 500; letter-spacing: -.04em; line-height: 1;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.bl-pc-t {
+  margin: clamp(12px, 1.8svh, 18px) 0 clamp(8px, 1.2svh, 12px);
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-weight: 800; letter-spacing: -.03em; line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.bl-pc-d {
+  margin: 0;
+  font-size: clamp(12.5px, 1.05vw, 14px); line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* ══════════════════════════════════════════════════════════
+   EN TELÉFONO, SÓLO LOS PASOS
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ EL RIEL SE VA Y NO SE ADAPTA, y estuvo puesto de costado antes de sacarlo,
+   así que esto es lo que se aprendió probándolo: acostada, la línea deja de
+   explicar y empieza a estorbar. En horizontal el riel ordena cuatro columnas que
+   están una al lado de la otra y el avance se lee de un vistazo; en vertical,
+   sobre una lista que ya se lee de arriba hacia abajo, no agrega ninguna
+   información que el orden de la lista no diera ya, y a cambio se lleva
+   veintiséis píxeles de un ancho que tiene trescientos noventa y empuja los
+   cuatro textos contra el borde derecho.
+
+   ⚠️ PERO EL PASO A PASO SE QUEDA, que es lo que la sección tiene para decir. Los
+   cuatro siguen encendiéndose de a uno con el scroll, con la misma cuenta y en el
+   mismo orden: lo que se sacó es el dibujo de la línea, no el recorrido. Sin
+   riel, lo que marca el avance es el texto mismo pasando de apagado a negro, que
+   en una pantalla angosta es más claro que un filete de un píxel.
+
+   ⚠️ Y LOS PUNTOS SE VAN CON ÉL. Una marca redonda sin línea de la que colgar no
+   es una marca: es una viñeta suelta al costado de un número que ya dice en qué
+   paso estamos. */
+@media (max-width: 720px) {
+  .bl-pc { padding-block: clamp(52px, 8svh, 84px); }
+
+  /* `display: none` en el riel se lleva también el tramo encendido y la marca del
+     frente, que son sus hijos. No hace falta apagarlos uno por uno. */
+  .bl-pc-riel { display: none; }
+  .bl-pc-paso::before { display: none; }
+
+  .bl-pc-pasos {
+    grid-template-columns: 1fr;
+    gap: clamp(24px, 3.6svh, 36px);
+    padding-top: 0;
+  }
+
+  .bl-pc-n { font-size: 26px; }
+  .bl-pc-t { margin-top: 6px; font-size: 19px; }
+  .bl-pc-d { font-size: 13px; }
+}
+/* ══════════════════════════════════════════════════════════
+   PROYECTOS · la sección que se queda quieta
+   ══════════════════════════════════════════════════════════
+
+   La sección mide varias pantallas y lo que se ve queda clavado mientras la
+   página baja. Cada tramo de scroll es un proyecto: cambian las dos pantallas, la
+   ficha y el fondo, y los aparatos no se mueven.
+
+   ⚠️ NO LLEVA `.bl-sec` NI `.bl-secpad`, y es la segunda excepción del archivo
+   después de Cómo trabajamos. Esas clases dan una pantalla de alto y un padding
+   pensado para contenido en flujo; acá el alto lo manda la cantidad de proyectos y
+   el padding lo pone la escena pegajosa, que es la que mide una pantalla. El fondo
+   opaco y el escalón de apilado sí hacen falta, así que van escritos a mano.
+
+   ⚠️ Y NO PUEDE LLEVAR `overflow` DE NINGÚN TIPO. Un `overflow` distinto de
+   `visible` en un ancestro del elemento pegajoso lo convierte en contenedor de
+   scroll y el `sticky` deja de pegarse: se ve la escena pasando de largo como
+   cualquier bloque. `clip` es la única excepción y no vale la pena arriesgarla
+   acá. */
+.bl-py {
+  position: relative; z-index: 1;
+  background: var(--bl-fondo);
+
+  /* ⚠️ EL ALTO ES UNA PANTALLA MÁS UN TRAMO POR CADA PROYECTO EXTRA, y de esa
+     cuenta sale todo el ritmo. La primera pantalla es la que se ve al llegar; cada
+     `72svh` que siguen son el scroll que hay que hacer para pasar al proyecto
+     siguiente. Más alto y el recorrido se hace pesado; menos, y los cuatro pasan
+     de golpe con un gesto de trackpad. */
+  min-height: calc(100svh + (var(--n, 4) - 1) * 72svh);
+}
+
+/* ── EL FONDO QUE SE TIÑE ───────────────────────────────── */
+.bl-py-fondos { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+
+/* ⚠️ EL COLOR ES UN TINTE, NO UN FONDO DE COLOR. Los dos aparatos muestran el
+   color del proyecto a pleno; si la sección entera se tiñe fuerte, las pantallas
+   dejan de destacarse contra ella y el proyecto se pierde adentro de su propio
+   fondo. Pero al 7% —que era el primer valor— el cambio directamente no se veía,
+   y todo el gesto de esta sección es que la pantalla ENTERA cambie de temperatura
+   al pasar de proyecto. El 16% de arriba es el punto donde se percibe sin que nada
+   se vuelva de color.
+
+   El degradé —cargado arriba, medio en el medio y limpio abajo— es para que el
+   tinte no se lea como una capa de pintura pareja encima de la página. */
+.bl-py-capa {
+  position: absolute; inset: 0;
+  opacity: 0;
+}
+.bl-py-fondos .bl-py-capa {
+  background: linear-gradient(to bottom,
+    color-mix(in oklab, var(--c) 16%, var(--bl-fondo)) 0%,
+    color-mix(in oklab, var(--c) 7%, var(--bl-fondo)) 52%,
+    var(--bl-fondo) 100%);
+}
+
+/* ── LA ESCENA PEGAJOSA ─────────────────────────────────── */
+.bl-py-escena {
+  position: sticky; top: 0; z-index: 1;
+  height: 100svh;
+  display: flex; align-items: center;
+  /* Los 72px de la barra fija, igual que en el resto de las secciones: sin esto,
+     la ficha y el título quedan debajo de ella todo el recorrido. */
+  padding-top: 72px;
+}
+.bl-py-in {
+  /* ⚠️ LA COLUMNA DE TEXTO ES LA ANGOSTA, y no es una preferencia de composición:
+     lo que esta sección muestra son las capturas, y una captura de un sitio dentro
+     de una tablet chica no se ve. El texto son tres renglones y una barra; el resto
+     del ancho es de los aparatos. */
+  display: grid; grid-template-columns: minmax(0, 24%) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 64px);
+}
+
+/* ── LA COLUMNA DE TEXTO ────────────────────────────────── */
+.bl-py-texto { display: flex; flex-direction: column; align-items: flex-start; }
+.bl-py-texto .bl-cab-ficha { width: 100%; }
+.bl-py-texto .bl-cab-tit { margin-bottom: clamp(20px, 3svh, 34px); }
+
+/* ⚠️ LA PRIMERA FICHA QUEDA EN EL FLUJO Y LAS OTRAS SE APILAN ENCIMA SUYO. Si las
+   cuatro fueran absolutas, el contenedor mediría cero y el indicador de abajo se
+   subiría hasta el título; si ninguna lo fuera, el bloque mediría la suma de las
+   cuatro. Así mide lo que mide UNA, que es lo único que se ve a la vez.
+
+   El riesgo conocido: si la ficha más alta no es la primera, las otras se salen por
+   abajo. Con nombre, rubro y año son todas de dos renglones; el día que una lleve
+   una línea más, esto pasa a necesitar un `min-height`. */
+.bl-py-fichas { position: relative; width: 100%; }
+.bl-py-ficha { position: absolute; inset: 0; }
+.bl-py-ficha:first-child { position: relative; }
+
+.bl-py-ficha h3 {
+  margin: 0 0 6px;
+  font-size: clamp(22px, 2.4vw, 34px);
+  font-weight: 800; letter-spacing: -.035em; line-height: 1.05;
+}
+.bl-py-tipo {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ── EL INDICADOR ───────────────────────────────────────── */
+/* Un tramo por proyecto. Es lo que una sección pegajosa no dice sola: cuántos hay
+   y en cuál estás. Sin esto, el visitante scrollea sin saber si le quedan dos o
+   diez. */
+.bl-py-pasos {
+  display: flex; gap: 6px; width: 100%;
+  margin-top: clamp(22px, 3.4svh, 40px);
+}
+.bl-py-paso {
+  flex: 1; height: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+.bl-py-paso i {
+  display: block; height: 100%;
+  background: var(--magenta);
+  transform: scaleX(0); transform-origin: 0 50%;
+}
+
+/* ── LOS DOS APARATOS ───────────────────────────────────── */
+/* ⚠️ SE APOYAN EN LA MISMA LÍNEA DE ABAJO (`align-items: flex-end`) Y SE PISAN UN
+   POCO. Alineados por el centro y separados, se leen como dos objetos sueltos en
+   una fila; apoyados y superpuestos, se leen como una foto de escritorio: el
+   teléfono adelante, la tablet atrás. El margen negativo es el que arma esa
+   profundidad. */
+.bl-py-aparatos {
+  display: flex; align-items: flex-end; justify-content: center;
+  /* ⚠️ EL ALTO SE MIDE EN `svh` Y LLEGA AL 68%, que es casi todo lo que la escena
+     tiene disponible una vez descontada la barra fija. La tablet estaba en 44 y era
+     demasiado chica para lo único que la sección tiene que hacer: que se vea el
+     proyecto. El techo en píxeles existe para que en un monitor vertical no se
+     vuelva gigante.
+
+     El teléfono sale de esta misma medida —el 82%— así que los dos crecen juntos y
+     la proporción entre ellos no cambia nunca. */
+  --alto: clamp(230px, 62svh, 500px);
+}
+
+/* ⚠️ `flex: none` EN LOS DOS APARATOS, Y NO ES DECORATIVO: son items de un flex y
+   por defecto se encogen cuando la fila no entra. Sin esto, el marco no medía lo
+   que decía su `aspect-ratio` —la tablet daba 1,48 en vez de 1,6 y el teléfono
+   0,43 en vez de 0,48— y las dos capturas quedaban espachurradas a lo ancho. El
+   síntoma es engañoso: parece un problema de proporción del dibujo y es el flex
+   apretando. Si vuelven a verse angostos, lo que hay que bajar es `--alto`. */
+.bl-py-tablet {
+  position: relative; flex: none;
+  height: var(--alto);
+  /* ⚠️ 16:10 Y NO 4:3, aunque un iPad sea 4:3. Lo que va adentro es la captura de
+     un SITIO DE ESCRITORIO, y un sitio de escritorio en un marco cuadrado obliga a
+     recortarle un tercio del ancho: se pierde justo lo que la sección vino a
+     mostrar. El marco se adapta al contenido, no al catálogo de Apple. */
+  aspect-ratio: 16 / 10;
+  border: 8px solid var(--ink);
+  border-radius: 20px;
+  background: var(--ink);
+  box-shadow: 0 28px 60px -24px rgba(10, 10, 12, .45);
+  overflow: hidden;
+}
+
+/* ⚠️ LA PROPORCIÓN ES LA DEL APARATO ENTERO, NO LA DE SU PANTALLA. Un iPhone 15
+   tiene la pantalla en 9:19.5 —o sea 0,46— pero el teléfono en la mano mide
+   70,6 × 146,6mm, que da 0,48. La diferencia son los marcos, y acá el marco está
+   dibujado por fuera del `aspect-ratio`: aplicando el 0,46 al conjunto, el aparato
+   sale más largo que uno real y se lee estirado. El número que va es el del
+   objeto, no el de su pantalla. */
+.bl-py-fono {
+  position: relative; z-index: 1; flex: none;
+  height: calc(var(--alto) * .82);
+  aspect-ratio: .48;
+  margin-left: calc(var(--alto) * -.14);
+  margin-bottom: calc(var(--alto) * -.06);
+  border: 6px solid var(--ink);
+  border-radius: 26px;
+  background: var(--ink);
+  box-shadow: 0 24px 50px -20px rgba(10, 10, 12, .5);
+  overflow: hidden;
+}
+
+/* La barra del gesto, el único detalle que se dibuja: alcanza para que un
+   rectángulo redondeado se lea como un teléfono. */
+.bl-py-barra {
+  position: absolute; z-index: 2;
+  left: 50%; bottom: 6px; transform: translateX(-50%);
+  width: 32%; height: 3px; border-radius: 2px;
+  background: rgba(255, 255, 255, .55);
+}
+
+/* El visor es lo que recorta las capturas contra las esquinas redondeadas del
+   marco. Hoy adentro hay colores planos; mañana, las imágenes. */
+.bl-py-visor { position: relative; width: 100%; height: 100%; overflow: hidden; }
+
+/* ⚠️ `cover` CON EL ANCLA ARRIBA. Las capturas se sacan con la proporción exacta
+   de su marco, así que en teoría no hay nada que recortar; el `cover` es el seguro
+   para el día que entre una con dos píxeles de diferencia, y el ancla arriba decide
+   qué se pierde en ese caso: el pie de la captura y nunca la cabecera, que es donde
+   está el logo y el título del proyecto. */
+.bl-py-visor img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 0;
+  display: block;
+}
+/* ⚠️ LA PANTALLA DEL TELÉFONO VA MÁS OSCURA QUE LA DE LA TABLET, y con las
+   capturas de verdad esto se cae solo —ahí son dos imágenes distintas— pero con
+   colores planos hace falta: dos rectángulos del mismo color exacto se leen como
+   un solo objeto partido en dos, no como dos vistas del mismo proyecto. */
+.bl-py-visor .bl-py-capa { background: var(--c); }
+.bl-py-fono .bl-py-capa { background: color-mix(in oklab, var(--c) 82%, black); }
+
+/* ══════════════════════════════════════════════════════════
+   EL RECORRIDO
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ `--a` ES EN QUÉ PROYECTO ESTAMOS, CON DECIMALES: el progreso crudo de la
+   sección multiplicado por la cantidad de proyectos. Vale 0 al llegar, 1,5 justo
+   entre el segundo y el tercero, 4 al final. Todo lo que sigue lo lee.
+
+   ⚠️ EN REPOSO VALE 0 Y NO 1, al revés que el resto de los gestos de esta hoja. La
+   razón es que acá el estado sin JavaScript no es "todo terminado" sino "el primer
+   proyecto": si `--a` valiera lo mismo que al final del recorrido, sin JavaScript
+   se vería el último proyecto y ninguno de los otros tres, lo cual es peor que ver
+   el primero. */
+.bl-py { --a: 0; }
+[data-px-listo] .bl-py { --a: calc(var(--p, 0) * var(--n, 4)); }
+
+/* ⚠️ CADA CAPA ESTÁ ENCENDIDA MIENTRAS `--a` RECORRE SU TRAMO Y SE CRUZA CON LA
+   VECINA EN EL BORDE. La cuenta mide la distancia entre `--a` y el CENTRO del tramo
+   —de ahí el 0,5— y de esa distancia sale la opacidad: uno en el medio del tramo,
+   medio justo en el borde, cero un poco después. Como la vecina hace lo mismo al
+   revés, en el borde las dos valen medio y el cambio es un fundido, no un corte.
+
+   ⚠️ EL PRIMER INTENTO MEDÍA LA DISTANCIA A LOS BORDES EN VEZ DE AL CENTRO, y
+   tenía un agujero: en el límite exacto entre dos proyectos la que salía ya valía
+   cero y la que entraba todavía no había arrancado, así que por un instante no se
+   veía ninguno de los dos y la sección quedaba en blanco. Medido: a la mitad del
+   recorrido, las cuatro capas en cero.
+
+   ⚠️ Y NO USA `abs()`, que sería lo natural para una distancia: es reciente y no
+   está en todos los navegadores que esta página tiene que soportar. `max(d, -d)` es
+   la misma cuenta escrita con lo que hay desde siempre.
+
+   El 0,68 es medio tramo más el fundido (0,5 + 0,18) y el 2,78 es su inversa
+   dividida por dos: juntos hacen que la rampa dure 0,36 de tramo, centrada en el
+   borde. Los dos números se mueven JUNTOS o el fundido deja de cerrar en medio. */
+[data-px-listo] .bl-py-capa {
+  opacity: clamp(0, calc((.68 - max(calc(var(--a) - var(--k) - .5),
+                                    calc(var(--k) + .5 - var(--a)))) * 2.78), 1);
+}
+
+/* ⚠️ LA PRIMERA NO ENTRA Y LA ÚLTIMA NO SALE, y esas dos excepciones no son un
+   detalle: sin ellas, el primer proyecto arranca a media opacidad —porque el
+   comienzo del recorrido ES el borde izquierdo de su tramo— y el último se apaga
+   igual al llegar al final. Cada una usa media cuenta: la primera sólo la rampa de
+   salida, la última sólo la de entrada. */
+[data-px-listo] .bl-py-fondos .bl-py-capa:first-child,
+[data-px-listo] .bl-py-visor .bl-py-capa:first-child,
+[data-px-listo] .bl-py-fichas .bl-py-capa:first-child {
+  opacity: clamp(0, calc((var(--k) + 1.18 - var(--a)) * 2.78), 1);
+}
+[data-px-listo] .bl-py-fondos .bl-py-capa:last-child,
+[data-px-listo] .bl-py-visor .bl-py-capa:last-child,
+[data-px-listo] .bl-py-fichas .bl-py-capa:last-child {
+  opacity: clamp(0, calc((var(--a) - var(--k) + .18) * 2.78), 1);
+}
+
+/* Sin JavaScript se ve el primer proyecto y nada más. No es un fallback pobre: es
+   exactamente lo que hay para mostrar cuando no hay recorrido. */
+.bl-py-fondos .bl-py-capa:first-child,
+.bl-py-visor .bl-py-capa:first-child,
+.bl-py-fichas .bl-py-capa:first-child { opacity: 1; }
+
+/* Cada tramo del indicador se pinta mientras el recorrido pasa por el suyo. Sin
+   `clamp` los tramos ya recorridos volverían a cero al pasar de largo. */
+[data-px-listo] .bl-py-paso i {
+  transform: scaleX(clamp(0, calc(var(--a) - var(--k)), 1));
+}
+
+/* ══════════════════════════════════════════════════════════
+   EN TELÉFONO: LA TABLET, NO EL TELÉFONO
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ QUEDA LA TABLET Y SE VA EL TELÉFONO, que es al revés de lo que parece
+   lógico. El primer intento dejó el teléfono —es el aparato con el que se está
+   mirando la página, y su captura ya viene en vertical— pero de eso no se sigue que
+   se vea mejor: un teléfono vertical adentro de una pantalla vertical entra angosto
+   y alto, y la captura queda del ancho de un dedo.
+
+   La tablet acostada usa TODO el ancho disponible. En 390px da unos 344 de ancho
+   por 215 de alto: es chica, pero es una vista completa del proyecto y no una tira.
+   Lo que importa acá no es qué aparato es más coherente con el contexto sino cuál
+   deja ver mejor lo que se está mostrando.
+
+   ⚠️ Y CAMBIA QUIÉN MANDA LA MEDIDA. En escritorio el aparato se dimensiona por el
+   ALTO —`--alto` en `svh`— porque lo que escasea ahí es el alto de la escena; acá lo
+   que escasea es el ancho, así que la tablet toma el 100% disponible y su alto sale
+   de la proporción. Es la misma caja midiéndose por el otro lado.
+
+   ⚠️ EL RECORRIDO NO CAMBIA: el fondo se sigue tiñendo, la ficha sigue cambiando y
+   el indicador sigue marcando. Lo único que se saca es un aparato. */
+@media (max-width: 900px) {
+  .bl-py-in {
+    grid-template-columns: 1fr;
+    gap: clamp(20px, 3svh, 32px);
+  }
+
+  .bl-py-fono { display: none; }
+
+  .bl-py-aparatos { display: block; }
+  .bl-py-tablet {
+    width: 100%;
+    height: auto;
+    border-width: 7px;
+    border-radius: 16px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   CONTACTO · la contratapa del hero
+   ══════════════════════════════════════════════════════════
+
+   ⚠️ ES LA SEGUNDA Y ÚLTIMA PANTALLA OSCURA DE LA PÁGINA, y ésa es toda la idea.
+   Abre con tinta, se aclara para el documento, y cierra con tinta. Entre las dos
+   pantallas negras está todo lo que hay que leer; ellas dos son las tapas.
+
+   Por eso repite tres cosas del hero y sólo tres: la grilla dibujada, la ficha en
+   mono con filete y la caja alta del titular. Es la única sección que usa
+   mayúsculas —las del medio no— porque no es una sección del documento, es su
+   contratapa: las del medio se leen, ésta y la portada se miran.
+
+   ⚠️ Y EMPALMA CON EL PIE, QUE TAMBIÉN ES TINTA. No es un descuido: el final de
+   la página es un solo bloque oscuro que contiene el contacto y la firma. Lo que
+   los separa es el filete propio del pie, que alcanza. */
+
+/* ⚠️ ES BLANCA, NO OSCURA, Y ESO RESUELVE DOS COSAS DE UNA. Fue tinta como el
+   hero y después un gris intermedio, y las dos versiones peleaban con el pie —que
+   también es tinta— por dónde termina una superficie y empieza la otra. En blanco
+   el corte contra el pie es total: no hace falta que nada lo explique.
+
+   Y de paso vuelve a la regla del resto del documento: la única pantalla oscura
+   de la página es el hero. Lo que cierra el círculo no es el color, es la FOTO.
+
+   ⚠️ EL TITULAR SÍ SIGUE EN CAJA ALTA. Es lo único que esta sección conserva del
+   hero además de la imagen, y es a propósito: no es una sección del documento, es
+   su contratapa. */
+.bl-ct {
+  position: relative;
+  overflow: clip;
+  background: var(--bl-fondo);
+  color: var(--text-primary);
+}
+
+/* ── LA FOTO, A UN COSTADO ────────────────────────────────
+   ⚠️ ARRANCA EN EL 52% Y LLEGA AL CANTO DERECHO DE LA PANTALLA. No lleva ancho
+   propio: los cuatro `inset` la definen entera, así que crece con la ventana sin
+   ninguna cuenta de por medio.
+
+   ⚠️ SIN TRATAMIENTO. En el hero va a `brightness(.46)` porque tiene un titular
+   encima que necesitaba 4,76:1 en toda la superficie; acá no hay texto arriba, así
+   que la foto se ve como es. Es el mismo archivo mostrando dos caras. */
+/* ⚠️ EL 52% VA SÓLO EN EL `<picture>`; LA `<img>` VA A `inset: 0` DE SU PADRE, y
+   escribir el mismo `inset` en los dos —que es lo que estaba— desplaza la imagen
+   DOS VECES: el contenedor arrancaba en 793px y la imagen adentro en 1175, así
+   que entre esos 380px no había foto sino fondo blanco. El degradé, que sí cubre
+   el contenedor entero, quedaba lavando sobre blanco y no se veía: la ciudad
+   empezaba con un corte vertical duro justo donde tenía que estar naciendo. */
+.bl-ct-foto {
+  position: absolute; z-index: 0;
+  inset: 0 0 0 52%;
+  display: block;
+}
+.bl-ct-foto img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+  object-fit: cover;
+  /* Centrado. La foto es un contrapicado con los dos rascacielos principales en
+     el medio del cuadro, asi que el recorte lateral tiene que sacar por igual de
+     los dos lados. Corrido a un costado, uno de los dos edificios se pierde. */
+  object-position: 50% 50%;
+}
+
+/* ⚠️ EL DEGRADÉ ES LO QUE LA PEGA A LA PÁGINA. Sin él, la foto arranca con un
+   borde vertical duro contra el blanco y se lee como una imagen pegada al lado
+   del texto. Naciendo desde el blanco de la página, la ciudad aparece desde el
+   fondo — el mismo recurso que usa la ilustración del hero, que trae su propio
+   desvanecido pintado.
+
+   Va sobre la foto y no como máscara: una máscara dejaría ver lo que haya detrás,
+   y detrás no hay nada. Un degradé del color de la página es más barato y hace lo
+   mismo. */
+.bl-ct-foto::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to right,
+    var(--bl-fondo) 0%,
+    rgba(255, 255, 255, .55) 16%,
+    rgba(255, 255, 255, 0) 42%);
+  pointer-events: none;
+}
+
+.bl-ct-esc {
+  position: relative; z-index: 1;
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  /* El aire entre la cabecera y los canales es mayor que el que separa las
+     piezas de la cabecera entre si. Con el mismo valor en los dos lugares, el
+     titulo, la bajada y las tres filas se leian como un solo bloque de seis
+     renglones apretados. Al separarlos, quedan dos cosas: lo que la seccion
+     dice y por donde se responde. */
+  gap: clamp(30px, 5.4svh, 66px);
+  /* ⚠️ EL ANCHO SE ACOTA EN LOS HIJOS, NO ACÁ, Y ESTE ERROR YA ESTÁ DOCUMENTADO
+     EN EL HERO: este elemento es TAMBIÉN `.bl-wrap`, así que un `max-width`
+     propio le pisa lo único que define al envoltorio. Puesto acá, el bloque dejó
+     de medir 1240px, pasó a medir el 54% de la pantalla y —como el envoltorio se
+     centra con `margin-inline: auto`— se centró sobre esa otra medida: el texto
+     arrancaba en 351px en vez de 167 y se metía debajo de la foto.
+
+     Acotando a los hijos, el envoltorio conserva su ancho y su eje, y lo único
+     que se angosta es el contenido. */
+  align-items: flex-start;
+}
+
+/* El 54% deja un margen entre donde termina el texto y donde el degradé de la
+   foto todavía está lavando: pegados, la última palabra de cada fila caería sobre
+   el borde del desvanecido. */
+.bl-ct-esc > * { width: 54%; }
+
+/* ── LA CABECERA, EN NEGATIVO ─────────────────────────────
+   Hereda `.bl-cab` del patrón compartido; acá sólo se le dan vuelta los colores,
+   porque el patrón está pensado para fondo claro. */
+/* ── LA CABECERA ─────────────────────────────────────────
+   Hereda `.bl-cab` del patrón compartido y no necesita ni un color propio: la
+   sección volvió a fondo claro, que es para el que ese patrón está hecho. */
+
+/* ⚠️ EL TITULAR NO USA `.bl-cab-tit`: ES EL DEL HERO EN CHICO. Caja alta,
+   interlínea por debajo de 1 y tracking negativo — las tres cosas que hacen que
+   dos renglones se lean como un bloque y no como dos frases sueltas.
+
+   ⚠️ Y ES MUCHO MÁS CHICO QUE EN LA VERSIÓN OSCURA: iba a 6,2vw cuando ocupaba el
+   ancho entero; ahora vive en la mitad izquierda, así que a esa escala
+   "TRABAJEMOS JUNTOS" no entraba en su columna. La medida manda sobre el gesto. */
+.bl-ct-tit {
+  margin: 0;
+  font-size: clamp(28px, 3.6vw, 46px);
+  font-weight: 800;
+  line-height: .94;
+  letter-spacing: -.04em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+/* El único color de la sección, igual que "necesita" en el hero. */
+.bl-ct-tit em { font-style: normal; color: var(--magenta); }
+
+.bl-ct-lede {
+  margin: 0; max-width: 46ch;
+  font-size: clamp(13px, 1.1vw, 15px);
+  line-height: 1.55;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+/* ── LOS CANALES ──────────────────────────────────────────
+   ⚠️ CADA UNO ES UNA FILA DEL ANCHO DE LA PÁGINA, no una tarjeta en una columna.
+   Eran dos grupos en media página, con las filas apretadas contra el borde; a lo
+   ancho, cada canal se toca de punta a punta y la marca a la que pertenece se lee
+   a la derecha, donde no le compite al canal.
+
+   Los filetes son lo único que los separa: sin cajas, sin fondos. Es la misma
+   lógica del índice de Servicios. */
+.bl-ct-lista {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column;
+  border-top: 1px solid var(--border);
+}
+.bl-ct-lista li { border-bottom: 1px solid var(--border); }
+
+.bl-ct-fila {
+  display: flex; align-items: center;
+  gap: clamp(12px, 1.6vw, 22px);
+  padding: clamp(12px, 1.8svh, 20px) 0;
+  text-decoration: none; color: inherit;
+  transition: padding-inline .3s var(--bl-sal), background .3s var(--bl-sal);
+}
+.bl-ct-fila:hover {
+  background: var(--n-50);
+  padding-inline: clamp(10px, 1.4vw, 20px);
+}
+
+.bl-ct-ico {
+  flex: none;
+  display: grid; place-items: center;
+  width: clamp(34px, 3.4vw, 42px); height: clamp(34px, 3.4vw, 42px);
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.bl-ct-ico svg { width: 19px; height: 19px; }
+/* WhatsApp lleva su propio verde: es el único lugar de la página donde un color
+   de marca ajena tiene sentido, porque identifica el canal. */
+/* ⚠️ EL VERDE BAJA DE TONO AL ACLARARSE EL FONDO. `#25D366` está hecho para
+   fondo oscuro; sobre blanco mide 2,0:1 y el ícono se lava. `#128C4A` es el mismo
+   verde de la marca llevado a un valor que se lee sobre claro — es el que ya usaba
+   esta sección antes de la versión oscura. */
+.bl-ct-ico.es-wa { color: #128C4A; border-color: rgba(18,140,74,.3); }
+
+.bl-ct-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.bl-ct-k {
+  font-size: clamp(15px, 1.5vw, 19px);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -.02em;
+  color: var(--text-primary);
+}
+.bl-ct-v {
+  font-size: clamp(12px, 1vw, 13.5px);
+  color: var(--text-secondary);
+}
+
+/* ⚠️ LA MARCA VA EN MONO Y EMPUJADA A LA DERECHA. Era un rótulo de grupo encima
+   de las filas —"Contacto Brickell Lab y Lúmina"— y como encabezado pesaba más
+   que los canales que agrupaba. Al costado de cada fila, es lo que es: el dato de
+   a quién le estás escribiendo. */
+.bl-ct-marca {
+  margin-left: auto;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: clamp(8.5px, .88vw, 10px);
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.bl-ct-fila .bl-fl {
+  flex: none; width: 18px; height: 18px;
+  color: var(--text-muted);
+  transition: transform .3s var(--bl-sal), color .3s var(--bl-sal);
+}
+.bl-ct-fila:hover .bl-fl { color: var(--magenta); transform: translateX(4px); }
+
+/* ── LA LÍNEA DE CIERRE ───────────────────────────────────
+   ⚠️ SIGUE ESTANDO AUNQUE YA NO HAGA FALTA PARA SEPARAR. Nació cuando esta
+   sección era tinta como el pie y las dos superficies se fundían; ahora el corte
+   de blanco a negro se explica solo. Queda porque hace otra cosa: es el único
+   trazo de color en todo el cierre y le pone un remate a la página, en vez de que
+   el blanco se termine de golpe.
+
+   ⚠️ Y AHORA EL HALO SE VE MEJOR QUE ANTES, no peor. Un resplandor sobre negro
+   compite con el negro; acá el `box-shadow` proyecta hacia abajo, sobre el pie
+   oscuro, que es exactamente donde un brillo se lee. Sobre el blanco de arriba,
+   en cambio, casi no se nota — que es lo que corresponde: la línea marca el
+   final, no lo interrumpe.
+
+   El degradé nace y muere en transparente para que sea un resplandor en el centro
+   y no una raya de neón de borde a borde. Y va a sangre, fuera del envoltorio:
+   separa dos SECCIONES, no dos bloques de la columna de texto. */
+.bl-ct::after {
+  content: "";
+  position: absolute; z-index: 2;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent 0%,
+    rgba(236, 30, 121, .12) 18%,
+    rgba(236, 30, 121, .85) 50%,
+    rgba(236, 30, 121, .12) 82%,
+    transparent 100%);
+  box-shadow: 0 0 14px 1px rgba(236, 30, 121, .38);
+  pointer-events: none;
+}
+
+/* ── EN TELÉFONO ──────────────────────────────────────────
+   ⚠️ LA MARCA DE CADA FILA SE VA. En 390px de ancho, el canal, su descripción y
+   el nombre de la marca en la misma línea dejan a los tres partidos en dos
+   renglones cada uno. El dato que se pierde está implícito en el canal —el de
+   Lexa lo dice su propia descripción— así que se sacrifica ése y no el canal.
+
+   La grilla baja a tres columnas: seis líneas en un teléfono son un rayado. */
+@media (max-width: 760px) {
+  .bl-ct-tit { font-size: clamp(28px, 8.4vw, 44px); }
+  .bl-ct-marca { display: none; }
+  .bl-ct-fila { gap: 12px; }
+
+  /* ⚠️ EN TELÉFONO NO HAY DOS COLUMNAS QUE REPARTIR: la foto pasa a ocupar el
+     fondo entero y el texto recupera todo el ancho. Dejada al 52%, quedaría una
+     tira de ciudad de 180px contra un texto de 200 — ninguna de las dos cosas se
+     vería. Y el degradé gira: de lavar por la izquierda a lavar desde arriba,
+     que es de donde ahora viene el texto. */
+  .bl-ct-esc > * { width: 100%; }
+  .bl-ct-foto { inset: 0; }
+  .bl-ct-foto img { object-position: 50% 40%; opacity: .26; }
+  .bl-ct-foto::after {
+    background: linear-gradient(to bottom,
+      var(--bl-fondo) 0%, rgba(255,255,255,.72) 46%, rgba(255,255,255,.5) 100%);
+  }
+  /* En una pantalla angosta el degradé cierra sobre un ancho mucho menor: el
+     halo se baja para que la línea no quede casi maciza de borde a borde. */
+  .bl-ct::after { box-shadow: 0 0 10px 1px rgba(236, 30, 121, .3); }
+}
+
+/* ══════════════════════════════════════════════════════════
+   EL PIE · portado del de Lúmina
+   ══════════════════════════════════════════════════════════
+
+   Dos zonas: la navegación y la banda de cierre. El markup y el porqué de cada
+   decisión están en `Pie.astro`.
+
+   ⚠️ ES EL ÚNICO BLOQUE OSCURO DE LA PÁGINA. Después de siete pantallas blancas,
+   la tinta cierra. Si hubiera tres secciones oscuras antes, ésta sería una más.
+
+   ⚠️ NO LLEVA LUZ NI DEGRADÉ DE FONDO. En Lúmina el pie tuvo dos radiales
+   soplados con blur, y se sacaron: venían de cuando el pie abría con una última
+   llamada a la acción que ocupaba esos primeros doscientos píxeles y sostenía el
+   foco. Sin ella, la luz quedaba sobre los links y los lavaba. Un plano parejo
+   es lo que dice "se acabó", que es todo lo que un pie tiene que decir. */
+
+.bl-pie {
+  position: relative; overflow: clip;
+  background: var(--ink); color: #EDEDF0;
+}
+
+/* ── LA NAVEGACIÓN ────────────────────────────────────────
+   Sin filete arriba: la navegación es lo PRIMERO del pie, y una línea ahí
+   separaría el pie de la sección de arriba dos veces —el cambio de fondo ya lo
+   hace—. El filete que sí queda es el de la banda, que separa dos cosas que
+   comparten fondo. */
+.bl-pie-nav {
+  position: relative; z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.5fr);
+  gap: clamp(28px, 4vw, 72px);
+  padding-block: clamp(38px, 6svh, 64px) clamp(30px, 4.4svh, 48px);
+}
+
+.bl-pie-logo { height: 26px; width: auto; display: block; filter: brightness(0) invert(); }
+.bl-pie-marca p {
+  margin: 15px 0 0;
+  font-size: 13px; line-height: 1.55;
+  color: rgba(255,255,255,.6); max-width: 38ch;
+}
+
+.bl-pie-cols {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 3vw, 48px);
+}
+.bl-pie-cols .tit {
+  display: block;
+  font-size: 10px; font-weight: 700; letter-spacing: .22em;
+  text-transform: uppercase; color: rgba(255,255,255,.4);
+}
+.bl-pie-cols ul {
+  list-style: none; padding: 0; margin: 14px 0 0;
+  display: flex; flex-direction: column; gap: 9px;
+}
+.bl-pie-cols a {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 13.5px; color: rgba(255,255,255,.72);
+  text-decoration: none; transition: color .18s ease;
+}
+.bl-pie-cols a:hover { color: #fff; }
+.bl-pie-cols .ext { width: 13px; height: 13px; flex: none; opacity: .7; }
+
+/* ── LA BANDA DE CIERRE ───────────────────────────────────
+   ⚠️ VA FUERA DEL ENVOLTORIO para que el fondo cruce la página de lado a lado;
+   el contenido de adentro sí se alinea con el resto. */
+.bl-pie-banda {
+  position: relative; z-index: 2;
+  border-top: 1px solid rgba(255,255,255,.12);
+  background: rgba(0, 0, 0, .22);
+}
+.bl-pie-banda .fila {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 14px clamp(16px, 2vw, 32px);
+  padding-block: clamp(14px, 2.2svh, 20px);
+}
+.bl-pie-banda .copy { font-size: 11.5px; color: rgba(255,255,255,.5); }
+
+.bl-pie-redes { display: flex; align-items: center; gap: clamp(14px, 2vw, 26px); }
+.bl-pie-redes .grupo { display: flex; align-items: center; gap: 9px; }
+.bl-pie-redes .q {
+  font-size: 10px; font-weight: 700; letter-spacing: .16em;
+  text-transform: uppercase; color: rgba(255,255,255,.4);
+}
+
+/* ── LOS ÍCONOS ──
+   Pelados, sin caja ni borde: cinco pastillas en una banda de cierre pesan más
+   que el copyright que tienen al lado.
+
+   ⚠️ EL `stroke-width` VA ACÁ Y NO EN CADA `svg`. Los dos que llevan la ventana
+   recortada —X y TikTok— lo declaran como atributo en el elemento, y un atributo
+   de presentación pierde contra una regla de CSS… salvo que la regla no exista.
+   Declarándolo sólo acá, el de TikTok (1.23, compensado por su viewBox chico)
+   sigue mandando. Si algún día se le agrega `stroke-width` a una regla más
+   específica, la fila se despareja. */
+.bl-pie-redes .rs {
+  display: inline-flex; color: rgba(255,255,255,.5);
+  transition: color .18s ease, transform .18s var(--bl-sal);
+}
+.bl-pie-redes .rs svg {
+  width: 17px; height: 17px;
+  fill: none; stroke: currentColor;
+  stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+}
+.bl-pie-redes .rs:hover { color: #fff; transform: translateY(-1px); }
+
+.bl-pie-banda .legales { display: flex; align-items: center; gap: clamp(12px, 1.6vw, 22px); }
+.bl-pie-banda .legales a,
+.bl-pie-banda .legales .cookies {
+  font-size: 11.5px; color: rgba(255,255,255,.5);
+  text-decoration: none; transition: color .18s ease;
+}
+.bl-pie-banda .legales a:hover,
+.bl-pie-banda .legales .cookies:hover { color: #fff; }
+/* El de cookies es un `<button>` porque no navega: abre el panel. Se lo despoja
+   de todo lo que un botón trae por defecto para que se lea como los links que
+   tiene al lado. */
+.bl-pie-banda .legales .cookies {
+  background: none; border: 0; padding: 0;
+  font-family: inherit; cursor: pointer;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .bl-pie-nav { grid-template-columns: 1fr; gap: 34px; }
+  .bl-pie-marca p { max-width: none; }
+  .bl-pie-banda .fila { flex-direction: column; align-items: flex-start; }
+  .bl-pie-redes { flex-wrap: wrap; }
+}
+
+@media (max-width: 560px) {
+  .bl-pie-cols { grid-template-columns: 1fr 1fr; gap: 26px 20px; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════ */
+
+
+/* ⚠️ ACÁ HABÍA UNA REGLA QUE CENTRABA EL TELÉFONO DEL HERO VIEJO CON ESTE BOTÓN,
+   calculando su posición a partir de `--nav-cta-w` —una variable que medía un
+   script en `Hero.astro` porque el ancho del botón depende del idioma—. Los dos
+   extremos ya no existen: el hero nocturno no monta el teléfono, y el script se
+   fue con la reescritura. Quedaba un `calc` apuntando a una variable que nadie
+   escribe, sobre un elemento que nadie dibuja.
+
+   Vale recordar el motivo por si vuelve a hacer falta alinear algo con este
+   botón: SU ANCHO NO SE PUEDE ESCRIBIR A MANO. Cambia con el idioma y con la
+   tipografía ya cargada, así que hay que medirlo en el navegador y publicarlo en
+   una custom property. Y ahora que dice "Contacto" en vez de la frase larga, mide
+   bastante menos que los 264px que había clavados como reserva. */
+
+@media (max-width: 900px) {
+  .bl-links, .bl-nav .bl-nav-cta { display: none; }
+  .bl-burger { display: inline-flex; }
+
+
+
+  /* ⚠️ ACÁ VIVÍA LA VERSIÓN DE TELÉFONO DE LAS TARJETAS DEL ECOSISTEMA: metía
+     los datos y el link ADENTRO de la foto, con el pie posicionado sobre el borde
+     de abajo y un hueco de 110px reservado a mano para hacerle lugar. Se fue con
+     el rediseño de la sección — ya no hay tarjeta ni foto oscurecida con texto
+     encima, y el caso resuelve su teléfono en su propio tramo, junto a sus reglas.
+
+     De aquello vale guardar la advertencia: un pie `absolute` sobre una foto NO
+     empuja a nadie, así que el espacio que ocupa hay que reservarlo a mano y ese
+     número queda desactualizado en cuanto el texto crece un renglón. Si vuelve a
+     hacer falta algo así, mejor que el pie ocupe flujo. */
+
+  /* ⚠️ ACÁ HABÍA DOS REGLAS DEL ÍNDICE DE SERVICIOS —`.bl-idx-fila` y
+     `.bl-idx-d`— que reacomodaban sus columnas en teléfono. El índice ya no
+     existe: la sección se convirtió en un carrusel y cada servicio ocupa un panel
+     entero, así que no hay filas que reacomodar. */
+
+  /* ⚠️ ACÁ VIVÍA MEDIO HERO VIEJO Y ESTABA PISANDO AL NUEVO. Había un
+     `min-height: 88svh` —que le ganaba al `100svh` del hero nocturno y lo dejaba
+     midiendo 769px en una pantalla de 874—, un `.bl-hero h1` que por tener un
+     elemento en el selector le ganaba en especificidad a `.bl-titular` y lo
+     clavaba en 34px, y una cinta entera con colores de fondo claro.
+
+     ⚠️ LA LECCIÓN, QUE VALE PARA LA PRÓXIMA VEZ: al reescribir un bloque hay que
+     buscar sus restos EN LAS MEDIA QUERIES DEL FINAL DEL ARCHIVO, no sólo donde
+     vivía. Nada avisa —el CSS no da error— y el síntoma aparece únicamente en el
+     ancho donde la media query entra, que es justo el que menos se prueba.
+
+     ⚠️ Y `.bl-hero h1` LE GANABA A `.bl-titular` AUNQUE PAREZCAN EQUIVALENTES:
+     una clase más un elemento (0,1,1) pesa más que una clase sola (0,1,0). Si
+     hace falta pisar el titular desde afuera, se pisa por `.bl-titular`, no
+     agregando elementos al selector.
+
+     El hero nocturno resuelve su propio teléfono en su `@media (max-width: 720px)`,
+     que vive junto a sus reglas y no acá abajo. */
+  .bl-piezas { display: none; }
+}
+
+/* ⚠️ ACÁ HABÍA UN TRAMO `(orientation: portrait)` QUE REORDENABA EL HERO VIEJO:
+   subía los números por encima de los botones con `order` y les colgaba un filete
+   con un tramo magenta. Los dos motivos desaparecieron con el hero nocturno — su
+   pie ya se apila en el orden correcto (bajada, números, botón) y no lleva
+   filetes colgados, porque las horizontales del hero son las de la ficha y el
+   pie—. El filete además estaba dibujado con `var(--border)`, que es un gris de
+   fondo claro: sobre la foto tratada no se veía. */
+
+@media (max-width: 560px) {
+  .bl { --bl-gutter: 18px; }
+  /* ⚠️ ACÁ HABÍA TRES REGLAS DE LOS NÚMEROS DEL HERO VIEJO —el reparto en
+     tercios y las escalas del número y del rótulo— y también le ganaban al hero
+     nocturno, que los resuelve en su propio tramo de 720px. Un `.bl-datos` acá
+     abajo pisaba al de allá arriba por venir después en el archivo. */
+
+  /* ⚠️ ACÁ HABÍA UN `min-height: 82svh` PARA LAS SECCIONES Y ERA EL VERDADERO
+     MOTIVO DE QUE EN TELÉFONO NO OCUPARAN LA PANTALLA. Venía del diseño anterior,
+     cuando las secciones eran título y bajada y poco más: llenar una pantalla
+     vertical con eso dejaba un tercio de texto y dos tercios de nada, así que se
+     bajaba el piso a propósito para que la siguiente asomara e invitara a seguir.
+
+     Ese argumento ya no existe. Las secciones de ahora están armadas para medir
+     una pantalla exacta y su contenido está calculado contra esa medida; con el
+     piso al 82% quedaban dieciocho puntos cortas y siempre asomaba un pedazo de
+     la de abajo, que es justo lo que había que evitar. La regla se sacó: vale
+     `100dvh` de `.bl-sec`, en teléfono igual que en escritorio.
+
+     Y ojo con el orden: esta regla vivía seiscientas líneas más abajo que la que
+     pisaba, con la misma especificidad, así que ganaba por venir después y sin
+     que nada lo delatara. Es la segunda vez que un resto del diseño viejo hace
+     exactamente eso en este archivo. */
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bl *, .bl *::before, .bl *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}

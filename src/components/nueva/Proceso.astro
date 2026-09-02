@@ -1,0 +1,146 @@
+---
+// src/components/nueva/Proceso.astro
+//
+// ══════════════════════════════════════════════════════════
+// CÓMO TRABAJAMOS · la línea que avanza
+// ══════════════════════════════════════════════════════════
+//
+// Una sola línea cruza la pantalla de lado a lado y se va pintando de izquierda
+// a derecha a medida que la página baja. Cada paso está apagado hasta que la
+// línea llega a su marca, y ahí se enciende. No es una entrada escalonada: es un
+// recorrido, y lo que se ve es el proceso avanzando.
+//
+// ⚠️ ESTA SECCIÓN NO MIDE UNA PANTALLA, y es la única de la página que no. Es una
+// franja: tiene el alto que necesita y nada más. Estirarla a pantalla completa
+// obligaba a repartir cuatro bloques de texto corto en setecientos píxeles y lo
+// que quedaba en el medio era vacío. Una línea de tiempo se lee a lo ancho, no a
+// lo alto.
+//
+// ⚠️ EL AVANCE VA ATADO AL SCROLL Y NO A UN `@keyframes`, y no es lo mismo. Con
+// una animación por tiempo, los cuatro pasos se encienden solos aunque nadie se
+// haya movido, y quien llega despacio se pierde el recorrido entero. Atado al
+// scroll, la línea avanza exactamente lo que avanzó el lector: es él el que la
+// empuja.
+//
+// ⚠️ `data-px="cruza"` Y NO EL MODO POR DEFECTO. El modo `entra` mide sólo el
+// último tramo de la subida —sirve para un fundido corto— y acá haría que los
+// cuatro pasos se enciendan casi juntos. `cruza` va desde que el borde de arriba
+// asoma hasta que el de abajo se fue: es todo el tiempo que la franja está a la
+// vista, que es el recorrido que hay que repartir entre los cuatro.
+//
+// ⚠️ LOS PASOS NO PROMETEN PLAZOS. Es fácil escribir "entrega en 15 días" y queda
+// muy bien; es una obligación comercial escrita en la home y nadie la revisó. Los
+// rótulos son de ETAPA, no de calendario. Si querés poner plazos reales, es acá y
+// hay que poder cumplirlos.
+//
+// El copy es NUEVO —no existía una sección de proceso en la página anterior— así
+// que está escrito con lo que el resto del sitio ya afirma. Revisalo antes de
+// publicar: es la única parte de esta página que no salió de un texto tuyo.
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+
+const PASOS = [
+  {
+    n: '01', t: 'Nos contás',
+    d: 'Una charla para entender qué vendés, a quién y qué te está frenando hoy. Sin formulario de por medio: WhatsApp o mail, y hablamos.',
+  },
+  {
+    n: '02', t: 'Proponemos',
+    d: 'Alcance, plazo y precio por escrito antes de empezar. Respetamos tu identidad, pero si vemos algo mejor lo decimos.',
+  },
+  {
+    // ⚠️ LOS DOS ÚLTIMOS PASOS HABLAN DE LOS SEIS SERVICIOS Y NO SÓLO DE WEB, que
+    // es como estaban escritos. La sección de Servicios ofrece dos planes web,
+    // diseño gráfico, packaging, aplicaciones a medida y traducciones: un proceso
+    // que en el paso 3 habla de Core Web Vitals y en el 4 de Search Console deja
+    // afuera a cuatro de los seis, y el que viene por un packaging no se ve
+    // descripto en ninguna parte.
+    //
+    // ⚠️ Y ESTE NO ENUMERA LOS SERVICIOS, que fue el primer intento y no servía.
+    // Listar "una identidad, un packaging, una aplicación o una traducción" hacía
+    // el paso genérico, sí, pero a costa de repetir la sección anterior entera y de
+    // no decir NADA sobre cómo se trabaja, que es lo único que este paso tiene para
+    // aportar. Un paso de proceso se generaliza hablando del proceso, no nombrando
+    // uno por uno los productos a los que se aplica.
+    //
+    // ⚠️ Y TAMPOCO DICE QUE SE MUESTREN AVANCES, que fue el segundo intento y era
+    // FALSO: acá no se le va mostrando el trabajo al cliente sobre la marcha. Se
+    // construye, y hay UNA revisión con él antes de la entrega. Escribir un ida y
+    // vuelta continuo suena mejor y es una forma de trabajo que después hay que
+    // sostener: cualquiera que lea esto va a esperar avances parciales que nadie
+    // se comprometió a mandar.
+    //
+    // El de abajo sí los nombra, y ahí corresponde: la entrega es distinta según
+    // qué se entrega, y esa diferencia es justamente lo que hay que contar. Los tres
+    // ejemplos salen uno por familia de servicio y ninguno afirma nada nuevo:
+    // "formato de producción" está en `sv.otro.box.desc`.
+    //
+    // ⚠️ Y LA TRADUCCIÓN CIERRA SIN NOMBRAR LA MATRÍCULA, aunque sea cierta y esté
+    // en `sv.otro.lang.name`. Acá el paso habla de la ENTREGA, y la matrícula no es
+    // una forma de entregar sino una credencial: dicha en este renglón desentona
+    // con los otros dos ejemplos, que son formatos. Su lugar es la ficha del
+    // servicio, donde ya está.
+    n: '03', t: 'Construimos',
+    d: 'Hacemos el trabajo completo y lo revisamos con vos antes de la entrega final: ahí se ajusta lo que haga falta.',
+  },
+  {
+    // ⚠️ "Entregamos" Y NO "Publicamos". Publicar es algo que le pasa a un sitio:
+    // un packaging se entrega en archivos de producción y una traducción con su
+    // matrícula, y ninguna de las dos se publica. La entrega es lo único que les
+    // pasa a los seis servicios por igual.
+    n: '04', t: 'Entregamos',
+    d: 'Te lo entregamos listo para usar: los archivos en formato de producción, el sitio publicado y midiendo, o la traducción que necesitás.',
+  },
+];
+---
+
+<section class="bl-pc" id="proceso" data-px="cruza" aria-labelledby="bl-pc-t"
+         style={`--n:${PASOS.length}`}>
+
+  <div class="bl-wrap bl-pc-cab">
+    <header class="bl-cab-ficha">
+      <span>Cómo trabajamos</span>
+      <span class="bl-cab-fin">Cuatro pasos</span>
+    </header>
+
+    {/* ⚠️ DECÍA "a estar publicado" Y ARRASTRABA EL MISMO PROBLEMA QUE EL ÚLTIMO
+        PASO: publicar es algo que le pasa a un sitio, y esta sección describe cómo
+        se trabaja en los seis servicios. "La entrega" es lo único que los seis
+        tienen en común, y además cierra con la misma palabra con la que termina el
+        recorrido de abajo. */}
+    <h2 class="bl-cab-tit bl-sube" id="bl-pc-t">
+      De la primera charla a <em>la entrega</em>
+    </h2>
+  </div>
+
+  <div class="bl-pc-banda">
+
+    {/* ⚠️ EL RIEL VA A SANGRE Y LOS PASOS NO, Y ESA DIFERENCIA ES EL GESTO. Si la
+        línea empezara y terminara donde empieza y termina el texto, sería el borde
+        de una tabla; saliéndose por los dos costados, es un recorrido que venía de
+        antes y sigue después, y la sección es apenas el tramo que se ve.
+
+        Son tres piezas superpuestas: el riel apagado que está siempre entero, el
+        tramo encendido que crece con el scroll, y la marca del frente, que es
+        dónde va la línea en este momento. */}
+    <div class="bl-pc-riel" aria-hidden="true">
+      <span class="bl-pc-avance"></span>
+      <span class="bl-pc-frente"></span>
+    </div>
+
+    {/* ⚠️ ES UN `<ol>` PORQUE LOS NÚMEROS SON EL ORDEN REAL en que pasan las
+        cosas, no una decoración. Con `<div>` serían dibujitos; así, quien escucha
+        la página también recibe el orden. Es la única numeración que queda visible
+        en el sitio: las otras se sacaron porque numeraban cosas que no tenían
+        orden. */}
+    <ol class="bl-wrap bl-pc-pasos">
+      {PASOS.map((p, i) => (
+        <li class="bl-pc-paso" style={`--i:${i}`}>
+          <span class="bl-pc-n">{p.n}</span>
+          <h3 class="bl-pc-t">{p.t}</h3>
+          <p class="bl-pc-d">{p.d}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

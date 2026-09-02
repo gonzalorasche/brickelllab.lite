@@ -1,0 +1,147 @@
+---
+// src/components/SeoSchema.astro
+// Schema.org del ecosistema Brickell Lab (GEO). Se incluye en el <head> de la home.
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+const p = lang === 'en' ? '/en' : '';
+const inLang = lang === 'en' ? 'en-US' : 'es-AR';
+
+const org = {
+  es: {
+    desc: "Estudio de desarrollo web, diseño digital, branding y traducción profesional. Marca madre del ecosistema Brickell Lab, que incluye Lúmina y Lexa.",
+    knowsAbout: ["Desarrollo Web a Medida","Landing Pages de Alta Conversión","SEO Técnico","GEO — Generative Engine Optimization","Diseño UX/UI","Branding e Identidad Visual","Diseño de Packaging","Aplicaciones Web a Medida","Traducción Profesional de Inglés"],
+    s1: "Arquitectura de conversión de hasta 4 secciones estratégicas con SEO técnico, GEO para IAs, Google Search Console y WhatsApp integrado.",
+    s2: "Ecosistema digital de hasta 6 secciones independientes con SEO semántico, GEO avanzado y navegación premium multi-sección.",
+    s3n: "Diseño gráfico", s3: "Identidad de marca, sistemas visuales, piezas para redes, folletería, presentaciones y retoque fotográfico.",
+    s4n: "Packaging", s4: "Diseño de etiquetas y packaging, pensado para producción y para destacar en góndola.",
+    s5n: "Soluciones digitales", s5: "Desarrollo de aplicaciones web a medida, con lógica real y adaptadas a la operación de cada cliente.",
+    s6n: "Traducciones", s6: "Traducción profesional de inglés con matrícula de traductor público, para trámites y documentación.",
+    luminaDesc: "Plataforma de gestión integral de eventos: invitados, asignación de mesas, transporte, cronograma, tareas e invitaciones digitales.",
+    lexaDesc: "Servicio de traducción profesional de inglés con matrícula de traductor público, para trámites y documentación oficial.",
+    cred: "Traductor Público Matriculado",
+    siteDesc: "Agencia de desarrollo web y diseño digital — Buenos Aires, Argentina.",
+    pageName: "Agencia de Desarrollo Web & Diseño Digital | Brickell Lab",
+    pageDesc: "Estudio de desarrollo web, diseño digital y branding en Buenos Aires. Creadores de Lúmina y Lexa.",
+  },
+  en: {
+    desc: "Web development, digital design, branding and professional translation studio. Parent brand of the Brickell Lab ecosystem, which includes Lúmina and Lexa.",
+    knowsAbout: ["Custom Web Development","High-Conversion Landing Pages","Technical SEO","GEO — Generative Engine Optimization","UX/UI Design","Branding and Visual Identity","Packaging Design","Custom Web Applications","Professional English Translation"],
+    s1: "Conversion architecture of up to 4 strategic sections with technical SEO, GEO for AI engines, Google Search Console and integrated WhatsApp.",
+    s2: "Digital ecosystem of up to 6 independent sections with semantic SEO, advanced GEO and premium multi-section navigation.",
+    s3n: "Graphic design", s3: "Brand identity, visual systems, social media pieces, brochures, presentations and photo retouching.",
+    s4n: "Packaging", s4: "Label and packaging design, made for production and to stand out on the shelf.",
+    s5n: "Digital solutions", s5: "Custom web application development, with real logic and adapted to each client's operation.",
+    s6n: "Translation", s6: "Professional English translation by a sworn public translator, for paperwork and documentation.",
+    luminaDesc: "End-to-end event management platform: guests, table assignment, transport, schedule, tasks and digital invitations.",
+    lexaDesc: "Professional English translation service by a sworn public translator, for paperwork and official documentation.",
+    cred: "Sworn Public Translator",
+    siteDesc: "Web development and digital design agency — Buenos Aires, Argentina.",
+    pageName: "Web Development & Digital Design Agency | Brickell Lab",
+    pageDesc: "Web development, digital design and branding studio in Buenos Aires. Creators of Lúmina and Lexa.",
+  },
+}[lang];
+
+const mkService = (name: string, desc: string) => ({
+  "@type": "Offer",
+  "itemOffered": { "@type": "Service", "name": name, "description": desc, "provider": { "@id": "https://labbrickell.com.ar/#organization" } }
+});
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["Organization", "ProfessionalService"],
+      "@id": "https://labbrickell.com.ar/#organization",
+      "name": "Brickell Lab",
+      "url": `https://labbrickell.com.ar${p}/`,
+      "logo": "https://labbrickell.com.ar/brickellLogoBlack.png",
+      "image": "https://labbrickell.com.ar/og-image.jpg",
+      "telephone": "+5491162770800",
+      "email": "info@labbrickell.com.ar",
+      "priceRange": "$$$",
+      "description": org.desc,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Ciudad Autónoma de Buenos Aires",
+        "addressRegion": "CABA",
+        "addressCountry": "AR"
+      },
+      "sameAs": [
+        "https://www.instagram.com/brickell.lab/",
+        "https://www.linkedin.com/company/brickell-lab/",
+        "https://x.com/LabBrickell"
+      ],
+      "knowsAbout": org.knowsAbout,
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios Brickell Lab",
+        "itemListElement": [
+          mkService("Landing Page", org.s1),
+          mkService("Business Pro", org.s2),
+          mkService(org.s3n, org.s3),
+          mkService(org.s4n, org.s4),
+          mkService(org.s5n, org.s5),
+          mkService(org.s6n, org.s6),
+        ]
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://lumina.labbrickell.com.ar/#lumina",
+      "name": "Lúmina",
+      "url": `https://labbrickell.com.ar${p}/lumina`,
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": org.luminaDesc,
+      "parentOrganization": { "@id": "https://labbrickell.com.ar/#organization" },
+      "subjectOf": { "@type": "WebPage", "url": `https://labbrickell.com.ar${p}/lumina` },
+      "sameAs": "https://lumina.labbrickell.com.ar/",
+      // La plataforma es SÓLO en español: es un dato del producto, no de la
+      // página que lo presenta. Por eso va fijo y no `inLang` — /en/lumina está
+      // en inglés y habla de una aplicación que no lo está.
+      "inLanguage": "es-AR",
+      "offers": { "@type": "Offer", "category": "SaaS" }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://labbrickell.com.ar/lexa#lexa",
+      "name": "Lexa",
+      "url": `https://labbrickell.com.ar${p}/lexa`,
+      "description": org.lexaDesc,
+      "parentOrganization": { "@id": "https://labbrickell.com.ar/#organization" },
+      "hasCredential": {
+        "@type": "EducationalOccupationalCredential",
+        "credentialCategory": org.cred
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://labbrickell.com.ar/#website",
+      "url": "https://labbrickell.com.ar/",
+      "name": "Brickell Lab",
+      "description": org.siteDesc,
+      "publisher": { "@id": "https://labbrickell.com.ar/#organization" },
+      // El sitio es UNO —el `@id` no lleva `${p}`— y es bilingüe. Con `inLang`
+      // decía es-AR en la home y en-US en /en: una sola entidad afirmando dos
+      // idiomas distintos según por dónde se la mirara. Las dos, que es la
+      // verdad, y así el hreflang y el schema cuentan lo mismo.
+      "inLanguage": ["es-AR", "en-US"]
+    },
+    {
+      "@type": "WebPage",
+      "@id": `https://labbrickell.com.ar${p}/#webpage`,
+      "url": `https://labbrickell.com.ar${p}/`,
+      "name": org.pageName,
+      "description": org.pageDesc,
+      "isPartOf": { "@id": "https://labbrickell.com.ar/#website" },
+      "about": { "@id": "https://labbrickell.com.ar/#organization" },
+      "inLanguage": inLang,
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": [".hero-title", ".hero-lede"]
+      }
+    }
+  ]
+};
+---
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

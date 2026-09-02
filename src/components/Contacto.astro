@@ -1,0 +1,166 @@
+---
+// src/components/Contacto.astro
+import { useTranslations } from '../i18n/utils';
+
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+const t = useTranslations(lang);
+
+const waBrickell = `https://wa.me/5491162770800?text=${encodeURIComponent(t('ct.wa.text.bl'))}`;
+const waLexa = `https://wa.me/5491164680800?text=${encodeURIComponent(t('ct.wa.text.lexa'))}`;
+const email = 'info@labbrickell.com.ar';
+const linkedin = 'https://www.linkedin.com/company/brickell-lab';
+const instagram = 'https://www.instagram.com/brickell.lab/';
+---
+<section class="ct" id="contacto" aria-label="Contacto">
+  <div class="ct-in">
+
+    <div class="ct-left ct-reveal">
+      <span class="ct-badge">{t('ct.badge')}</span>
+      <h2 class="ct-title">{t('ct.title.pre')}<em>{t('ct.title.em')}</em></h2>
+      <p class="ct-lede">
+        {t('ct.lede')}
+      </p>
+
+      <div class="ct-social">
+        <span class="ct-social-t">{t('ct.social.t')}</span>
+        <div class="ct-social-links">
+          <a href={instagram} target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href={linkedin} target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21h-4z"/></svg>
+          </a>
+          <a href="https://x.com/LabBrickell" target="_blank" rel="noopener" aria-label="X">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.9 2.5h3.3l-7.2 8.24L23.5 21.5h-6.6l-5.18-6.77-5.93 6.77H2.48l7.7-8.8L2 2.5h6.78l4.68 6.19L18.9 2.5Zm-1.16 17h1.83L8.35 4.4H6.38l11.36 15.1Z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ct-right">
+      <div class="ct-group ct-reveal">
+        <span class="ct-group-t">{t('ct.group.bl')}</span>
+        <a href={waBrickell} target="_blank" rel="noopener" class="ct-row">
+          <span class="ct-row-txt">
+            <span class="ct-row-k">{t('ct.wa.k')}</span>
+            <span class="ct-row-v">{t('ct.wa.v')}</span>
+          </span>
+          <span class="ct-row-arrow" aria-hidden="true">→</span>
+        </a>
+        <a href={`mailto:${email}`} class="ct-row">
+          <span class="ct-row-txt">
+            <span class="ct-row-k">{t('ct.mail.k')}</span>
+            <span class="ct-row-v">{email}</span>
+          </span>
+          <span class="ct-row-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      <div class="ct-group ct-reveal">
+        <span class="ct-group-t">{t('ct.group.lexa')}</span>
+        <a href={waLexa} target="_blank" rel="noopener" class="ct-row">
+          <span class="ct-row-txt">
+            <span class="ct-row-k">{t('ct.lexa.k')}</span>
+            <span class="ct-row-v">{t('ct.lexa.v')}</span>
+          </span>
+          <span class="ct-row-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .ct{ position:relative; width:100%; background:var(--surface); padding-top:0; padding-bottom:clamp(72px,9vh,120px); }
+  .ct-in{
+    width:100%; padding:0 var(--gutter);
+    display:grid; grid-template-columns:1fr 1fr; gap:0; align-items:start;
+  }
+
+  /* Columna izquierda */
+  .ct-left{ padding-right:var(--gutter); }
+  .ct-badge{
+    display:inline-block; margin-bottom:20px;
+    font-size:10px; font-weight:var(--fw-semibold); letter-spacing:.16em; text-transform:uppercase;
+    color:#fff; background:var(--ink); padding:6px 13px; border-radius:var(--r-pill);
+  }
+  .ct-title{
+    margin:0; font-size:clamp(34px,4vw,56px); font-weight:var(--fw-bold);
+    letter-spacing:-.04em; line-height:1.02; color:var(--text-primary); text-wrap:balance;
+  }
+  .ct-title em{ font-style:italic; color:var(--magenta); font-weight:var(--fw-semibold); }
+  .ct-lede{
+    margin:clamp(16px,2vw,24px) 0 0; max-width:42ch;
+    font-size:clamp(16px,1.2vw,19px); line-height:1.6; color:var(--text-secondary);
+  }
+  .ct-social{ margin-top:clamp(28px,3.4vw,40px); display:flex; align-items:center; gap:16px; }
+  .ct-social-t{ font-size:11px; font-weight:var(--fw-semibold); letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); }
+  .ct-social-links{ display:flex; gap:10px; }
+  .ct-social-links a{
+    display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px;
+    border:1px solid var(--border-strong); border-radius:50%; color:var(--text-primary);
+    transition:border-color var(--dur) var(--ease), background var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .ct-social-links a:hover{ border-color:var(--ink); background:var(--ink); color:#fff; }
+
+ /* Columna derecha — grupos de filas */
+  .ct-right{ padding-left:var(--gutter); display:flex; flex-direction:column; gap:clamp(28px,3vw,40px); }
+  .ct-group-t{
+    display:inline-flex; align-items:center; gap:9px; margin-bottom:14px;
+    font-size:12px; font-weight:var(--fw-semibold); letter-spacing:.14em; text-transform:uppercase;
+    color:var(--text-primary);
+  }
+  .ct-group-t::before{
+    content:""; width:22px; height:2px; border-radius:2px; background:var(--magenta);
+  }
+  .ct-row{
+    display:flex; align-items:center; gap:18px;
+    padding:clamp(18px,2vw,22px) clamp(16px,1.6vw,20px);
+    text-decoration:none; border:1px solid var(--border); border-radius:var(--r-lg);
+    transition:background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .ct-row + .ct-row{ margin-top:10px; }
+  .ct-row:hover{ background:var(--n-100); border-color:var(--border-strong); }
+  .ct-row:hover{ background:var(--n-100); }
+  .ct-row-txt{ display:flex; flex-direction:column; min-width:0; }
+  .ct-row-k{ font-size:clamp(18px,1.6vw,22px); font-weight:var(--fw-semibold); letter-spacing:-.02em; color:var(--text-primary); }
+  .ct-row-v{ margin-top:4px; font-size:14px; color:var(--text-secondary); }
+  .ct-row-arrow{ margin-left:auto; font-size:20px; color:var(--magenta); transition:transform var(--dur) var(--ease); }
+  .ct-row:hover .ct-row-arrow{ transform:translateX(4px); }
+
+  /* ===== Compactar escritorio 100vh ===== */
+  @media (min-width:901px){
+    .ct{ min-height:100dvh; display:flex; align-items:center; }
+  }
+
+  /* ===== MOBILE ===== */
+  @media (max-width:900px){
+    .ct-in{ grid-template-columns:1fr; gap:clamp(36px,7vw,52px); }
+    .ct-left{ padding-right:0; }
+    .ct-right{ padding-left:0; }
+  }
+
+  /* ===== Reveal ===== */
+  .ct-reveal{ opacity:0; transform:translateY(20px); }
+  .ct-reveal.is-in{ opacity:1; transform:none; transition:opacity .6s var(--ease-out), transform .6s var(--ease-out); }
+  @media (prefers-reduced-motion:reduce){
+    .ct-reveal{ opacity:1; transform:none; }
+    .ct-reveal.is-in{ transition:none; }
+    .ct-row:hover .ct-row-arrow{ transform:none; }
+  }
+</style>
+
+<script is:inline>
+  (function(){
+    var els = document.querySelectorAll('.ct-reveal');
+    if(!els.length) return;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, { threshold:0, rootMargin:'0px 0px -12% 0px' });
+    els.forEach(function(el){ io.observe(el); });
+  })();
+</script>

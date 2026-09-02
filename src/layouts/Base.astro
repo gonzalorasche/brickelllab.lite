@@ -1,0 +1,113 @@
+---
+import '@fontsource-variable/inter';
+import '../styles/design-tokens.css';
+import '../styles/components.css';
+import CookieConsent from '../components/CookieConsent.astro';
+
+const {
+  title = 'Brickell Lab | Agencia de Desarrollo Web & Diseño Digital',
+  description = 'Estudio de desarrollo web, diseño digital y branding en Buenos Aires. Creadores de Lúmina (gestión de eventos) y Lexa (traducción de inglés matriculada).',
+  canonical = 'https://labbrickell.com.ar/',
+  image = 'https://labbrickell.com.ar/og-image.jpg',
+  schema = false,
+  // El default es el de siempre, asi que ninguna pagina existente cambia.
+  // Existe para que una pagina EN CONSTRUCCION pueda nacer con noindex sin
+  // tener que duplicar el layout: dos URLs con el mismo contenido en el mismo
+  // dominio compiten entre si, y la que Google elija no la elegis vos.
+  robots = 'index, follow',
+} = Astro.props;
+
+// Idioma actual según la URL (es | en)
+const lang = Astro.currentLocale ?? 'es';
+const htmlLang = lang === 'en' ? 'en' : 'es-AR';
+const ogLocale = lang === 'en' ? 'en_US' : 'es_AR';
+
+// URLs alternas (misma página en cada idioma) para hreflang
+const site = 'https://labbrickell.com.ar';
+const path = Astro.url.pathname;
+const basePath = path.replace(/^\/en(\/|$)/, '/');
+const esHref = site + basePath;
+const enHref = site + (basePath === '/' ? '/en/' : `/en${basePath}`);
+---
+<!doctype html>
+<html lang={htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Título y descripción -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Brickell Lab" />
+
+    <!-- Google Search Console -->
+    <meta name="google-site-verification" content="zdAmZogDlE45CPpBFYU4R8POrylW3BfvLor1I9Kogzk" />
+
+    <!-- Canonical + robots -->
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={robots} />
+
+    <!-- Hreflang: versión española e inglesa de esta página -->
+    <link rel="alternate" hreflang="es" href={esHref} />
+    <link rel="alternate" hreflang="en" href={enHref} />
+    <link rel="alternate" hreflang="x-default" href={esHref} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Brickell Lab" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:alt" content="Brickell Lab — Agencia de Desarrollo Web y Diseño Digital" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={ogLocale} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@LabBrickell" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    {schema && <slot name="schema" />}
+
+    <style is:global>
+      html, body { margin: 0; padding: 0; }
+      html { scrollbar-gutter: stable; }
+      body { overflow-x: hidden; width: 100%; }
+      main { margin: 0; padding: 0; max-width: none; width: 100%; }
+      main > section { width: 100%; }
+      main > :first-child { margin-top: 0; }
+
+      /* Scroll suave al navegar por anclas */
+      html { scroll-behavior: smooth; }
+
+      html { scrollbar-width: thin; scrollbar-color: #F49CC4 var(--n-100); }
+      html::-webkit-scrollbar { width: 10px; }
+      html::-webkit-scrollbar-track { background: var(--n-100); }
+      html::-webkit-scrollbar-thumb {
+        background: #F49CC4;
+        border-radius: 999px;
+        border: 2px solid var(--n-100);
+      }
+      html::-webkit-scrollbar-thumb:hover { background: #EC1E79; }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+      }
+    </style>
+  </head>
+  <body class="brand-brickell">
+    <slot />
+    <CookieConsent />
+  </body>
+</html>

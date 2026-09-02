@@ -1,0 +1,414 @@
+---
+// src/components/nueva/Servicios.astro
+//
+// ══════════════════════════════════════════════════════════
+// SERVICIOS · la sección ES el carrusel
+// ══════════════════════════════════════════════════════════
+//
+// ⚠️ ACÁ HUBO UN ÍNDICE DE SEIS FILAS QUE ABRÍA UN MODAL, y el modal se fue
+// entero. La información que mostraba es la que ahora está a la vista: el panel
+// del modal y esta sección eran la misma pieza, sólo que una escondida detrás de
+// un click. Sacarlo se llevó el estado de abrir y cerrar, el `<dialog>`, el
+// manejo de foco y la carga diferida de las fotos, y dejó el contenido visible
+// desde el primer momento, que además es lo que un buscador puede leer.
+//
+// ⚠️ EL GESTO ES DESLIZAR, EN LAS DOS PANTALLAS. La pista tiene `scroll-snap`, así
+// que arrastrar con el dedo, con el trackpad o con la rueda funciona sin una
+// línea de JavaScript. Las flechas de escritorio y los puntos de teléfono son
+// atajos y señales, no el mecanismo: si el script no corre, la sección se sigue
+// pudiendo recorrer.
+//
+// ⚠️ Y CADA SERVICIO TRAE SU FOTO DE BRICKELL. Son seis imágenes distintas de la
+// ciudad, en blanco y negro y apenas desenfocadas, que cambian con el servicio.
+import { useTranslations } from '../../i18n/utils';
+
+interface Props { lang?: 'es' | 'en'; }
+const { lang = 'es' } = Astro.props;
+const t = useTranslations(lang);
+
+/* ⚠️ LOS DOS PLANES SON DOS SERVICIOS MÁS, Y LLEVAN SU PRECIO. La idea es que cada
+   panel se baste solo: si mañana la sección de Planes se usa para otra cosa, acá
+   ya está todo lo que esa sección explicaba, qué incluye cada plan, qué no, y
+   cuánto sale.
+
+   ⚠️ Y ACÁ VIVEN LOS PRECIOS, QUE AHORA SON LOS ÚNICOS DE LA PÁGINA. Estuvieron
+   escritos en dos lugares mientras existió la sección de Planes, que dibujaba el
+   mismo comparador abajo; esa sección se borró justamente porque estos seis
+   paneles ya dicen todo lo que ella decía, precio incluido. Si cambian, se
+   cambian acá y no hay otro lado que revisar.
+
+   ⚠️ TODO EL TEXTO SALE DE `i18n/ui.ts`: las descripciones y las dos listas son
+   las mismas claves que usa el comparador, no una copia.
+
+   ⚠️ LAS LISTAS DE LOS OTROS CUATRO NO SON TEXTO NUEVO: SON SU PROPIA DESCRIPCIÓN
+   DESGLOSADA. "Identidad de marca, piezas para redes, folletería, presentaciones
+   y retoque fotográfico" es exactamente lo que dice `sv.otro.design.desc`,
+   partido en ítems. No se agregó ni un servicio que la página no afirmara ya.
+
+   ⚠️ Y NO LLEVAN PRECIO PORQUE NO LO TIENEN: se cotizan por proyecto, así que en
+   lugar del número va una nota que lo dice. Inventar un "desde" para que la ficha
+   quede simétrica sería poner un precio que nadie fijó. */
+const PRECIOS = { landing: '399.000', business: '799.000' };
+
+/**
+ * LA FOTO DE CADA SERVICIO.
+ *
+ * ⚠️ EL CAMPO `foto` ES EL NOMBRE BASE DEL ARCHIVO, sin extensión ni tamaño. De
+ * ahí salen las dos versiones que pide el `<picture>`:
+ *
+ *     public/<base>-1600.webp     y     public/<base>-2400.webp
+ *
+ * ⚠️ VAN EN BLANCO Y NEGRO Y APENAS DESENFOCADAS, Y LAS DOS COSAS ESTÁN HORNEADAS
+ * EN EL ARCHIVO, no puestas con `filter` en el CSS. Una imagen desenfocada y sin
+ * canal de croma comprime muchísimo mejor: las seis pasaron de 26,6MB en PNG a
+ * 706KB en total. Y un `blur()` de CSS sobre seis fotos a pantalla completa se
+ * recalcula en cada pintado.
+ *
+ * Para volverlas a color o quitarles el desenfoque hay que regenerar los doce
+ * archivos sacando el `.greyscale()` o el `.blur()` del comando.
+ *
+ * ⚠️ EL DESENFOQUE ES MAYOR EN LA VERSIÓN GRANDE (3,6 contra 2,5). Con el mismo
+ * sigma, la de 2400 se vería más nítida en pantalla: el desenfoque se mide en
+ * píxeles del archivo y esa versión tiene más píxeles para el mismo espacio.
+ */
+const SERVICIOS = [
+  {
+    n: '01', t: 'Landing Page',
+    d: t('sv.landing.desc'), precio: PRECIOS.landing, cotiza: false,
+    foto: 'brickell_sv_01',
+    si: [0, 1, 2, 3, 4, 5].map((i) => t(`sv.landing.inc.${i}` as any)),
+    no: [0, 1, 2, 3].map((i) => t(`sv.landing.no.${i}` as any)),
+  },
+  {
+    n: '02', t: 'Business Pro',
+    d: t('sv.business.desc'), precio: PRECIOS.business, cotiza: false,
+    foto: 'brickell_sv_02',
+    si: [0, 1, 2, 3, 4, 5].map((i) => t(`sv.business.inc.${i}` as any)),
+    no: [0, 1, 2, 3].map((i) => t(`sv.business.no.${i}` as any)),
+  },
+  {
+    n: '03', t: t('sv.otro.design.name'), d: t('sv.otro.design.desc'),
+    precio: '', cotiza: true, no: [], foto: 'brickell_sv_03',
+    si: ['Identidad de marca', 'Piezas para redes', 'Folletería', 'Presentaciones', 'Retoque fotográfico'],
+  },
+  {
+    n: '04', t: t('sv.otro.box.name'), d: t('sv.otro.box.desc'),
+    precio: '', cotiza: true, no: [], foto: 'brickell_sv_04',
+    si: ['Diseño de etiquetas', 'Packaging', 'Pensado para producción', 'Pensado para góndola'],
+  },
+  {
+    n: '05', t: t('sv.otro.code.name'), d: t('sv.otro.code.desc'),
+    precio: '', cotiza: true, no: [], foto: 'brickell_sv_05',
+    si: ['Aplicaciones web a medida', 'Lógica real, no maquetas', 'Adaptadas a tu operación'],
+  },
+  {
+    n: '06', t: t('sv.otro.lang.name'), d: t('sv.otro.lang.desc'),
+    precio: '', cotiza: true, no: [], foto: 'brickell_sv_06',
+    si: ['Traducción de inglés', 'Matrícula de traductor público', 'Trámites y documentación'],
+  },
+];
+---
+
+<section class="bl-sec bl-secpad bl-sv" id="servicios" data-px aria-labelledby="bl-sv-t">
+
+  {/* ⚠️ LAS SEIS FOTOS ESTÁN APILADAS Y SÓLO SE VE LA ACTIVA. Reemplazar el `src`
+      al cambiar de servicio dispararía una descarga por salto y el fondo
+      parpadearía mientras llega; apiladas, el cambio es un fundido entre dos que
+      ya están en memoria.
+
+      El `lazy` alcanza acá: la sección está abajo en la página, así que las fotos
+      se piden recién cuando alguien se acerca. (Cuando esto vivía dentro de un
+      `<dialog>` no alcanzaba: un dialog cerrado nunca cuenta como visible y la
+      descarga no se disparaba nunca.)
+
+      `alt` vacío y `aria-hidden`: son decorativas y todo lo que dicen está en el
+      texto de al lado. */}
+  <div class="bl-sv-fondo" aria-hidden="true">
+    {SERVICIOS.map((sv, i) => (
+      <picture data-fondo={i}>
+        <source srcset={`/${sv.foto}-1600.webp 1600w, /${sv.foto}-2400.webp 2400w`}
+                sizes="100vw" type="image/webp" />
+        <img src={`/${sv.foto}-1600.webp`} alt="" width="2400" height="1440"
+             loading="lazy" decoding="async" />
+      </picture>
+    ))}
+  </div>
+
+  <div class="bl-wrap bl-sv-esc">
+
+    {/* ⚠️ EL RÓTULO ES EL `<h2>`, Y ESO ES TODO EL TÍTULO DE LA SECCIÓN. No hay
+        frase de encabezado, y es a propósito: el título de verdad de lo que se
+        está viendo es el nombre del servicio, y cualquier cosa arriba compite con
+        él diciendo casi lo mismo. Hubo un "Seis formas de trabajar con nosotros"
+        que además contaba cuántos eran, o sea que se rompía solo el día que se
+        agregue o se saque uno.
+
+        ⚠️ PERO ALGÚN `<h2>` TIENE QUE HABER. Los seis servicios son `<h3>` y
+        necesitan colgar de algo, o quedan colgados del `<h1>` del hero y la
+        jerarquía del documento se salta un nivel. En vez de esconder un título que
+        nadie ve, el rótulo que ya estaba hace las dos cosas: se lee como rótulo y
+        vale como encabezado. Una sola palabra, sin texto oculto. */}
+    <header class="bl-sv-cab">
+      <h2 class="bl-sv-rotulo" id="bl-sv-t">{t('sv.badge')}</h2>
+      <span class="bl-sv-pos" aria-live="polite"></span>
+    </header>
+
+    <div class="bl-sv-pista" tabindex="0" aria-label={t('sv.badge')}>
+      {SERVICIOS.map((sv, i) => (
+        <article class="bl-sv-panel" data-panel={i} aria-label={sv.t}>
+          <div class="bl-sv-panel-in">
+            <span class="bl-sv-panel-n">{sv.n}</span>
+            <h3 class="bl-sv-panel-t">{sv.t}</h3>
+            <p class="bl-sv-panel-d">{sv.d}</p>
+
+            {sv.precio && (
+              <p class="bl-sv-precio">
+                <span class="bl-sv-desde">{t('sv.price.from')}</span>
+                <span class="bl-sv-num">${sv.precio}</span>
+              </p>
+            )}
+
+            {/* ⚠️ ES UNA NOTA, NO UN BOTÓN. Un botón invita a hacer algo y lo que
+                hay que comunicar es un HECHO: que ese servicio no tiene precio de
+                lista porque depende del proyecto. */}
+            {sv.cotiza && (
+              <p class="bl-sv-cotiza">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 16v-4M12 8h.01" /></svg>
+                Se cotiza según el alcance de cada proyecto
+              </p>
+            )}
+
+            <div class="bl-sv-listas">
+              <div>
+                <p class="bl-sv-lista-t">{t('sv.list.yes')}</p>
+                <ul>
+                  {sv.si.map((x) => (
+                    <li>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7" /></svg>
+                      {x}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {sv.no.length > 0 && (
+                <div class="bl-sv-no">
+                  <p class="bl-sv-lista-t">{t('sv.list.no')}</p>
+                  <ul>
+                    {sv.no.map((x) => (
+                      <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+                        {x}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    {/* ⚠️ LOS MANDOS SON DISTINTOS EN CADA PANTALLA Y NO SE SUPERPONEN: las flechas
+        para el mouse, los puntos para el dedo. En un teléfono, dos botones de 32px
+        son un blanco difícil de acertar con el pulgar y quedan lejos de donde
+        descansa la mano; con un mouse, en cambio, no hay gesto de deslizar natural
+        y hace falta algo que clickear. Cada uno se dibuja donde sirve. */}
+    <footer class="bl-sv-mandos">
+      <div class="bl-sv-puntos" aria-hidden="true">
+        {SERVICIOS.map(() => <span />)}
+      </div>
+
+      <div class="bl-sv-flechas">
+        <button type="button" class="bl-sv-nav" data-sv-ir="-1" aria-label="Servicio anterior">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+        </button>
+        <button type="button" class="bl-sv-nav" data-sv-ir="1" aria-label="Servicio siguiente">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
+        </button>
+      </div>
+    </footer>
+  </div>
+</section>
+
+<script>
+  /* ══════════════════════════════════════════════════════════
+     EL CARRUSEL DE SERVICIOS
+     ══════════════════════════════════════════════════════════
+
+     ⚠️ EL DESLIZAMIENTO NO SE PROGRAMA ACÁ. La pista tiene `scroll-snap` y
+     `overflow-x: auto`: arrastrar con el dedo, con el trackpad o con la rueda ya
+     funciona sin JavaScript. Esto sólo mueve el scroll cuando alguien usa las
+     flechas o el teclado, y mantiene al día lo que acompaña al panel activo: el
+     rótulo, los puntos y la foto de fondo. Si fallara, la sección se seguiría
+     pudiendo recorrer.
+
+     ⚠️ TODO POR DELEGACIÓN EN `document`, y no enganchando un listener por botón.
+     Con un listener por elemento hay que acertar el momento en que existen; con
+     uno solo en `document`, responden porque están en el DOM cuando se los toca.
+     Ya falló una vez de la otra forma.
+
+     ⚠️ Y LOS ATRIBUTOS LLEVAN PREFIJO `data-sv-`. `data-cerrar` a secas lo usa el
+     drawer del menú en teléfono: con delegación en `document`, un selector sin
+     prefijo respondería también a esos botones. */
+  const pista = document.querySelector<HTMLElement>('.bl-sv-pista');
+  const seccion = document.querySelector<HTMLElement>('.bl-sv');
+
+  if (pista && seccion) {
+    const pos = seccion.querySelector<HTMLElement>('.bl-sv-pos');
+    const fondos = Array.from(seccion.querySelectorAll<HTMLElement>('[data-fondo]'));
+    const puntos = Array.from(seccion.querySelectorAll<HTMLElement>('.bl-sv-puntos span'));
+    const paneles = () => Array.from(pista.querySelectorAll<HTMLElement>('.bl-sv-panel'));
+
+    /**
+     * ⚠️ LA POSICIÓN DE UN PANEL SE MIDE CONTRA LA PISTA, NO CONTRA LA PÁGINA.
+     * `offsetLeft` se cuenta desde el `offsetParent`, que acá no es la pista sino
+     * la sección: los seis vienen corridos por el margen del contenedor, unos
+     * dieciocho píxeles en teléfono y bastantes más en escritorio. Ese corrimiento
+     * hay que restarlo, porque `scrollLeft` sí arranca en cero sobre la pista.
+     *
+     * Con `scroll-snap` puesto, olvidarse de restarlo no se nota: el navegador
+     * corrige el desvío al asentar. Pero el error crece con el margen, y el día
+     * que supere media pantalla el carrusel salta un panel de más.
+     */
+    const izquierda = (p: HTMLElement) => p.offsetLeft - pista!.offsetLeft;
+
+    /** El panel a la vista: el más cercano al centro de la pista. */
+    function actual(): number {
+      const centro = pista!.scrollLeft + pista!.clientWidth / 2;
+      let mejor = 0, dist = Infinity;
+      paneles().forEach((p, i) => {
+        const d = Math.abs(izquierda(p) + p.offsetWidth / 2 - centro);
+        if (d < dist) { dist = d; mejor = i; }
+      });
+      return mejor;
+    }
+
+    function pintar() {
+      const p = paneles();
+      const n = actual();
+      if (pos) pos.textContent = `${n + 1} / ${p.length}`;
+      fondos.forEach((f, i) => f.classList.toggle('es-activa', i === n));
+      puntos.forEach((x, i) => x.classList.toggle('es-activo', i === n));
+    }
+
+    /* `behavior: 'smooth'` gana sobre el `scroll-behavior` del CSS, así que si
+       alguien pidió menos movimiento hay que preguntarlo acá: ponerlo en la hoja
+       de estilos no alcanza para desactivarlo. */
+    const quieto = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    /**
+     * ⚠️ `scrollLeft` DIRECTO Y NO `scrollIntoView`. El segundo desplaza TODOS los
+     * ancestros scrolleables hasta dejar el elemento a la vista, incluida la
+     * página: al pasar de servicio, la sección entera saltaría de posición.
+     */
+    function ir(i: number) {
+      const p = paneles();
+      const n = Math.max(0, Math.min(p.length - 1, i));
+      pista!.scrollTo({
+        left: izquierda(p[n]),
+        behavior: quieto.matches ? 'auto' : 'smooth',
+      });
+      pintar();
+    }
+
+    document.addEventListener('click', (e) => {
+      const flecha = (e.target as HTMLElement).closest<HTMLElement>('[data-sv-ir]');
+      if (flecha) ir(actual() + Number(flecha.dataset.svIr));
+    });
+
+    /* ══════════════════════════════════════════════════════
+       UN GESTO, UN PANEL
+       ══════════════════════════════════════════════════════
+
+       ⚠️ EL `scroll-snap` DEL NAVEGADOR NO ALCANZA, Y ACÁ QUEDÓ DEMOSTRADO. En el
+       papel `mandatory` obliga a asentar siempre en un panel; en la práctica, en
+       un teléfono, el deslizamiento se queda a mitad de camino entre dos y ahí se
+       planta. Un carrusel que muestra media tarjeta y media de la siguiente no es
+       un carrusel: es un scroll horizontal que quedó torcido.
+
+       Así que la última palabra la tiene esto. El arrastre sigue siendo scroll
+       nativo —el dedo mueve la pista en tiempo real, con su inercia, sin nada
+       programado— y recién cuando el movimiento se detiene se decide dónde tiene
+       que quedar. Si el navegador ya lo dejó bien, no se toca nada.
+
+       ⚠️ LA DECISIÓN SE TOMA CON EL RECORRIDO DEL GESTO, no con dónde frenó. Al
+       apoyar el dedo se anota de qué panel se sale; al soltarlo se mira cuánto se
+       corrió: pasado el umbral se avanza UNO, en la dirección del gesto, y nunca
+       más de uno por más envión que traiga. Sin llegar al umbral se vuelve al que
+       estaba. Es lo que hace que deslizar se sienta como pasar una página y no
+       como empujar una cinta.
+
+       ⚠️ EL UMBRAL ES BAJO A PROPÓSITO. Un octavo de pantalla es poco más de
+       cuarenta píxeles en un teléfono: alcanza para no confundir un roce con una
+       intención, y no obliga a arrastrar media pantalla para pasar de servicio. */
+    const UMBRAL = 0.12;
+
+    let arranque = -1;   // dónde estaba el scroll cuando el dedo tocó
+    let desde = 0;       // en qué panel estaba
+    let tocando = false;
+    let reposo = 0;
+
+    function asentar() {
+      const p = paneles();
+      const ancho = pista!.clientWidth || 1;
+
+      let destino: number;
+      if (arranque >= 0) {
+        const corrido = pista!.scrollLeft - arranque;
+        destino = desde + (Math.abs(corrido) > ancho * UMBRAL ? Math.sign(corrido) : 0);
+        arranque = -1;
+      } else {
+        /* Sin gesto de por medio —rueda, trackpad, o un asentado que llegó tarde—
+           se corrige al más cercano y listo. */
+        destino = actual();
+      }
+
+      destino = Math.max(0, Math.min(p.length - 1, destino));
+      const objetivo = izquierda(p[destino]);
+      /* ⚠️ SÓLO SE MUEVE SI HACE FALTA. Sin esta guarda, cada asentado dispara un
+         scroll que dispara otro asentado: el bucle se sostiene solo. */
+      if (Math.abs(pista!.scrollLeft - objetivo) > 1) {
+        pista!.scrollTo({ left: objetivo, behavior: quieto.matches ? 'auto' : 'smooth' });
+      }
+      pintar();
+    }
+
+    pista.addEventListener('touchstart', () => {
+      arranque = pista!.scrollLeft;
+      desde = actual();
+      tocando = true;
+    }, { passive: true });
+
+    /* Al soltar se decide enseguida, sin esperar a que la inercia termine: es lo
+       que corta el envión que se pasaba de largo. */
+    const soltar = () => { tocando = false; asentar(); };
+    pista.addEventListener('touchend', soltar, { passive: true });
+    pista.addEventListener('touchcancel', soltar, { passive: true });
+
+    /* ⚠️ Y UN SEGUNDO INTENTO CUANDO TODO SE DETIENE. En iOS la inercia sigue
+       corriendo después de soltar y puede ignorar el primer pedido; este se
+       ejecuta cuando ya no queda movimiento, y si el panel quedó donde tenía que
+       quedar no hace nada. */
+    pista.addEventListener('scroll', () => {
+      pintar();
+      clearTimeout(reposo);
+      reposo = window.setTimeout(() => { if (!tocando) asentar(); }, 140);
+    }, { passive: true });
+
+    /* ⚠️ LAS FLECHAS DEL TECLADO SÓLO CUANDO EL FOCO ESTÁ EN LA PISTA. Escuchadas
+       en `document`, se robarían las flechas de toda la página: alguien
+       navegando con el teclado no podría moverse por la página sin cambiar de
+       servicio sin querer. La pista tiene `tabindex="0"` justamente para poder
+       recibir ese foco. */
+    pista.addEventListener('keydown', (e) => {
+      const ev = e as KeyboardEvent;
+      if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;
+      ev.preventDefault();
+      ir(actual() + (ev.key === 'ArrowRight' ? 1 : -1));
+    });
+
+    pintar();
+  }
+</script>
