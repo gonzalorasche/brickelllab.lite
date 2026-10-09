@@ -1,0 +1,9 @@
+CARRUSEL "UNA WEB BIEN HECHA vs UNA QUE NO"
+Fotos: 1. Vertical 4:5 (mínimo 2160 px de ancho), sin texto encima.
+
+1. TAPA — Alguien frente a una notebook con gesto de impaciencia o frustración
+   (mano en la frente, mirando la pantalla esperando). La pantalla puede verse de
+   costado pero sin contenido legible. Tonos neutros, fondo limpio. Aire arriba.
+
+El resto del carrusel es tipográfico y con capturas de sitios del estudio (no
+hace falta foto).

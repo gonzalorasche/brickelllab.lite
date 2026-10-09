@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LinkedIn — Brickell Lab</title>
+<!--
+  ⚠️ LA HOJA PARA PROGRAMAR EN LINKEDIN. Cada pieza con su vista previa, el
+  texto del posteo y un botón para copiarlo. Las imágenes salen de
+  marketing/salida/linkedin/: si no se ven, falta correr
+  `node marketing/linkedin.mjs`.
+
+  ⚠️ ACÁ NO SE NOMBRA NINGÚN PROYECTO. En LinkedIn no está el cliente final
+  mirando trabajos: está el que tiene que contratar y después responder por esa
+  decisión adentro de su empresa. Lo que le mueve la aguja no es "mirá qué lindo
+  esto que hicimos", es "así me aseguro de no equivocarme". Las pantallas se
+  pueden mostrar; de quién son, no se cuenta.
+
+  ⚠️ Y NINGÚN TEXTO USA ESTADÍSTICAS. Si algún día se quiere un dato, va con su
+  fuente al pie.
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap">
+<style>
+  :root { --tinta:#0B0B0F; --gris:#5E606B; --gris-2:#9A9CA6; --linea:#E6E6EA; --suave:#F5F5F7; --marca:linear-gradient(90deg,#FF2E8F,#B23CFF 55%,#7C4DFF); --li:#0A66C2; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Geist',system-ui,sans-serif; color:var(--tinta); background:#fff; padding:56px 20px 120px; }
+  .centro { max-width:1180px; margin:0 auto; }
+  .rotulo { display:grid; gap:12px; justify-items:start; font:500 12px 'Geist Mono',monospace; letter-spacing:.14em; text-transform:uppercase; color:var(--gris); }
+  .rotulo::after { content:''; width:28px; height:2px; background:var(--marca); }
+  h1 { font-size:clamp(34px,5vw,56px); font-weight:600; letter-spacing:-.035em; line-height:1.02; margin:14px 0 12px; }
+  .intro { color:var(--gris); max-width:62ch; line-height:1.55; }
+  /* La guía de arriba */
+  .guia { margin:40px 0 8px; padding:28px 30px; border:1px solid var(--linea); border-radius:16px; background:var(--suave); }
+  .guia h2 { font-size:20px; font-weight:600; letter-spacing:-.02em; margin-bottom:16px; }
+  .guia ul { list-style:none; display:grid; gap:12px; }
+  .guia li { padding-left:22px; position:relative; font-size:15px; line-height:1.55; color:var(--gris); }
+  .guia li::before { content:''; position:absolute; left:0; top:.6em; width:6px; height:6px; border-radius:50%; background:var(--marca); }
+  .guia li b { color:var(--tinta); font-weight:500; }
+  .pieza { display:grid; gap:24px; padding:40px 0; border-top:1px solid var(--linea); }
+  .cab { display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 16px; }
+  .n { font:500 13px 'Geist Mono',monospace; color:var(--gris-2); }
+  .cab h2 { font-size:26px; font-weight:600; letter-spacing:-.02em; }
+  .chip { font:500 11px 'Geist Mono',monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--gris); border:1px solid var(--linea); border-radius:99px; padding:5px 10px; }
+  .chip.doc { color:var(--li); border-color:#BBD4EE; }
+  .imgs { display:flex; gap:10px; overflow-x:auto; padding-bottom:6px; }
+  .imgs img { height:250px; border-radius:10px; border:1px solid var(--linea); flex:none; background:var(--suave); }
+  .texto { border:1px solid var(--linea); border-radius:14px; overflow:hidden; }
+  .texto header { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; background:var(--suave); border-bottom:1px solid var(--linea); }
+  .texto header span { font:500 12px 'Geist Mono',monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--gris); }
+  .texto pre { white-space:pre-wrap; font:15px/1.65 'Geist',sans-serif; padding:18px; }
+  button { font:500 13px 'Geist',sans-serif; border:0; border-radius:99px; padding:9px 16px; background:var(--tinta); color:#fff; cursor:pointer; }
+  button.ok { background:#0FA968; }
+  .nota { font-size:14px; color:var(--gris); line-height:1.55; }
+  .nota b { color:var(--tinta); font-weight:500; }
+  a { color:var(--li); }
+</style>
+</head>
+<body>
+<div class="centro">
+  <p class="rotulo">Marketing · Brickell Lab</p>
+  <h1>Para publicar en LinkedIn.</h1>
+  <p class="intro">Cuatro documentos y ocho posteos de una imagen. Ninguno nombra un proyecto: todos le hablan a quien está por contratar un estudio y necesita no equivocarse. De la 07 en adelante manda la imagen, y las tres últimas cuentan Lúmina — no para venderla, sino para mostrar que el estudio mantiene un producto propio.</p>
+
+  <section class="guia">
+    <h2>Qué quiere ver la gente acá (y cómo publicarlo)</h2>
+    <ul>
+      <li><b>Criterio, no portfolio.</b> En Instagram funciona mostrar trabajos; acá el que mira tiene que justificar una decisión frente a su jefe. Lo que guarda y comparte es lo que lo ayuda a elegir bien: qué pedir, qué plazos son reales, qué preguntar antes de firmar.</li>
+      <li><b>Los documentos (PDF) son el formato con más alcance.</b> Los cuatro carruseles ya salen en PDF: al publicar, elegí "Documento" y subí el archivo. Se pasa con el dedo dentro del feed y la gente lo guarda.</li>
+      <li><b>Las dos primeras líneas son todo.</b> Antes del "ver más" se leen unas dos líneas: ahí va el gancho, nunca el saludo ni el "en Brickell Lab creemos que…".</li>
+      <li><b>El enlace, en el primer comentario.</b> Un posteo con link afuera suele mostrarse menos. Publicá el texto sin link y dejá labbrickell.com.ar en un comentario propio.</li>
+      <li><b>Publicá desde la página de la empresa y compartilo desde tu perfil personal.</b> El alcance de una página es bajo; el de una persona, mucho mayor.</li>
+      <li><b>Dos por semana alcanza</b> (martes y jueves a la mañana). Es mejor sostener dos buenos que publicar cinco flojos.</li>
+      <li><b>Sin emojis decorativos y con pocos hashtags</b> (tres o cuatro). Acá restan seriedad más de lo que suman alcance.</li>
+      <li><b>Si una pieza se entiende sin leerla, arrancá por esa.</b> En el feed un bloque de texto se pasa de largo. Las primeras son de texto y las tres últimas se apoyan en pantallas: alterná una de cada tipo.</li>
+      <li><b>Contestá los comentarios el mismo día.</b> Es lo que más empuja a que se siga mostrando, y además es de donde salen las consultas.</li>
+    </ul>
+  </section>
+
+  <!-- 1 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">01</span><h2>Cinco preguntas antes de firmar</h2><span class="chip doc">Documento · 7 páginas</span></div>
+    <div class="imgs">
+      <img src="salida/linkedin/li-antes-de-firmar/01.png"><img src="salida/linkedin/li-antes-de-firmar/02.png"><img src="salida/linkedin/li-antes-de-firmar/03.png"><img src="salida/linkedin/li-antes-de-firmar/04.png"><img src="salida/linkedin/li-antes-de-firmar/05.png"><img src="salida/linkedin/li-antes-de-firmar/06.png"><img src="salida/linkedin/li-antes-de-firmar/07.png">
+    </div>
+    <p class="nota">Subir como documento: <b>salida/linkedin/li-antes-de-firmar.pdf</b></p>
+    <div class="texto"><header><span>Texto del posteo</span><button>Copiar</button></header><pre>Antes de firmar con un estudio, pedí que te contesten estas cinco preguntas por escrito.
+
+No es desconfianza. Es lo que separa un presupuesto de un número.
+
+1 · ¿El dominio, el código y los accesos quedan a nombre de la empresa?
+Tu sitio es un activo. Si algún día cambiás de proveedor, te lo tenés que poder llevar completo.
+
+2 · ¿Qué incluye el precio y qué no?
+Cuántas secciones, quién escribe los textos, si las fotos van aparte, cuántas rondas de cambios, qué pasa con el hosting.
+
+3 · ¿Cuánto tarda y de qué depende?
+Un plazo que no depende de nada es un plazo que no se va a cumplir. Casi siempre depende del contenido, y eso tiene que estar dicho.
+
+4 · ¿Quién responde cuando algo se rompe?
+Un nombre y un tiempo de respuesta, no un área.
+
+5 · ¿Lo diseñan y lo programan ustedes?
+Cuando el diseño y el código viven en lugares distintos, lo que se pierde en el traspaso lo termina pagando el cliente.
+
+Nosotros dejamos todo eso por escrito antes de empezar. Si estás evaluando proveedores, usá la lista con nosotros también.
+
+#DesarrolloWeb #DiseñoWeb #Pymes</pre></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">02</span><h2>¿Cuánto tarda un sitio?</h2><span class="chip doc">Documento · 6 páginas</span></div>
+    <div class="imgs">
+      <img src="salida/linkedin/li-cuanto-tarda/01.png"><img src="salida/linkedin/li-cuanto-tarda/02.png"><img src="salida/linkedin/li-cuanto-tarda/03.png"><img src="salida/linkedin/li-cuanto-tarda/04.png"><img src="salida/linkedin/li-cuanto-tarda/05.png"><img src="salida/linkedin/li-cuanto-tarda/06.png">
+    </div>
+    <p class="nota">Subir como documento: <b>salida/linkedin/li-cuanto-tarda.pdf</b></p>
+    <div class="texto"><header><span>Texto del posteo</span><button>Copiar</button></header><pre>"¿Cuánto tarda?" es la primera pregunta de casi toda reunión. La respuesta honesta es que depende de qué estés pidiendo.
+
+Una sola página: dos a cuatro semanas.
+Un sitio institucional de varias secciones: cuatro a ocho.
+Una plataforma con usuarios y datos: meses. Hay lógica, permisos y casos de error, y no se estima como un sitio.
+
+Lo que atrasa casi nunca es el código: son los textos, las fotos y las aprobaciones internas. El proyecto que llega con el contenido resuelto se publica semanas antes que el que lo va armando en el camino.
+
+Y una señal de alerta: si alguien te promete un sitio completo en una semana, te va a entregar una plantilla con el logo cambiado.
+
+#DesarrolloWeb #GestiónDeProyectos #Pymes</pre></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">03</span><h2>Un presupuesto no es un número</h2><span class="chip">Imagen</span></div>
+    <div class="imgs"><img src="salida/linkedin/li-presupuesto/01.png"></div>
+    <div class="texto"><header><span>Texto del posteo</span><button>Copiar</button></header><pre>"Sitio web institucional: $X" no es un presupuesto. Es un número.
+
+Un presupuesto dice qué incluye y qué no: cuántas secciones, quién escribe los textos, si las fotos van aparte, cuántas rondas de cambios hay, qué pasa con el dominio y el hosting, y qué queda a nombre de la empresa.
+
+También dice cuánto tarda y de qué depende ese plazo.
+
+Todo lo que no está escrito antes de empezar se discute después. Y después siempre se discute mal.
+
+#DesarrolloWeb #Compras #Pymes</pre></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">04</span><h2>Un solo responsable</h2><span class="chip">Imagen</span></div>
+    <div class="imgs"><img src="salida/linkedin/li-un-responsable/01.png"></div>
+    <div class="texto"><header><span>Texto del posteo</span><button>Copiar</button></header><pre>El problema más caro de un proyecto web no suele ser técnico: es el traspaso.
+
+Un estudio diseña, otro programa, y entre los dos se pierde la mitad de las decisiones. El cliente aprueba una cosa y recibe otra, y nadie se hace cargo porque cada uno hizo su parte.
+
+Nosotros diseñamos y programamos en el mismo lugar. Un solo interlocutor, y lo que aprobás es lo que se publica.
+
+Si estás por contratar, preguntá quién hace cada cosa. La respuesta te dice bastante sobre cómo va a terminar el proyecto.
+
+#DiseñoWeb #DesarrolloWeb #UX</pre></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">05</span><h2>Publicar no es terminar</h2><span class="chip">Imagen</span></div>
+    <div class="imgs"><img src="salida/linkedin/li-publicar-no-es-terminar/01.png"></div>
+    <div class="texto"><header><span>Texto del posteo</span><button>Copiar</button></header><pre>El día que un sitio se publica no termina el proyecto. Empieza.
+
+Las dependencias se actualizan, los formularios dejan de llegar sin que nadie se entere, el certificado vence, los buscadores cambian de criterio. Un sitio que nadie mira después de la primera semana se desactualiza, se rompe y deja de aparecer.
+
+Antes de firmar, preguntá dos cosas: quién lo sostiene después de publicar, y cada cuánto.
+
+#DesarrolloWeb #Mantenimiento #Pymes</pre></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">06</span><h2>Primero el teléfono</h2><span class="chip">Imagen</span></div>
+    <div class="imgs"><img src="salida/linkedin/li-primero-el-telefono/01.png"></div>
+    <div class="texto"><header><span>Texto del posteo</span><button>Copiar</button></header><pre>Casi todos te van a buscar desde el teléfono, muchas veces en la calle y con mala señal.
+
+Por eso el teléfono no es "la versión mobile" que se resuelve al final: es donde empieza el diseño. Recién después se lleva a escritorio.
+
+Si hay que hacer zoom para leer un precio o para encontrar el botón de contacto, el sitio no está terminado.
+
+#DiseñoWeb #UX #DesarrolloWeb</pre></div>
+  </section>
+
+  <!-- 7 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">07</span><h2>La primera pantalla</h2><span class="chip doc">Documento · 6 páginas</span><span class="chip">Pantallas reales</span></div>
+    <div class="imgs">
+      <img src="salida/linkedin/li-primera-pantalla/01.png"><img src="salida/linkedin/li-primera-pantalla/02.png"><img src="salida/linkedin/li-primera-pantalla/03.png"><img src="salida/linkedin/li-primera-pantalla/04.png"><img src="salida/linkedin/li-primera-pantalla/05.png"><img src="salida/linkedin/li-primera-pantalla/06.png">
+    </div>
+    <p class="nota">Subir como documento: <b>salida/linkedin/li-primera-pantalla.pdf</b></p>
+    <div class="texto"><header><span>Texto del posteo</span><button>Copiar</button></header><pre>El visitante llega desde el teléfono y decide en la primera pantalla si sigue o se va. No lee: mira.
+
+Cuatro cosas que se juegan ahí:
+
+1 · El dato que vino a buscar, arriba. El horario, el precio, si está abierto. Si hay que buscarlo, se va antes de encontrarlo.
+
+2 · Un botón principal y uno secundario. Seis botones del mismo tamaño es ninguno: la jerarquía le dice al visitante qué queremos que haga.
+
+3 · Lo que vino a hacer, ya empezado. El buscador, el turnero o el formulario en la primera pantalla, no escondidos en otra página.
+
+4 · Se lee de corrido, sin hacer zoom. Y el contacto siempre a la vista, no al final del todo.
+
+Nada de esto se arregla después. Se decide antes de escribir la primera línea de código.
+
+#DiseñoWeb #UX #DesarrolloWeb</pre></div>
+  </section>
+
+  <!-- 8 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">08</span><h2>Ninguna plantilla</h2><span class="chip">Imagen</span><span class="chip">Pantallas reales</span></div>
+    <div class="imgs"><img src="salida/linkedin/li-sin-plantilla/01.png"></div>
+    <div class="texto"><header><span>Texto del posteo</span><button>Copiar</button></header><pre>Cuatro proyectos, cuatro sistemas visuales distintos. Ninguno arrancó de una plantilla.
+
+Una plantilla te da un sitio rápido y te deja igual a otros mil. Lo que define al tuyo no es el tema que compraste: es la tipografía, el color, el ritmo y la jerarquía, elegidos para tu negocio y para lo que tu cliente viene a hacer.
+
+Si reconocés el mismo diseño con otro logo, no te diseñaron nada: te lo configuraron.
+
+#DiseñoWeb #Branding #DesarrolloWeb</pre></div>
+  </section>
+
+  <!-- 9 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">09</span><h2>El estudio</h2><span class="chip">Imagen</span><span class="chip">Institucional</span></div>
+    <div class="imgs"><img src="salida/linkedin/li-el-estudio/01.png"></div>
+    <div class="texto"><header><span>Texto del posteo</span><button>Copiar</button></header><pre>Brickell Lab nació en Buenos Aires inspirado por una ciudad que nunca parece terminar de construirse: Brickell, Miami. La idea detrás del nombre terminó siendo una forma de trabajar.
+
+Nos interesan los proyectos que todavía no están del todo definidos. Las ideas que necesitan convertirse en algo concreto. Las marcas que quieren dejar de parecerse a todas las demás.
+
+Diseño, tecnología y estrategia en el mismo lugar, con proyectos de distintos lugares.
+
+Buenos Aires · Argentina
+
+#DiseñoWeb #DesarrolloWeb #BuenosAires</pre></div>
+  </section>
+
+  <!-- 10 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">10</span><h2>Producto propio</h2><span class="chip">Imagen</span><span class="chip">Lúmina</span></div>
+    <div class="imgs"><img src="salida/linkedin/li-producto-propio/01.png"></div>
+    <div class="texto"><header><span>Texto del posteo</span><button>Copiar</button></header><pre>Hacemos sitios y plataformas para clientes. Y además mantenemos un producto nuestro.
+
+Lúmina es nuestra plataforma para casamientos y fiestas de quince: la invitación digital que reciben los invitados y el panel desde el que se organiza todo, de la lista de confirmados al plano del salón.
+
+No es un experimento de portfolio. Tiene gente que la usa el día más importante del año, y cuando algo no funciona, atendemos nosotros.
+
+Eso cambia cómo trabajamos para los demás: cada decisión que proponemos en un proyecto ya la pagamos en el nuestro.
+
+#ProductoDigital #DesarrolloWeb #SaaS</pre></div>
+  </section>
+
+  <!-- 11 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">11</span><h2>La función que sacamos</h2><span class="chip">Imagen</span><span class="chip">Lúmina</span></div>
+    <div class="imgs"><img src="salida/linkedin/li-sacamos-una-funcion/01.png"></div>
+    <div class="texto"><header><span>Texto del posteo</span><button>Copiar</button></header><pre>En nuestro producto teníamos el control de ingreso para el día del evento: el organizador marcaba quién iba llegando, desde el teléfono.
+
+Funcionaba. Lo sacamos antes de publicarlo.
+
+El motivo: en un salón no siempre hay señal, y el peor momento para que algo falle es la puerta, con la gente entrando. Una función que depende de la conectividad justo cuando no la hay no es un activo: es un pasivo.
+
+La decisión difícil de un proyecto casi nunca es qué agregar. Es qué sacar.
+
+Si estás por contratar un desarrollo, preguntá qué van a dejar afuera y por qué. La respuesta dice más que la lista de funciones.
+
+#DesarrolloWeb #ProductoDigital #UX</pre></div>
+  </section>
+
+  <!-- 12 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">12</span><h2>Lo que aprendimos</h2><span class="chip doc">Documento &middot; 6 páginas</span><span class="chip">Lúmina</span></div>
+    <div class="imgs">
+      <img src="salida/linkedin/li-aprendimos/01.png"><img src="salida/linkedin/li-aprendimos/02.png"><img src="salida/linkedin/li-aprendimos/03.png"><img src="salida/linkedin/li-aprendimos/04.png"><img src="salida/linkedin/li-aprendimos/05.png"><img src="salida/linkedin/li-aprendimos/06.png">
+    </div>
+    <p class="nota">Subir como documento: <b>salida/linkedin/li-aprendimos.pdf</b></p>
+    <div class="texto"><header><span>Texto del posteo</span><button>Copiar</button></header><pre>Mantener un producto propio es la escuela más cara que tenemos. Cuatro cosas que aprendimos ahí y que aplicamos en los proyectos de clientes:
+
+1 · El caso raro es la mitad del trabajo. Un invitado avisa que no va: no se borra, queda en el historial, se libera su lugar en la mesa, se cancela su traslado y baja el cupo del salón. Una línea en la propuesta, semanas de trabajo.
+
+2 · Un dato, un solo lugar donde se calcula. Si el mismo número se saca en tres pantallas distintas, algún día no van a coincidir. Y lo ve el cliente antes que vos.
+
+3 · Se diseña para el teléfono porque ahí se mira. Diseñar para la demo de la reunión es diseñar para la pantalla equivocada.
+
+4 · Lo que no está cargado, no se dibuja. Un bloque vacío no es "pendiente de completar": es un error a la vista del usuario.
+
+Ninguna de las cuatro salió de un libro. Las pagamos nosotros primero.
+
+#ProductoDigital #DesarrolloWeb #UX</pre></div>
+  </section>
+
+  <section class="pieza">
+    <p class="nota"><b>Primer comentario, para los tres primeros posteos:</b> "Si querés, escribimos tu caso: labbrickell.com.ar" — el enlace va acá y no en el texto del posteo.</p>
+  </section>
+</div>
+
+<script>
+  // Copiar: primero la API del portapapeles; si el navegador la bloquea (pasa
+  // al abrir el archivo desde el disco), el método viejo con un textarea.
+  document.querySelectorAll('.texto button').forEach((b) => b.addEventListener('click', async () => {
+    const texto = b.closest('.texto').querySelector('pre').innerText
+    try { await navigator.clipboard.writeText(texto) } catch (e) {
+      const t = document.createElement('textarea'); t.value = texto; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove()
+    }
+    b.textContent = 'Copiado ✓'; b.classList.add('ok')
+    setTimeout(() => { b.textContent = 'Copiar'; b.classList.remove('ok') }, 1600)
+  }))
+</script>
+</body>
+</html>

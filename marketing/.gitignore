@@ -1,0 +1,9 @@
+# Lo que se versiona es el generador y los pedidos de fotos (LEEME.txt), que es
+# donde vive el criterio. Las fotos y los renders se pueden volver a bajar o a
+# generar. Se ignora el CONTENIDO de fotos/ y no la carpeta, para que git baje
+# a mirar adentro y encuentre los LEEME.
+fotos/*
+!fotos/*/
+fotos/*/*
+!fotos/*/LEEME.txt
+salida/

@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Publicaciones — Brickell Lab</title>
+<!--
+  ⚠️ LA HOJA PARA PROGRAMAR: cada pieza con su vista previa, su texto y un
+  botón para copiarlo. Las imágenes salen de marketing/salida/ (se abren desde
+  este mismo archivo): si no se ven, falta correr `node marketing/generar.mjs`.
+  Ningún texto usa estadísticas: se argumenta sin cifras. Lúmina se nombra
+  siempre para casamientos y fiestas de quince, nada más.
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap">
+<style>
+  :root { --tinta:#0B0B0F; --gris:#5E606B; --gris-2:#9A9CA6; --linea:#E6E6EA; --suave:#F5F5F7; --marca:linear-gradient(90deg,#FF2E8F,#B23CFF 55%,#7C4DFF); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Geist',system-ui,sans-serif; color:var(--tinta); background:#fff; padding:56px 20px 120px; }
+  .centro { max-width:1180px; margin:0 auto; }
+  .rotulo { display:grid; gap:12px; justify-items:start; font:500 12px 'Geist Mono',monospace; letter-spacing:.14em; text-transform:uppercase; color:var(--gris); }
+  .rotulo::after { content:''; width:28px; height:2px; background:var(--marca); }
+  h1 { font-size:clamp(34px,5vw,56px); font-weight:600; letter-spacing:-.035em; line-height:1.02; margin:14px 0 12px; }
+  .intro { color:var(--gris); max-width:62ch; line-height:1.55; }
+  .pieza { display:grid; gap:24px; padding:40px 0; border-top:1px solid var(--linea); }
+  .pieza:first-of-type { margin-top:40px; }
+  .cab { display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 16px; }
+  .n { font:500 13px 'Geist Mono',monospace; color:var(--gris-2); }
+  .cab h2 { font-size:26px; font-weight:600; letter-spacing:-.02em; }
+  .chip { font:500 11px 'Geist Mono',monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--gris); border:1px solid var(--linea); border-radius:99px; padding:5px 10px; }
+  .chip.li { color:#0A66C2; border-color:#BBD4EE; }
+  .imgs { display:flex; gap:10px; overflow-x:auto; padding-bottom:6px; }
+  .imgs img, .imgs video { height:260px; border-radius:10px; border:1px solid var(--linea); flex:none; background:var(--suave); }
+  .textos { display:grid; gap:18px; }
+  @media (min-width:900px) { .textos.dos { grid-template-columns:1fr 1fr; } }
+  .texto { border:1px solid var(--linea); border-radius:14px; overflow:hidden; }
+  .texto header { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; background:var(--suave); border-bottom:1px solid var(--linea); }
+  .texto header span { font:500 12px 'Geist Mono',monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--gris); }
+  .texto pre { white-space:pre-wrap; font:15px/1.6 'Geist',sans-serif; padding:16px; color:var(--tinta); }
+  button { font:500 13px 'Geist',sans-serif; border:0; border-radius:99px; padding:9px 16px; background:var(--tinta); color:#fff; cursor:pointer; }
+  button.ok { background:#0FA968; }
+  .nota { font-size:14px; color:var(--gris); line-height:1.5; }
+  .nota b { color:var(--tinta); font-weight:500; }
+</style>
+</head>
+<body>
+<div class="centro">
+  <p class="rotulo">Marketing · Brickell Lab</p>
+  <h1>Publicaciones listas para programar.</h1>
+  <p class="intro">En el orden sugerido: tres por semana (martes, jueves y sábado), alternando institucional y educativa. Cada texto tiene su botón de copiar. Las historias no llevan texto: van con un sticker de enlace a labbrickell.com.ar.</p>
+
+  <!-- 1 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">01</span><h2>Presentación</h2><span class="chip">Post</span><span class="chip">Historia</span></div>
+    <div class="imgs"><img src="salida/estudio-presentacion/01.png"><img src="salida/estudio-presentacion-historia/01.png"></div>
+    <div class="textos"><div class="texto"><header><span>Instagram</span><button>Copiar</button></header><pre>Diseñamos lo que tu marca todavía no tiene.
+
+Somos Brickell Lab, un estudio de diseño y desarrollo web en Buenos Aires. Hacemos sitios, plataformas y productos digitales, de la idea al código: el diseño y el desarrollo en el mismo lugar.
+
+Si tenés una idea dando vueltas, contanos. 👉 labbrickell.com.ar
+
+#diseñoweb #desarrolloweb #estudiodediseño #buenosaires #productosdigitales #branding</pre></div></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">02</span><h2>Te están buscando ahora mismo</h2><span class="chip">Carrusel · 7</span><span class="chip">Historias · 7</span></div>
+    <div class="imgs"><img src="salida/edu-web-posiciona/01.png"><img src="salida/edu-web-posiciona/02.png"><img src="salida/edu-web-posiciona/03.png"><img src="salida/edu-web-posiciona/04.png"><img src="salida/edu-web-posiciona/05.png"><img src="salida/edu-web-posiciona/06.png"><img src="salida/edu-web-posiciona/07.png"></div>
+    <div class="textos"><div class="texto"><header><span>Instagram</span><button>Copiar</button></header><pre>Alguien está buscando lo que vos hacés. ¿Te encuentra a vos o a tu competencia? 🔎
+
+Hoy, lo primero que hace quien te necesita es buscarte: en Google, en Maps y cada vez más preguntándole a una inteligencia artificial. Instagram muestra lo que publicaste hoy; una web contesta lo que te preguntan siempre.
+
+En el carrusel te contamos qué mira Google (y las IA) para mostrarte, y por qué una web bien hecha trabaja mientras vos atendés tu negocio.
+
+¿Tu web te trae clientes? Escribinos y lo vemos juntos. 👉 labbrickell.com.ar
+
+#seo #posicionamientoweb #diseñoweb #paginaweb #emprendedores #negocioslocales #marketingdigital #buenosaires</pre></div></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">03</span><h2>Qué hacemos</h2><span class="chip">Carrusel · 4</span><span class="chip">Historias · 4</span></div>
+    <div class="imgs"><img src="salida/estudio-que-hacemos/01.png"><img src="salida/estudio-que-hacemos/02.png"><img src="salida/estudio-que-hacemos/03.png"><img src="salida/estudio-que-hacemos/04.png"></div>
+    <div class="textos"><div class="texto"><header><span>Instagram</span><button>Copiar</button></header><pre>De la idea al código. Esto es lo que hacemos 👇
+
+→ Desarrollo web: sitios y landings desde cero, sin plantillas. Rápidos, a medida y fáciles de encontrar.
+→ Productos digitales: plataformas con usuarios y datos reales. Paneles, sistemas internos y MVPs.
+→ Identidad y diseño: un sistema visual que vive igual en una web, un packaging o una pantalla.
+
+Diseño y desarrollo en el mismo lugar, sin pasar el proyecto de mano en mano.
+
+¿Cuál necesitás? Contanos tu idea 👉 labbrickell.com.ar
+
+#desarrolloweb #diseñoweb #identidadvisual #productosdigitales #uxui #branding #buenosaires</pre></div></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">04</span><h2>Una web que no carga es una puerta cerrada</h2><span class="chip">Carrusel · 7</span><span class="chip">Historias · 7</span></div>
+    <div class="imgs"><img src="salida/edu-web-bien-hecha/01.png"><img src="salida/edu-web-bien-hecha/02.png"><img src="salida/edu-web-bien-hecha/03.png"><img src="salida/edu-web-bien-hecha/04.png"><img src="salida/edu-web-bien-hecha/05.png"><img src="salida/edu-web-bien-hecha/06.png"><img src="salida/edu-web-bien-hecha/07.png"></div>
+    <div class="textos"><div class="texto"><header><span>Instagram</span><button>Copiar</button></header><pre>Una web bien hecha y una que no se diferencian en cosas que tus clientes notan aunque no sepan explicarlas. 👀
+
+⚡ Velocidad: si tarda en abrir, la gente se va antes de verla.
+📱 Celular: si hay que hacer zoom para leer, no está pensada para el teléfono.
+💬 Mensaje: en cinco segundos tiene que quedar claro qué hacés y para quién.
+📲 Contacto: WhatsApp y mail a un toque, no un formulario perdido al final.
+🔎 Google: armada para que los buscadores y las IA la entiendan y la muestren.
+
+¿La tuya cuál es? Si no estás seguro, escribinos y la miramos 👉 labbrickell.com.ar
+
+#diseñoweb #paginaweb #desarrolloweb #experienciadeusuario #seo #emprendedores #buenosaires</pre></div></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">05</span><h2>El estudio</h2><span class="chip">Post</span><span class="chip">Historia</span></div>
+    <div class="imgs"><img src="salida/estudio-el-estudio/01.png"><img src="salida/estudio-el-estudio-historia/01.png"></div>
+    <div class="textos"><div class="texto"><header><span>Instagram</span><button>Copiar</button></header><pre>Un nombre que es una forma de trabajar.
+
+Brickell Lab nació en Buenos Aires, inspirado por una ciudad que nunca parece terminar de construirse: Brickell, Miami. La idea detrás del nombre terminó convirtiéndose en nuestra forma de trabajar.
+
+Nos interesan los proyectos que todavía no están del todo definidos, las ideas que necesitan volverse algo concreto y las marcas que quieren dejar de parecerse a todas las demás.
+
+¿Tenés una? 👉 labbrickell.com.ar
+
+#estudiodediseño #diseñoweb #desarrolloweb #branding #buenosaires #brickelllab</pre></div></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">06</span><h2>Reel · Lo que construimos</h2><span class="chip">Reel IG 9:16</span><span class="chip li">Video LinkedIn 4:5</span></div>
+    <div class="imgs"><video src="salida/reel/reel-proyectos.mp4" controls muted></video><video src="salida/reel/reel-proyectos-linkedin.mp4" controls muted></video></div>
+    <div class="textos dos">
+      <div class="texto"><header><span>Instagram · reel</span><button>Copiar</button></header><pre>Lo que construimos 🧱
+
+Un planetario que se siente como un instrumento. Una agencia de viajes que no vende paquetes. Una biblioteca de doscientos cuarenta años.
+
+Cada sitio empieza en blanco y termina en código: diseño y desarrollo en el mismo lugar. Diseñamos para vos. ✨
+
+👉 labbrickell.com.ar
+
+#diseñoweb #desarrolloweb #webdesign #portfolio #uxui #buenosaires #brickelllab</pre></div>
+      <div class="texto"><header><span>LinkedIn</span><button>Copiar</button></header><pre>Cada proyecto empieza en blanco y termina en código.
+
+En Brickell Lab diseñamos y desarrollamos sitios, plataformas y productos digitales en el mismo lugar, sin pasar el proyecto de mano en mano. En este video, algunos de los sitios que construimos:
+
+• Cenit — la cartelera de un planetario tratada como un instrumento: el domo, la carta del cielo de esta noche y las entradas.
+• Meridiano — una agencia que no vende paquetes: un buscador de itinerarios con filtros propios.
+• Biblioteca Gadir — doscientos cuarenta años de historia, con catálogo, línea de tiempo y el carné en tres pasos.
+
+Todos pensados primero para el teléfono, rápidos y armados para que Google y los motores de IA los entiendan.
+
+Si tu empresa necesita un sitio o una plataforma que trabaje de verdad, conversemos: labbrickell.com.ar
+
+#DiseñoWeb #DesarrolloWeb #ProductosDigitales #UXUI #SEO #BuenosAires</pre></div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">07</span><h2>La marca no es un logo</h2><span class="chip">Carrusel · 6</span><span class="chip">Historias · 6</span></div>
+    <div class="imgs"><img src="salida/edu-diseno-de-marca/01.png"><img src="salida/edu-diseno-de-marca/02.png"><img src="salida/edu-diseno-de-marca/03.png"><img src="salida/edu-diseno-de-marca/04.png"><img src="salida/edu-diseno-de-marca/05.png"><img src="salida/edu-diseno-de-marca/06.png"></div>
+    <div class="textos"><div class="texto"><header><span>Instagram</span><button>Copiar</button></header><pre>La marca no es un logo. 🎨
+
+Es cómo te reconocen cuando no estás: los colores, la tipografía, el tono, las fotos, el packaging, la web. Piezas distintas que tienen que hablar con la misma voz.
+
+Y la gente confía en lo que se ve cuidado: una marca prolija se lee como un negocio serio; una desprolija hace dudar, aunque el producto sea bueno.
+
+En el carrusel, un caso: cómo una misma marca vive en una web, un aviso y un packaging.
+
+¿Tu marca dice quién sos? Contanos 👉 labbrickell.com.ar
+
+#branding #identidadvisual #diseñodemarca #diseñografico #packaging #emprendedores #buenosaires</pre></div></div>
+  </section>
+
+  <!-- 8 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">08</span><h2>Lúmina, producto propio</h2><span class="chip">Post</span><span class="chip">Historia</span></div>
+    <div class="imgs"><img src="salida/estudio-lumina/01.png"><img src="salida/estudio-lumina-historia/01.png"></div>
+    <div class="textos"><div class="texto"><header><span>Instagram</span><button>Copiar</button></header><pre>Lo que hacemos para otros, lo hicimos primero para nosotros. 💜
+
+Lúmina es nuestra plataforma para casamientos y fiestas de quince: la invitación digital que reciben los invitados y el panel desde el que se organiza todo, desde las confirmaciones hasta las mesas y el transporte.
+
+La pensamos, la diseñamos y la construimos nosotros. Es la prueba de lo que hacemos: un producto funcionando, con usuarios reales.
+
+Conocela en @lumina.labbrickell 👉 lumina.labbrickell.com.ar
+
+#productosdigitales #desarrolloweb #diseñoux #startup #casamientos #quinceaños #brickelllab</pre></div></div>
+  </section>
+
+  <!-- 9 -->
+  <section class="pieza">
+    <div class="cab"><span class="n">09</span><h2>Contacto</h2><span class="chip">Post</span><span class="chip">Historia</span></div>
+    <div class="imgs"><img src="salida/estudio-contacto/01.png"><img src="salida/estudio-contacto-historia/01.png"></div>
+    <div class="textos"><div class="texto"><header><span>Instagram</span><button>Copiar</button></header><pre>Contanos tu idea. 💬
+
+No hace falta que el proyecto esté definido. Escribinos y te decimos cómo lo haríamos, en cuánto tiempo y cuánto sale.
+
+📩 info@labbrickell.com.ar
+📲 WhatsApp: +54 9 11 2460 9038
+🌐 labbrickell.com.ar
+
+#diseñoweb #desarrolloweb #branding #productosdigitales #buenosaires #brickelllab</pre></div></div>
+  </section>
+
+  <section class="pieza">
+    <p class="nota"><b>Historias:</b> subí las versiones <b>-historia</b> de cada pieza el mismo día que el post, con un sticker de enlace a <b>labbrickell.com.ar</b> en la zona libre del medio (arriba y abajo las tapa Instagram). En los carruseles, van en orden, una atrás de otra.</p>
+  </section>
+</div>
+
+<script>
+  // Copiar: primero la API del portapapeles; si el navegador la bloquea
+  // (pasa al abrir el archivo desde el disco), el método viejo con un textarea.
+  document.querySelectorAll('.texto button').forEach((b) => b.addEventListener('click', async () => {
+    const texto = b.closest('.texto').querySelector('pre').innerText
+    try { await navigator.clipboard.writeText(texto) } catch (e) {
+      const t = document.createElement('textarea'); t.value = texto; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove()
+    }
+    b.textContent = 'Copiado ✓'; b.classList.add('ok')
+    setTimeout(() => { b.textContent = 'Copiar'; b.classList.remove('ok') }, 1600)
+  }))
+</script>
+</body>
+</html>

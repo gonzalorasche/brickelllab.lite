@@ -1,0 +1,26 @@
+LA CAMADA DE NECESIDAD — las fotos de las tres series (octubre 2026)
+
+Stock de Unsplash (licencia Unsplash: uso comercial permitido, sin atribución
+obligatoria). Se bajaron con la búsqueda pública y quedaron acá con nombre
+descriptivo; el detalle de autor e ID de cada una está en _creditos.txt (no se
+versiona, como ninguna foto — este LEEME es lo que queda).
+
+LAS QUE USAN LAS PLACAS (no renombrar sin tocar generar.mjs):
+
+  libreta-idea-2.jpg    tapa de necesidad-la-idea — cuadernos escritos a mano,
+                        lápices, un teléfono. La idea anotada hace meses.
+  duena-cafe-1.jpg      tapa de necesidad-web-inversion — la dueña de un café
+                        DE ESPALDAS en su mostrador (sin cara: a propósito).
+  persiana-noche-2.jpg  tapa de necesidad-dia-a-dia — el cartel CLOSED colgado
+                        en el vidrio, bokeh cálido detrás.
+
+LAS DEMÁS SON REPUESTO. Se bajaron en la misma tanda y quedaron por si alguna
+placa nueva las pide, pero NO SE USAN, y dos tienen motivo para no usarse:
+
+  peluqueria-1.jpg      caras reconocibles + marcas ajenas en el delantal.
+  mostrador-tel-1.jpg   cartelería "Panadol" en primer plano.
+
+CRITERIO PARA SUMAR FOTOS ACÁ: sin caras reconocibles, sin marcas de terceros
+legibles, luz cálida de negocio real (nada de oficina stock), mínimo 1080 px de
+ancho y en vertical — la placa es 1080×1350 y la tapa lleva el titular abajo,
+así que lo importante de la imagen tiene que vivir en la mitad superior.

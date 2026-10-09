@@ -1,0 +1,11 @@
+CARRUSEL "LA MARCA NO ES UN LOGO" — la importancia de un buen diseño de marca
+Fotos: 2. Verticales 4:5 (mínimo 2160 px de ancho), sin texto encima.
+
+1. TAPA — Una mesa de trabajo de diseño vista desde arriba: muestras de color,
+   papeles, bocetos de un logo, una tarjeta, un lápiz. Ordenado, luz natural,
+   fondo claro. Sin marcas reconocibles de otras empresas.
+
+2. INTERIOR — Dos productos o dos vidrieras iguales, una con marca cuidada y otra
+   genérica (o una sola bien cuidada: packaging, bolsa, tarjeta de un mismo
+   negocio). Que se vea "coherencia". Si no hay, se reemplaza por el caso Bloom
+   Bud que ya tenemos en docs/identidad.
