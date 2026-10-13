@@ -1,0 +1,462 @@
+---
+// ============================================================
+// EL LAYOUT DE LA WEB NUEVA
+// ============================================================
+// ⚠️ NO IMPORTA NADA DE LO VIEJO: ni tokens, ni components.css, ni Inter. Es
+// una hoja nueva (`v4.css`) y una tipografía nueva (Geist + Geist Mono).
+//
+// ⚠️ ES LA WEB OFICIAL DESDE EL 29/09/2026: vive en `/` y reemplazó a la
+// anterior (que quedó en docs/descartes/sitio-viejo). Se indexa. Conserva lo que
+// la anterior ya tenía ganado en Google: la verificación de Search Console, la
+// cuenta de X y el `@id` de la organización (ver pages/index.astro).
+import '../styles/v4.css'
+// La tarjeta de artículo es la misma en la home, en la página de artículos y
+// al pie de cada artículo: por eso vive en su propia hoja, no en un componente.
+import '../styles/v4-tarjeta-articulo.css'
+import { SITIO } from '../data/v4/contacto'
+
+const {
+  title = 'Brickell Lab — Diseño y desarrollo web en Buenos Aires',
+  description = 'Estudio independiente de diseño y desarrollo web. Sitios, plataformas y productos digitales de la idea al código. Creadores de Lúmina.',
+  ruta = '/',
+  imagen = '/v4/og.jpg',
+  robots = 'index, follow, max-image-preview:large',
+  jsonld = null as null | object | object[],
+} = Astro.props
+const canonical = SITIO + ruta
+---
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="author" content="Brickell Lab" />
+  <meta name="robots" content={robots} />
+  <!-- La misma verificación de Google Search Console que tenía la web anterior:
+       sin ella se pierde el acceso a la propiedad al reemplazar el sitio. -->
+  <meta name="google-site-verification" content="zdAmZogDlE45CPpBFYU4R8POrylW3BfvLor1I9Kogzk" />
+  <link rel="canonical" href={canonical} />
+  <meta name="theme-color" content="#ffffff" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Brickell Lab" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={SITIO + imagen} />
+  {imagen === '/v4/og.jpg' && <meta property="og:image:width" content="1200" />}
+  {imagen === '/v4/og.jpg' && <meta property="og:image:height" content="630" />}
+  <meta property="og:image:alt" content={title} />
+  <meta property="og:locale" content="es_AR" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@LabBrickell" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={SITIO + imagen} />
+
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="alternate" type="text/plain" title="Resumen para asistentes de IA" href="/llms.txt" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  {/* ⚠️ GSAP VIENE DE UN TERCER DOMINIO Y HAY QUE ABRIRLE LA PUERTA ANTES. Las
+      animaciones se cargan desde `cdn.jsdelivr.net` (ver los scripts de la home
+      y del blog), y antes del primer byte hay que resolver su DNS y negociar su
+      TLS: en local eso no se nota y en producción son unos cuantos cientos de
+      milisegundos, que es parte de la diferencia entre el 99 que da el sitio
+      servido acá y lo que mide PageSpeed. El `preconnect` hace ese trámite en
+      paralelo con el resto de la carga.
+
+      Lo que lo resolvería del todo es alojar GSAP con el sitio, y queda
+      anotado: son dos archivos y tres URLs, pero toca las tres páginas que lo
+      usan y no es un cambio para hacer apurado antes de un deploy. */}
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+
+  {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />}
+
+  <!-- ⚠️ LA PÁGINA SIEMPRE ARRANCA ARRIBA. El navegador restaura el scroll de
+       la visita anterior al recargar, y con el smoother eso deja la página
+       parada en cualquier lado. Se apaga la restauración y, si no hay ancla en
+       la URL, se vuelve a cero antes de pintar. -->
+  <script is:inline>
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+    // ⚠️ AL RECARGAR SE VUELVE SIEMPRE ARRIBA, aunque la URL haya quedado con
+    // un ancla (pasa al usar el menú: queda `#articulos` pegado y cada F5
+    // caía ahí). Si se ENTRA desde un enlace con ancla, esa sí se respeta.
+    var nav0 = performance.getEntriesByType && performance.getEntriesByType('navigation')[0]
+    if (location.hash && (!nav0 || nav0.type === 'reload' || nav0.type === 'back_forward')) {
+      history.replaceState(null, '', location.pathname + location.search)
+    }
+    // ⚠️ EL RESETEO AL `load` SOLO SI TODAVÍA NO TOCARON NADA: el `load` llega
+    // recién cuando terminan de cargar fotos y videos, y si para entonces ya
+    // estabas scrolleando, te devolvía al hero de un tirón.
+    window.__tocado = false
+    var marcar = function () { window.__tocado = true }
+    addEventListener('wheel', marcar, { passive: true, once: true })
+    addEventListener('touchstart', marcar, { passive: true, once: true })
+    addEventListener('keydown', marcar, { once: true })
+    if (!location.hash) {
+      window.scrollTo(0, 0)
+      addEventListener('load', function () { if (!window.__tocado && !location.hash && (window.scrollY || 0) < 4) window.scrollTo(0, 0) })
+    }
+  </script>
+
+  <!-- ⚠️ ESTO VA ANTES QUE TODO Y ARREGLA UNA CARRERA QUE ROMPÍA EL
+       TELÉFONO ENTERO. Cada página avisa con `gsap:listo` cuando están las
+       librerías del desplazamiento suave. En escritorio ese aviso tarda,
+       porque hay que bajarlas, y para cuando llega ya hay quien lo escucha.
+       En el teléfono NO SE BAJA NADA y el aviso sale en el acto, en el mismo
+       renglón: antes de que el segundo script alcance a escuchar. Resultado
+       medido: en el teléfono no corría NI UNA LÍNEA del script de la página.
+       La barra se quedaba blanca sobre el hero blanco, o sea invisible, y
+       con ella se caían las anclas del menú, el visor y el aviso.
+
+       Con esto el aviso deja una marca puesta, así que quien llegue tarde
+       igual arranca. Nadie escucha `gsap:listo` a mano: se entra por
+       `alListo`. -->
+  <script is:inline>
+    window.__listo = false
+    document.addEventListener('gsap:listo', function () { window.__listo = true })
+    window.alListo = function (fn) {
+      if (window.__listo) fn()
+      else document.addEventListener('gsap:listo', fn)
+    }
+  </script>
+
+  <!-- ⚠️ TODO EL MOVIMIENTO DE LA WEB SALE DE ACÁ, DE UN SOLO LUGAR.
+       Son tres cosas y comparten un único bucle de animación:
+         1. las entradas, con el ritmo repartido al momento de entrar;
+         2. el paralaje de los medios;
+         3. la barra, que marca en qué sección estás.
+       El que no tiene JS lo ve todo quieto y puesto (ver el noscript). -->
+  <noscript><style>
+    [data-entra] { translate: none !important; rotate: none !important; scale: none !important; clip-path: none !important; }
+    [data-entra] h1, [data-entra] h2, [data-entra] .art__titulo { clip-path: none !important; translate: none !important; }
+    [data-entra] img, [data-entra] video { scale: none !important; }
+    [data-para] { translate: none !important; }
+  </style></noscript>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function () {
+      var quieto = matchMedia('(prefers-reduced-motion: reduce)').matches
+      var bloques = [].slice.call(document.querySelectorAll('[data-entra]'))
+
+      if (quieto || !('IntersectionObserver' in window)) {
+        // Ni se parten los titulares ni se observa nada: todo puesto.
+        bloques.forEach(function (el) { el.classList.add('viva') })
+        return
+      }
+
+      // ── 1. EL RITMO, REPARTIDO AL ENTRAR ─────────────────────────────
+      // ⚠️ NO HAY UN SOLO RETARDO ESCRITO EN EL MARKUP. Los bloques que
+      // aparecen en la misma tanda se ordenan por su lugar en la pantalla
+      // —primero el de más arriba, y a igual altura el de más a la
+      // izquierda— y se les da 80 ms de diferencia. Un bloque que entra
+      // solo no espera nada. Así una sección de dos piezas y otra de seis
+      // tienen la misma cadencia, que es lo que hace que la página se
+      // sienta una sola y no una colección de secciones sueltas.
+      //
+      // El retardo se deja en `--retardo`, que SÍ se hereda: el titular,
+      // la rayita del rótulo y las imágenes de adentro lo leen y entran
+      // en su lugar de la cascada en vez de arrancar todos juntos.
+      // ── EL TITULAR, PARTIDO EN RENGLONES ─────────────────────────────
+      // ⚠️ ESTO ES LO QUE HACE QUE UN TITULAR SE SIENTA COMPUESTO y no
+      // "animado": cada renglón sube desde atrás de su propia línea, uno
+      // detrás del otro. No se puede escribir en el HTML porque dónde
+      // corta cada renglón depende del ancho y de la tipografía, así que
+      // se mide acá y se rearma.
+      //
+      // Se parte SÓLO el titular que es texto pelado. El del hero trae
+      // color propio y cortes a mano: ese no se toca y se descubre entero
+      // con el mismo borde y la misma curva, así que el gesto es el mismo.
+      //
+      // El texto original queda guardado, porque al cambiar el ancho hay
+      // que volver a medir: los renglones de antes ya no son los de ahora.
+      var titulares = [].slice.call(document.querySelectorAll('[data-entra] h2'))
+      var partir = function (h) {
+        if (h.dataset.noPartir) return
+        var txt = h.dataset.txt
+        if (txt === undefined) {
+          if (h.children.length) { h.dataset.noPartir = '1'; return }
+          txt = h.textContent.replace(/\s+/g, ' ').trim()
+          if (!txt) { h.dataset.noPartir = '1'; return }
+          h.dataset.txt = txt
+        }
+        // 1. una palabra por caja, para poder preguntarle a cada una en
+        //    qué renglón cayó
+        var palabras = txt.split(' ')
+        h.textContent = ''
+        var cajas = []
+        palabras.forEach(function (w, i) {
+          var e = document.createElement('span')
+          e.style.display = 'inline-block'
+          e.textContent = w
+          h.appendChild(e)
+          cajas.push(e)
+          if (i < palabras.length - 1) h.appendChild(document.createTextNode(' '))
+        })
+        // 2. agruparlas por altura (todas las lecturas juntas, una sola
+        //    cuenta de la página)
+        var alturas = cajas.map(function (e) { return e.offsetTop })
+        var lineas = [], ultima = null
+        cajas.forEach(function (e, i) {
+          if (ultima === null || Math.abs(alturas[i] - ultima) > 2) { lineas.push([]); ultima = alturas[i] }
+          lineas[lineas.length - 1].push(e.textContent)
+        })
+        // 3. rearmar: un renglón por línea, cada uno 70 ms detrás
+        h.textContent = ''
+        lineas.forEach(function (ws, i) {
+          var caja = document.createElement('span')
+          caja.className = 'reng'
+          var dentro = document.createElement('span')
+          dentro.className = 'reng__i'
+          dentro.style.setProperty('--reng', (i * 70) + 'ms')
+          // ⚠️ EL ESPACIO DEL FINAL VA A PROPÓSITO: sin él, al copiar el
+          // titular o al leerlo un lector de pantalla, la última palabra
+          // de un renglón y la primera del siguiente quedan pegadas
+          // ("unaforma"). Un espacio al final de una línea no se dibuja,
+          // así que no mueve nada.
+          dentro.textContent = ws.join(' ') + (i < lineas.length - 1 ? ' ' : '')
+          caja.appendChild(dentro)
+          h.appendChild(caja)
+        })
+        h.classList.add('partido')
+      }
+      titulares.forEach(partir)
+      // La tipografía llega después que el HTML: con la definitiva los
+      // renglones cortan en otro lado, así que se vuelve a medir.
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { titulares.forEach(partir) })
+      addEventListener('resize', function () {
+        clearTimeout(window.__parte)
+        window.__parte = setTimeout(function () { titulares.forEach(partir) }, 200)
+      })
+
+      // ⚠️ LA CASCADA NO SE ARMA CONTANDO CUÁNTOS ENTRARON JUNTOS. Probado:
+      // los bloques cruzan el borde de la pantalla de a uno, en avisos
+      // separados por unos pocos milisegundos, así que contarlos por tanda
+      // daba casi siempre cero y la página perdía toda la cascada.
+      //
+      // Lo que se lleva es UNA COLA POR SECCIÓN. Cada bloque que entra se
+      // pone 80 ms detrás del anterior de su sección; si pasó suficiente
+      // tiempo desde el último, arranca sin esperar. Así los cuatro
+      // proyectos, que cruzan juntos, se escalonan; y un bloque que aparece
+      // solo porque venís bajando despacio entra en el acto, sin demoras
+      // falsas. El techo es para que nada se sienta trabado.
+      // ⚠️ EL TECHO BAJÓ DE 400 A 240. Cuatrocientos milisegundos de espera
+      // encima de los novecientos que dura el movimiento son casi un segundo y
+      // medio para el último de una tanda: con el disparo adelantado eso lo
+      // dejaba llegando tarde igual. La cascada se sigue notando —son tres
+      // tiempos de 80ms— pero ya no hace esperar al que está al final.
+      var PASO = 80, TECHO = 240
+      var cola = new Map()
+      var ojo = new IntersectionObserver(function (es) {
+        var ahora = performance.now()
+        var entran = []
+        es.forEach(function (e) {
+          if (e.isIntersecting) {
+            if (!e.target.classList.contains('viva')) entran.push(e)
+          } else if (e.boundingClientRect.top > innerHeight * 1.6 || e.boundingClientRect.bottom < 0) {
+            // Salió del todo por arriba o por abajo: vuelve a su estado de
+            // partida para que el camino de vuelta también se anime.
+            //
+            // ⚠️ POR ABAJO SE EXIGE MÁS DISTANCIA QUE LA QUE DISPARA LA ENTRADA
+            // (1,6 pantallas contra las 1,45 del `rootMargin`), y es a
+            // propósito: con el mismo número, un bloque parado justo en el borde
+            // se prende y se apaga con cada temblor del scroll. La diferencia
+            // entre los dos umbrales es el margen que hace que eso no pase.
+            e.target.classList.remove('viva')
+            e.target.style.removeProperty('--retardo')
+          }
+        })
+        // A igual momento, primero el de más arriba y después el de más a
+        // la izquierda: la cascada sigue el orden de lectura, no el del HTML.
+        entran.sort(function (a, b) {
+          var d = a.boundingClientRect.top - b.boundingClientRect.top
+          return Math.abs(d) > 24 ? d : a.boundingClientRect.left - b.boundingClientRect.left
+        })
+        entran.forEach(function (e) {
+          var s = e.target.closest('section, footer, main') || document.body
+          var turno = Math.max(ahora, cola.get(s) || 0)
+          cola.set(s, turno + PASO)
+          e.target.style.setProperty('--retardo', Math.round(Math.min(turno - ahora, TECHO)) + 'ms')
+          e.target.classList.add('viva')
+        })
+      // ⚠️ EL UMBRAL VA EN CERO, NO EN UN PORCENTAJE, Y ESTO SE MIDIÓ.
+      // Un bloque que entra con cortina (`data-entra="medio"`) arranca con
+      // `clip-path` tapándolo entero, y el navegador entonces le calcula
+      // una porción visible de cero por más que esté a la vista: con un
+      // umbral del 8 % ese bloque NO SE MONTABA NUNCA si llegabas
+      // bajando —sólo si saltabas de golpe—, y la foto del estudio quedó
+      // tapada en la página publicada sin que nada avisara. Probado con un
+      // control al lado: el mismo bloque sin cortina sí llegaba al 8 %.
+      // Con umbral cero alcanza con que asome un píxel, y el momento de
+      // entrar lo decide el margen de abajo, que va en píxeles.
+      //
+      // ⚠️ Y EL MARGEN VA EN PÍXELES, NO EN %: con un porcentaje del alto
+      // de la pantalla, una banda finita al pie de la página nunca llegaba
+      // a tocar la zona y se quedaba invisible para siempre.
+      //
+      // ⚠️ EL MARGEN DE ABAJO ES POSITIVO, Y ÉSTE ES EL ARREGLO DEL "SE VE
+      // VACÍO Y DESPUÉS SE LLENA". Estaba en `-60px`, o sea que un bloque
+      // empezaba a aparecer recién cuando YA había asomado sesenta píxeles. Y lo
+      // que viene después tarda: 0,9s de recorrido (1,25s si es una imagen) más
+      // hasta 400ms de cascada. Bajando a velocidad normal, eso es más de un
+      // segundo mirando un hueco donde debería haber algo — y mirando cómo se
+      // llena, que es peor que no animar nada.
+      //
+      // Saltando con la barra no se notaba nunca: el viewport cambia de golpe,
+      // todo entra en la misma tanda y para cuando mirás ya está. Por eso el
+      // problema parecía no existir.
+      //
+      // Con `45%` la animación arranca cuando al bloque todavía le falta casi
+      // media pantalla para asomar, así que llega a la vista con el grueso del
+      // movimiento hecho. Se sigue viendo entrar —que es lo que gusta— pero no
+      // se ve esperar.
+      //
+      // ⚠️ Y ACÁ EL PORCENTAJE SÍ VA. La nota de arriba sobre usar píxeles es
+      // para el margen NEGATIVO, que ACHICA la zona: con un porcentaje, una
+      // banda finita al pie nunca llegaba a tocarla. Un margen positivo la
+      // AGRANDA, así que no puede dejar nada afuera — sólo adelantar.
+      }, { threshold: 0, rootMargin: '0px 0px 45% 0px' })
+      bloques.forEach(function (el) { ojo.observe(el) })
+
+      // ── 1b. LAS FOTOS SE FUNDEN CUANDO LLEGAN ────────────────────────
+      // ⚠️ ESTO ARREGLA LAS IMÁGENES QUE "APARECÍAN COMO POR MAGIA": las de Qué
+      // hacemos, las de Proyectos y las de los artículos salían de golpe,
+      // mientras el texto de al lado entraba bien. No era la animación de
+      // entrada: es que no estaban.
+      //
+      // Veintiuna de las veintidós imágenes del sitio van con `loading="lazy"`,
+      // así que el navegador las pide por su cuenta y llegan cuando llegan. El
+      // bloque, mientras tanto, hace su revelado igual —con el hueco vacío
+      // adentro— y para cuando la foto aparece la transición ya terminó hace
+      // rato. Resultado: la caja se descubre vacía y la foto se materializa
+      // después, sin nada que la acompañe.
+      //
+      // Con esto cada foto arranca transparente y se funde al terminar de
+      // cargar, llegue cuando llegue. Si llegó antes que el revelado —que es lo
+      // normal cuando hay buena conexión— no se nota nada: entra con el bloque,
+      // como siempre.
+      //
+      // ⚠️ EL ESTADO INICIAL LO PONE ESTE SCRIPT Y NO LA HOJA, a propósito. Con
+      // `opacity: 0` escrito en el CSS, cualquier cosa que impida que este
+      // código corra deja el sitio entero sin imágenes. Así, sin JavaScript no
+      // hay nada que apagar y las fotos se ven como siempre.
+      //
+      // El `error` cuenta como cargada: una foto que no llegó tiene que mostrar
+      // su hueco, no quedarse invisible esperando para siempre.
+      var fotos = [].slice.call(document.querySelectorAll('[data-entra] img, [data-entra] video'))
+      fotos.forEach(function (f) {
+        // `naturalWidth` además de `complete`: una imagen rota también se
+        // reporta como completa.
+        if (f.complete && f.naturalWidth) return
+        f.classList.add('llegando')
+        var lista = function () { f.classList.remove('llegando') }
+        f.addEventListener('load', lista, { once: true })
+        f.addEventListener('error', lista, { once: true })
+      })
+
+      // ── 2. EL PARALAJE Y LA BARRA, EN UN SOLO BUCLE ──────────────────
+      // ⚠️ PRIMERO SE LEEN TODAS LAS MEDIDAS Y DESPUÉS SE ESCRIBEN TODOS
+      // LOS CAMBIOS. Alternar lectura y escritura obliga al navegador a
+      // recalcular la página varias veces por cuadro, y eso es lo que se
+      // siente como un movimiento tosco. Un solo `requestAnimationFrame`
+      // para las dos cosas, y nada corre si no hizo falta.
+      var medios = [].slice.call(document.querySelectorAll('[data-para]'))
+      var enlaces = [].slice.call(document.querySelectorAll('.nav__enlaces a[href*="#"]'))
+      var destinos = enlaces.map(function (a) {
+        var h = a.getAttribute('href') || '', i = h.indexOf('#')
+        return i < 0 ? null : document.getElementById(h.slice(i + 1))
+      })
+
+      if (medios.length || destinos.some(Boolean)) {
+        var marco = function () {
+          var alto = innerHeight
+          var d = [], s = []
+          // ── leer ──
+          for (var i = 0; i < medios.length; i++) {
+            var r = medios[i].getBoundingClientRect()
+            // ⚠️ SE DIVIDE POR (alto + r.height), NO POR `alto`. El centro de
+            // la foto viaja desde `alto + h/2` hasta `-h/2`, así que
+            // dividir por el alto de la pantalla da un recorrido de
+            // 1 + h/pantalla, no de 1: una foto grande se corría bastante
+            // más que los píxeles pedidos y llegaba a mostrar el borde del
+            // contenedor. Así el número de `data-para` son los píxeles
+            // exactos que se corre de punta a punta, ni uno más.
+            d.push(r.bottom > -240 && r.top < alto + 240 ? (r.top + r.height / 2 - alto / 2) / (alto + r.height) : null)
+          }
+          var linea = alto * 0.38, aqui = -1
+          for (var k = 0; k < destinos.length; k++) {
+            if (!destinos[k]) { s.push(null); continue }
+            var q = destinos[k].getBoundingClientRect()
+            s.push(q)
+            if (q.top <= linea && q.bottom > linea) aqui = k
+          }
+          // ── escribir ──
+          for (var j = 0; j < medios.length; j++) {
+            if (d[j] === null) continue
+            var f = parseFloat(medios[j].getAttribute('data-para')) || 10
+            medios[j].style.setProperty('--para', (d[j] * f).toFixed(2) + 'px')
+          }
+          for (var m = 0; m < enlaces.length; m++) {
+            enlaces[m].classList.toggle('aqui', m === aqui)
+          }
+        }
+        // ⚠️ NO ALCANZA CON CORRER UN CUADRO POR CADA EVENTO DE SCROLL.
+        // En escritorio el desplazamiento suave sigue moviendo la página
+        // DESPUÉS del último evento —esa es toda su gracia— y el navegador
+        // no avisa nada mientras dura. Midiéndolo se veía: el paralaje se
+        // congelaba en el aire y la barra se quedaba marcando la sección
+        // anterior. Así que el bucle sigue corriendo mientras algo se
+        // mueva, y recién para cuando la página estuvo quieta doce cuadros
+        // seguidos. Quieto no cuesta nada: no hay ningún bucle prendido.
+        var lienzo = document.getElementById('smooth-content')
+        var donde = function () { return lienzo ? Math.round(lienzo.getBoundingClientRect().top) : Math.round(scrollY) }
+        var corriendo = false, quietos = 0, ultimo = null
+        var bucle = function () {
+          marco()
+          var q = donde()
+          quietos = q === ultimo ? quietos + 1 : 0
+          ultimo = q
+          if (quietos < 12) requestAnimationFrame(bucle)
+          else corriendo = false
+        }
+        var pedir = function () {
+          quietos = 0
+          if (!corriendo) { corriendo = true; requestAnimationFrame(bucle) }
+        }
+        addEventListener('scroll', pedir, { passive: true })
+        addEventListener('resize', pedir)
+        // El desplazamiento suave se monta después: cuando avisa, se vuelve
+        // a medir, porque recién ahí las posiciones son las definitivas.
+        alListo(pedir)
+        marco()
+      }
+
+      // ── 3. RED DE SEGURIDAD ──────────────────────────────────────────
+      // Si algo quedó a medio montar (una medida rara, una imagen que
+      // llegó tarde, un bloque más alto que la pantalla), se muestra igual.
+      var rescatar = function () {
+        bloques.forEach(function (el) {
+          var r = el.getBoundingClientRect()
+          if (!r.height) return
+          if (r.top < innerHeight && r.bottom > 0 && !el.classList.contains('viva')) el.classList.add('viva')
+        })
+      }
+      addEventListener('load', function () { setTimeout(rescatar, 900) })
+      addEventListener('resize', function () { clearTimeout(window.__rescate); window.__rescate = setTimeout(rescatar, 250) })
+      setTimeout(rescatar, 2500)
+    })
+  </script>
+</head>
+<body>
+  <slot />
+</body>
+</html>

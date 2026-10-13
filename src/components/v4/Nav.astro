@@ -1,0 +1,195 @@
+---
+// ⚠️ LA BARRA ES FIJA Y VIVE FUERA DEL CONTENEDOR DEL SMOOTHER: `sticky` no
+// sobrevive al transform del contenido. El contenido le deja `--barra` arriba.
+// Sobre el hero (video oscuro) es blanca; en cuanto se scrollea pasa a tinta
+// sobre vidrio blanco. Lo decide una clase que pone el JS de la home.
+//
+// En el teléfono (< 900px) los enlaces y el "Hablemos" viven en un panel a
+// pantalla completa (#menu), BLANCO (Gonzalo no lo quiso oscuro), que abre el
+// botón de las rayas: se descorre desde arriba, los ítems entran en cascada y cada
+// filete se dibuja de izquierda a derecha. El panel es hermano de la
+// barra, no hijo: el backdrop-filter de la barra sería su containing block y
+// un fixed adentro mediría la barra. Los dos logos son PNG (tinta y blanco):
+// la máscara CSS no se veía en el navegador de Gonzalo y recortaba la "b".
+import { MAIL, WHATSAPP_URL, INSTAGRAM, LINKEDIN } from '../../data/v4/contacto'
+// ⚠️ FUERA DE LA HOME, LAS ANCLAS LLEVAN LA BARRA ADELANTE. Los enlaces de la
+// barra apuntan a secciones de la home (`#estudio`, `#proyectos`…), y desde un
+// artículo esas secciones NO EXISTEN en el documento: el navegador busca el
+// ancla, no la encuentra y no pasa absolutamente nada. Eso es lo que se veía
+// como «los botones de la barra no funcionan» en el blog.
+//
+// Con `/#estudio` el navegador navega a la home y recién ahí busca el ancla,
+// que es lo que hay que hacer. En la home se dejan como están, porque ahí sí
+// son anclas del mismo documento y el scroll suave de `index.astro` las
+// intercepta por `a[href^="#"]`.
+//
+// El scroll-spy de `V4.astro` sigue andando en los dos casos: busca el `#` con
+// `indexOf` y se queda con lo que viene después, así que el prefijo no lo
+// confunde.
+const enHome = Astro.url.pathname === '/'
+const ancla = (h: string) => (enHome ? h : `/${h}`)
+
+const SECCIONES = [
+  ['#estudio', 'El estudio', 'Quiénes somos'],
+  ['#proyectos', 'Proyectos', 'Lo que construimos'],
+  ['#lumina', 'Lúmina', 'Producto propio'],
+  ['#lexa', 'Lexa', 'Traducciones'],
+  ['#blog', 'Blog', 'Lo último del estudio'],
+  ['#contacto', 'Contacto', 'Hablemos'],
+]
+---
+<header class="nav" id="nav">
+  <div class="centro nav__caja">
+    <a class="nav__marca" href="/" aria-label="Brickell Lab, inicio">
+      <img class="nav__logo nav__logo--tinta" src="/v4/logo-brickell.png" alt="" width="1312" height="234" />
+      <img class="nav__logo nav__logo--blanco" src="/v4/logo-brickell-blanco.png" alt="" width="1312" height="234" aria-hidden="true" />
+    </a>
+    <nav class="nav__enlaces" aria-label="Secciones">
+      {SECCIONES.slice(0, 5).map(([h, t]) => <a href={ancla(h)}>{t}</a>)}
+    </nav>
+    <a class="boton nav__ir" href={`mailto:${MAIL}`}>Hablemos</a>
+    <button class="nav__menu" id="menu-boton" type="button" aria-controls="menu" aria-expanded="false">
+      <span class="nav__menu-txt" data-abrir>Menú</span><span class="nav__menu-txt" data-cerrar>Cerrar</span>
+      <i class="nav__menu-ico" aria-hidden="true"><b></b><b></b></i>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="menu" aria-hidden="true">
+  <i class="menu__luz" aria-hidden="true"></i>
+  <div class="menu__caja">
+    <nav class="menu__lista" aria-label="Secciones">
+      {SECCIONES.map(([h, t, s], k) => (
+        <a class="menu__item" href={ancla(h)} style={`--i:${k}`}>
+          <span class="menu__nombre">{t}</span>
+          <span class="meta menu__sub">{s}</span>
+        </a>
+      ))}
+    </nav>
+    <div class="menu__pie" style={`--i:${SECCIONES.length}`}>
+      <a class="menu__mail" href={`mailto:${MAIL}`}>{MAIL}</a>
+      <a class="menu__wa" href={WHATSAPP_URL} target="_blank" rel="noopener">Escribinos por WhatsApp</a>
+      <div class="menu__redes">
+        <a class="rs" href={INSTAGRAM} target="_blank" rel="noopener" aria-label="Instagram de Brickell Lab"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg></a>
+        <a class="rs" href={LINKEDIN} target="_blank" rel="noopener" aria-label="LinkedIn de Brickell Lab"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.5M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg></a>
+        <span class="meta menu__donde">Brickell · Miami</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const boton = document.getElementById('menu-boton'), menu = document.getElementById('menu'), nav = document.getElementById('nav')
+    if (!boton || !menu) return
+    const raiz = document.documentElement
+    let abierto = false
+    const poner = (si) => {
+      abierto = si
+      menu.classList.toggle('menu--abierto', si)
+      nav.classList.toggle('nav--menu', si)
+      boton.setAttribute('aria-expanded', String(si))
+      menu.setAttribute('aria-hidden', String(!si))
+      raiz.classList.toggle('menu-abierto', si)
+    }
+    boton.addEventListener('click', () => poner(!abierto))
+    // Un enlace del panel lo cierra; el scroll al ancla lo hace el JS de la página.
+    menu.addEventListener('click', (e) => { if (e.target.closest('a')) poner(false) })
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && abierto) poner(false) })
+    matchMedia('(min-width: 900px)').addEventListener('change', (e) => { if (e.matches && abierto) poner(false) })
+  })()
+</script>
+
+<style>
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+    height: var(--barra); display: grid; align-items: center;
+    padding: 0 var(--margen); color: #fff;
+    transition: background-color .3s ease, color .3s ease, box-shadow .3s ease;
+  }
+  /* `width:100%`: un item de grid con margin auto se encoge a su contenido y el logo quedaba a 355px del borde. */
+  .nav__caja { width: 100%; display: flex; align-items: center; gap: clamp(20px, 3vw, 40px); }
+  .nav__marca { display: block; height: 22px; position: relative; }
+  .nav__logo { display: block; height: 100%; width: auto; transition: opacity .3s ease; }
+  .nav__logo--blanco { position: absolute; inset: 0; }
+  .nav__logo--tinta { opacity: 0; }
+  .nav--tinta .nav__logo--tinta { opacity: 1; }
+  .nav--tinta .nav__logo--blanco { opacity: 0; }
+  .nav__enlaces { display: none; gap: clamp(18px, 2.2vw, 30px); margin-left: auto; }
+  .nav__enlaces a { font-size: 14.5px; font-weight: 500; opacity: .82; transition: opacity .2s ease; }
+  .nav__enlaces a:hover { opacity: 1; }
+  .nav__ir { display: none; margin-left: auto; min-height: 40px; padding: 0 18px; font-size: 14px; background: rgba(255,255,255,.14); color: #fff; border-color: rgba(255,255,255,.45); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+  .nav--tinta { color: var(--tinta); background: rgba(255,255,255,.82); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--linea); }
+  .nav--tinta .nav__ir { background: var(--tinta); color: #fff; border-color: var(--tinta); }
+  @media (hover: hover) and (pointer: fine) {
+    .nav__ir:hover { background: #fff; color: var(--tinta); border-color: #fff; }
+    .nav--tinta .nav__ir:hover { background: transparent; color: var(--tinta); }
+  }
+
+  /* ── El botón del menú (solo teléfono): SOLO LAS RAYAS, que se cruzan en X.
+     El texto queda para los lectores de pantalla (sr-only) y el margen
+     negativo alinea las rayas con el borde derecho del contenedor, aunque el
+     botón mida 44px de lado para que se pueda tocar. ── */
+  .nav__menu {
+    margin-left: auto; margin-right: -11px; display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer;
+  }
+  /* El texto no se ve, pero los lectores de pantalla leen uno solo por vez. */
+  .nav__menu-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .nav__menu-txt[data-cerrar] { display: none; }
+  .nav__menu[aria-expanded="true"] .nav__menu-txt[data-abrir] { display: none; }
+  .nav__menu[aria-expanded="true"] .nav__menu-txt[data-cerrar] { display: block; }
+  .nav__menu-ico { position: relative; width: 26px; height: 26px; display: block; }
+  .nav__menu-ico b { position: absolute; left: 2px; right: 2px; top: 50%; height: 1.8px; background: currentColor; border-radius: 2px; transition: transform .35s cubic-bezier(.2,.7,.2,1); }
+  .nav__menu-ico b:first-child { transform: translateY(-4px); }
+  .nav__menu-ico b:last-child { transform: translateY(3px); }
+  .nav__menu[aria-expanded="true"] .nav__menu-ico b:first-child { transform: rotate(45deg); }
+  .nav__menu[aria-expanded="true"] .nav__menu-ico b:last-child { transform: rotate(-45deg); }
+  /* Con el panel abierto la barra es tinta sobre blanco, esté donde esté el scroll. */
+  .nav--menu, .nav--menu.nav--tinta { color: var(--tinta); background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .nav--menu .nav__logo--tinta { opacity: 1; }
+  .nav--menu .nav__logo--blanco { opacity: 0; }
+
+
+  /* ── El panel: pantalla entera, blanco, con la luz de la marca respirando en pastel ── */
+  .menu {
+    position: fixed; inset: 0; z-index: 55; display: grid; overflow: hidden;
+    background: var(--papel); color: var(--tinta);
+    clip-path: inset(0 0 100% 0 round 0 0 28px 28px);
+    visibility: hidden; transition: clip-path .55s cubic-bezier(.7,0,.2,1), visibility 0s linear .55s;
+  }
+  .menu--abierto { clip-path: inset(0 0 0 0 round 0); visibility: visible; transition: clip-path .6s cubic-bezier(.7,0,.2,1), visibility 0s; }
+  .menu__luz { position: absolute; inset: -20%; pointer-events: none; opacity: 1;
+    background: radial-gradient(40% 35% at 85% 20%, rgba(178,60,255,.22), transparent 65%), radial-gradient(35% 30% at 10% 90%, rgba(255,46,143,.16), transparent 65%), radial-gradient(30% 30% at 70% 95%, rgba(124,77,255,.14), transparent 65%);
+    animation: menu-respira 14s ease-in-out infinite alternate; }
+  @keyframes menu-respira { from { transform: translate(0, 0) rotate(0deg); } to { transform: translate(-4%, 3%) rotate(6deg); } }
+  .menu__caja { position: relative; display: grid; grid-template-rows: 1fr auto; padding: calc(var(--barra) + 12px) var(--margen) max(22px, env(safe-area-inset-bottom)); min-height: 100%; overflow-y: auto; }
+  .menu__lista { display: grid; align-content: center; }
+  .menu__item, .menu__pie { opacity: 0; transform: translateY(22px); transition: opacity .5s ease, transform .6s cubic-bezier(.2,.7,.2,1); transition-delay: 0s; }
+  .menu--abierto .menu__item, .menu--abierto .menu__pie { opacity: 1; transform: none; transition-delay: calc(.18s + var(--i) * .055s); }
+  /* Cada ítem entra subiendo y su filete de abajo se dibuja de izquierda a derecha, en cascada. */
+  .menu__item { position: relative; display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: clamp(10px, 1.6svh, 16px) 0; }
+  .menu__item:first-child { border-top: 1px solid var(--linea); }
+  .menu__item::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: linear-gradient(90deg, var(--tinta), var(--linea-2) 30%, var(--linea) 100%); transform: scaleX(0); transform-origin: left; transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+  .menu--abierto .menu__item::after { transform: scaleX(1); transition-delay: calc(.3s + var(--i) * .07s); }
+  .menu__item:active .menu__nombre { background: var(--marca); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .menu__nombre { font-size: clamp(30px, 8.5vw, 42px); font-weight: 600; letter-spacing: -.02em; line-height: 1.05; }
+  .menu__sub { color: var(--gris-2); white-space: nowrap; }
+  .menu__pie { display: grid; gap: 10px; padding-top: 26px; }
+  .menu__mail { font-size: 18px; font-weight: 500; background: var(--marca); -webkit-background-clip: text; background-clip: text; color: transparent; width: max-content; max-width: 100%; }
+  .menu__wa { font-size: 14.5px; color: var(--gris); }
+  .menu__redes { display: flex; align-items: center; gap: 14px; margin-top: 8px; }
+  .menu__donde { margin-left: auto; color: var(--gris-2); }
+  .rs { display: inline-flex; color: var(--gris); }
+  .rs svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  /* Teléfono acostado: hay poco alto, los ítems se aprietan. */
+  @media (max-height: 500px) { .menu__nombre { font-size: 22px; } .menu__item { padding: 6px 0; } .menu__pie { padding-top: 12px; gap: 4px; } .menu__lista { align-content: start; } }
+  @media (prefers-reduced-motion: reduce) { .menu, .menu--abierto, .menu__item, .menu__pie, .menu__item::after { transition: none; } .menu__luz { animation: none; } }
+
+  @media (min-width: 900px) {
+    .nav__marca { height: 26px; }
+    .nav__enlaces { display: flex; }
+    .nav__ir { display: inline-flex; margin-left: 0; }
+    .nav__menu, .menu { display: none; }
+  }
+</style>

@@ -1,0 +1,424 @@
+/* ============================================================
+   BRICKELL LAB · LA HOJA DE LA WEB NUEVA
+   ============================================================
+   ⚠️ UNA SOLA HOJA, UNA SOLA TIPOGRAFÍA, UN SOLO COLOR. Geist para todo el
+   texto y Geist Mono para la metadata. Blanco, tinta, y un gris que es la
+   misma tinta con menos peso. El magenta→violeta de la marca aparece SÓLO en
+   dos lugares: el filete de una pulgada bajo los rótulos y el hover de los
+   enlaces. No pinta fondos, no pinta botones.
+
+   ⚠️ MOBILE FIRST DE VERDAD: lo que está fuera de una consulta es la versión
+   de teléfono, y las consultas sólo agrandan. Todas las medidas de tipografía
+   son rampas continuas (clamp) entre 360 y 1440 px: no hay saltos de cuerpo.
+
+   ⚠️ LAS SECCIONES ENTRAN EN UNA PANTALLA. `min-height: 100svh` y el padding
+   de arriba compensa la barra fija (--barra). Cuando el contenido no entra —
+   proyectos, artículos— la sección crece; no se recorta nada.
+   ============================================================ */
+
+:root {
+  --papel: #FFFFFF;
+  --tinta: #0B0B0F;
+  --gris: #5E606B;      /* 6,9:1 sobre blanco */
+  --gris-2: #9A9CA6;    /* metadata y filetes de texto: 3,1:1, sólo para lo que no hay que leer de corrido */
+  --linea: #E6E6EA;
+  --linea-2: #D2D2D8;
+  --suave: #F5F5F7;
+  --marca: linear-gradient(90deg, #FF2E8F, #B23CFF 55%, #7C4DFF);
+  --magenta: #EC1E79;
+  --violeta: #7C4DFF;
+
+  --texto: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'Geist Mono', ui-monospace, 'JetBrains Mono', Menlo, monospace;
+
+  --margen: clamp(20px, 5vw, 72px);
+  --ancho: 1280px;
+  --barra: 64px;
+
+  /* 40 → 96 px */
+  --t-hero: clamp(40px, calc(21.33px + 5.19vw), 96px);
+  /* 30 → 60 */
+  --t-titulo: clamp(30px, calc(20px + 2.78vw), 60px);
+  /* 22 → 32 */
+  --t-sub: clamp(22px, calc(18.67px + .93vw), 32px);
+  /* 17 → 20 */
+  --t-bajada: clamp(17px, calc(16px + .28vw), 20px);
+  /* 16 → 17 */
+  --t-texto: clamp(16px, calc(15.67px + .093vw), 17px);
+  /* 11 → 12 */
+  --t-meta: clamp(11px, calc(10.67px + .093vw), 12px);
+}
+@media (min-width: 900px) { :root { --barra: 76px; } }
+/* Portatil bajo (768) o telefono acostado: las secciones ceden aire. */
+@media (max-height: 800px) { .pantalla { padding-top: clamp(28px, 4vh, 48px); padding-bottom: clamp(28px, 4vh, 48px); } .cab { margin-bottom: clamp(20px, 3vh, 32px); } }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html.smooth { scroll-behavior: auto; }
+html, body { overflow-x: clip; }
+body {
+  margin: 0; background: var(--papel); color: var(--tinta);
+  font-family: var(--texto); font-size: var(--t-texto); line-height: 1.55;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4, p { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
+img, video { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--tinta); outline-offset: 4px; border-radius: 2px; }
+::selection { background: var(--tinta); color: var(--papel); }
+
+#smooth-content { padding-top: var(--barra); overflow-x: clip; }
+/* Con el panel del menú abierto (teléfono) la página de atrás no scrollea. */
+html.menu-abierto, html.menu-abierto body { overflow: hidden; height: 100%; }
+
+/* ── Piezas que se repiten ─────────────────────────────────── */
+.centro { max-width: var(--ancho); margin-inline: auto; width: 100%; }
+/* ⚠️ `width:100%`: como item de una grilla (.pantalla es grid) un bloque con margin auto
+   se encoge a su contenido y se centra — Contacto, que tiene poco texto, quedaba a 289px
+   del borde en vez de en el eje del logo. */
+
+/* El rótulo: mono, versalita, y el filete de marca de una pulgada debajo.
+   Es la única aparición del color en toda la página además del hover. */
+.meta {
+  font-family: var(--mono); font-size: var(--t-meta); font-weight: 500;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--gris);
+}
+.rotulo { display: grid; gap: 12px; justify-items: start; }
+.rotulo::after { content: ''; width: 28px; height: 2px; background: var(--marca); border-radius: 1px; }
+
+h1, h2 { font-weight: 600; letter-spacing: -.035em; line-height: 1.02; }
+h2 { font-size: var(--t-titulo); max-width: 22ch; }
+h3 { font-weight: 600; letter-spacing: -.02em; }
+.bajada { max-width: 54ch; color: var(--gris); font-size: var(--t-bajada); line-height: 1.5; }
+.texto { max-width: 60ch; color: var(--gris); }
+
+.boton {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 50px; padding: 0 24px; border-radius: 999px;
+  background: var(--tinta); color: var(--papel); border: 1px solid var(--tinta);
+  font-weight: 500; font-size: 15.5px; white-space: nowrap;
+  transition: background-color .22s ease, color .22s ease, border-color .22s ease, transform .22s ease;
+}
+.boton--claro { background: transparent; color: var(--tinta); border-color: var(--linea-2); }
+.boton--papel { background: var(--papel); color: var(--tinta); border-color: var(--papel); }
+.boton--vidrio { background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.45); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.boton svg { width: 14px; height: 14px; flex: none; transition: transform .25s cubic-bezier(.2,.7,.2,1); }
+@media (hover: hover) and (pointer: fine) {
+  .boton:hover { background: var(--papel); color: var(--tinta); }
+  .boton--claro:hover { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+  .boton--papel:hover { background: transparent; color: var(--papel); }
+  .boton--vidrio:hover { background: #fff; color: var(--tinta); border-color: #fff; }
+  .boton:hover svg { transform: translate(2px, -2px); }
+}
+.acciones { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* Un enlace de texto con la raya de marca al pasar. */
+.enlace { position: relative; font-weight: 500; }
+.enlace::after { content: ''; position: absolute; left: 0; right: 0; bottom: -3px; height: 1.5px; background: var(--marca); transform: scaleX(0); transform-origin: left; transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+@media (hover: hover) and (pointer: fine) { .enlace:hover::after { transform: scaleX(1); } }
+
+/* ── Sección tipo: entra en una pantalla ───────────────────── */
+.pantalla {
+  min-height: calc(100svh - var(--barra));
+  display: grid; align-content: center;
+  padding: clamp(48px, 7vh, 96px) var(--margen);
+}
+.pantalla--alta { min-height: 0; padding-top: clamp(64px, 10vh, 130px); padding-bottom: clamp(64px, 10vh, 130px); }
+.cab { display: grid; gap: clamp(16px, 2.4vh, 24px); margin-bottom: clamp(30px, 5vh, 56px); }
+/* Cuando la cabecera va en dos columnas, el rótulo y el titular viven adentro
+   de un <div>: sin esto quedaban pegados (el título arrancaba justo debajo de
+   la rayita de la marca). Mismo ritmo que la cabecera. */
+.cab > div { display: grid; gap: clamp(16px, 2.4vh, 24px); align-content: start; }
+
+/* ── EL MOVIMIENTO DE TODA LA WEB, EN UN SOLO LUGAR ────────────────────
+
+   ⚠️ NADA SE DESVANECE. TODO SE DESCUBRE.
+
+   No hay una sola transición de opacidad en las entradas de esta web, y
+   es a propósito. Un fundido es lo primero que hace cualquiera y se nota:
+   mientras dura, el texto está a media tinta y el navegador lo dibuja
+   borroso, así que el momento en que el visitante mira la página es
+   justo el momento en que peor se ve. Además no dice nada, porque no
+   tiene dirección ni forma.
+
+   Acá todo aparece detrás de un borde que se corre: el bloque está
+   entero y nítido desde el primer cuadro, y lo que cambia es cuánto se
+   ve de él. El texto nunca está a medias, nunca está gris, nunca está
+   chico. Eso es lo que hace que se sienta dibujado y no "animado".
+
+   Tres maneras de entrar, elegidas por el PAPEL del elemento y NUNCA por
+   la sección:
+
+     data-entra              un texto, un botón: se descubre y sube
+     data-entra="tarjeta"    toda grilla: lo mismo, con más recorrido
+     data-entra="medio"      toda foto: la cortina sube y la foto se asienta
+
+   Y adentro de cualquiera de los tres, sin marcar nada: el titular se
+   parte en renglones y cada uno sube detrás del anterior (lo arma el
+   layout), la rayita del rótulo se dibuja y las imágenes se asientan.
+
+   ⚠️ EL RETARDO NO SE ESCRIBE A MANO EN NINGÚN LADO. Lo reparte el layout
+   al entrar, y lo deja en `--retardo` para que lo lean también el titular
+   y las imágenes de adentro. Por eso una sección de dos piezas y otra de
+   seis tienen la misma cadencia.
+
+   ⚠️ EL ESTADO DE PARTIDA VA SIEMPRE EN `:not(.viva)`, nunca en una regla
+   que después haya que deshacer. Se probó al revés y falló feo: tarjetas
+   corridas para siempre, ya montadas, porque `.viva` perdía por un pelo
+   contra `:nth-child(even)` y contra cualquier regla de un componente,
+   que Astro marca y por eso pesa más. Con `:not(.viva)` la regla deja de
+   aplicar sola y no hay pelea posible.
+
+   ⚠️ SE USAN LAS PROPIEDADES SUELTAS `translate` y `scale`, no
+   `transform`: así el paralaje escribe `translate` cuadro a cuadro sin
+   pisar la escala de la entrada, que va con transición. */
+:root {
+  /* Arranca rápido y se acomoda largo. Es la curva que hace que algo se
+     sienta pesado y caro en vez de mecánico. Una sola para toda la web. */
+  --sal: cubic-bezier(.16, 1, .3, 1);
+  --mov: .9s;                              /* lo que tarda en descubrirse */
+  --mov-lento: 1.25s;                      /* lo que tarda una imagen */
+}
+
+[data-entra] {
+  transition-property: clip-path, translate, rotate, scale;
+  transition-duration: var(--mov), var(--mov), var(--mov), var(--mov);
+  transition-timing-function: var(--sal);
+  transition-delay: var(--retardo, 0ms);
+  /* ⚠️ EL ESTADO FINAL DEL RECORTE SE ESCRIBE, Y ANTES NO ESTABA. ÉSTE ERA EL
+     DEFECTO POR EL QUE LOS BLOQUES APARECÍAN DE GOLPE.
+
+     Partían de `inset(100% …)` y al ganar `.viva` se quedaban sin ninguna regla
+     de `clip-path`, así que el valor volvía a `none`. Y de un `inset()` a `none`
+     NO HAY INTERPOLACIÓN POSIBLE: no es que la transición fuera rápida, es que
+     el navegador no podía hacerla y saltaba de un fotograma al otro. El
+     `translate` de al lado sí animaba —ahí `none` equivale a cero y se
+     interpola—, y por eso el bloque se veía subir sus dieciocho píxeles
+     mientras su contenido se materializaba de la nada. Se notaba sobre todo en
+     columnas y tarjetas con foto, donde lo que aparece de golpe es una imagen
+     entera.
+
+     La prueba de que el problema era éste está tres reglas más abajo:
+     `[data-entra~="medio"]` declara sus DOS estados como `inset()` y ésos
+     siempre se vieron bien.
+
+     Los valores repiten los del estado de partida —los costados y el pie se
+     pasan del borde— para que la cortina sólo recorra el eje vertical y no
+     coma sombras ni colas de letras al llegar. */
+  clip-path: inset(-14% -8% -14% -8%);
+}
+/* El borde se corre de abajo hacia arriba y el bloque sube un poco al
+   mismo tiempo. Los costados y el pie del recorte se pasan de los bordes
+   para no comerse las colas de las letras ni las sombras de las cards. */
+[data-entra]:not(.viva) { clip-path: inset(100% -8% -14% -8%); translate: 0 18px; }
+
+/* ── LA FOTO QUE TODAVÍA NO LLEGÓ ──
+   ⚠️ LA CLASE LA PONE EL JAVASCRIPT, Y ACÁ NO HAY NINGÚN `opacity: 0` SUELTO.
+   Es deliberado: si el estado de partida viviera en la hoja, cualquier cosa que
+   impida que el script corra —un error antes, el JS apagado— dejaría el sitio
+   entero sin imágenes. Así, lo peor que puede pasar es que no se fundan.
+
+   El porqué del fundido está en `V4.astro`, en el bloque 1b: casi todas las
+   imágenes son `lazy`, llegan después del revelado del bloque y sin esto
+   aparecían de golpe, ya terminada la animación que debía acompañarlas.
+
+   ⚠️ LA TRANSICIÓN NO VA ACÁ: va sumada a la que estas mismas imágenes ya
+   tienen más abajo («LA IMAGEN SE ASIENTA»). Declarar otro `transition` para
+   `opacity` pisaría aquella —`transition` es una sola propiedad, no una lista
+   que se acumula— y las fotos perderían la escala con la que se asientan. */
+[data-entra] img.llegando,
+[data-entra] video.llegando { opacity: 0; }
+
+/* TARJETAS ── el mismo gesto con más recorrido y una escala mínima:
+   alcanza para que se lean como piezas y no como párrafos.
+   ⚠️ SUBEN, NO ENTRAN DE COSTADO. Se probó entrando de a un lado,
+   alternando, y fuera de "Qué hacemos" no funciona: esta página es una
+   columna que se lee de arriba hacia abajo, y algo que llega desde el
+   costado se lee como un error, no como un gesto. */
+[data-entra~="tarjeta"]:not(.viva) { translate: 0 38px; scale: .985; }
+
+/* MEDIOS ── la cortina sube y descubre la foto. El radio se pasa en
+   `--radio-medio` para que siga las esquinas redondeadas del contenedor
+   en vez de cuadrarlas mientras dura. */
+[data-entra~="medio"] { clip-path: inset(0 round var(--radio-medio, 0px)); transition-duration: var(--mov-lento); }
+[data-entra~="medio"]:not(.viva) { translate: none; clip-path: inset(100% 0 0 0 round var(--radio-medio, 0px)); }
+
+/* LA IMAGEN SE ASIENTA ── adentro de CUALQUIER bloque que entra, la foto
+   arranca un poco más grande y baja a su tamaño mientras se descubre.
+   Un solo renglón y lo hacen todas las imágenes, sin marcar nada. */
+[data-entra] img, [data-entra] video {
+  /* `opacity` acompaña a `scale` en la MISMA declaración. Es el fundido de la
+     foto que llega tarde por ser `lazy` (ver la clase `llegando` más arriba y el
+     bloque 1b de `V4.astro`): medio segundo, que es un acompañamiento y no un
+     gesto propio — con la duración del revelado competiría con el bloque que la
+     contiene. */
+  transition: scale var(--mov-lento) var(--sal), opacity .5s ease;
+  transition-delay: var(--retardo, 0ms);
+}
+[data-entra]:not(.viva) img, [data-entra]:not(.viva) video { scale: 1.05; }
+
+/* ── EL TITULAR, RENGLÓN POR RENGLÓN ───────────────────────────────────
+   Cada renglón sube desde atrás de su propia línea, uno detrás del otro.
+   Es lo que separa un titular compuesto de un titular que "aparece", y
+   es la razón por la que la página se siente dibujada.
+
+   Lo arma el layout partiendo el texto; acá sólo está cómo se mueve. El
+   titular que el layout NO pudo partir —porque trae color o cortes de
+   línea propios, como el del hero— se descubre entero con el mismo borde
+   y la misma curva, así que el gesto es el mismo. */
+/* ⚠️ EL RENGLÓN RECORTA, ASÍ QUE HAY QUE DARLE AIRE ABAJO: sin esto la
+   cola de una jota o de una ge queda cortada, que es exactamente el tipo
+   de detalle por el que una animación se ve barata. El aire se agrega
+   por dentro y se descuenta por fuera, así no mueve nada del diseño. */
+.reng { display: block; overflow: hidden; }
+.reng__i {
+  display: block;
+  padding-bottom: .16em; margin-bottom: -.16em;
+  translate: 0 110%;
+  transition: translate var(--mov) var(--sal);
+  transition-delay: calc(var(--retardo, 0ms) + var(--reng, 0ms));
+}
+[data-entra].viva .reng__i { translate: none; }
+
+[data-entra] h1, [data-entra] h2:not(.partido), [data-entra] .art__titulo {
+  clip-path: inset(-12% -6% -12% -2%);
+  transition: clip-path var(--mov) var(--sal), translate var(--mov) var(--sal);
+  transition-delay: calc(var(--retardo, 0ms) + 60ms);
+}
+[data-entra]:not(.viva) h1,
+[data-entra]:not(.viva) h2:not(.partido),
+[data-entra]:not(.viva) .art__titulo {
+  clip-path: inset(100% -6% -12% -2%);
+  translate: 0 14px;
+}
+
+/* La rayita de la marca del rótulo se dibuja de izquierda a derecha. */
+.rotulo::after {
+  transform-origin: left;
+  transition: transform .8s var(--sal);
+  transition-delay: calc(var(--retardo, 0ms) + 120ms);
+}
+[data-entra]:not(.viva) .rotulo::after { transform: scaleX(0); }
+
+/* ── EL PARALAJE ───────────────────────────────────────────────────────
+   Todo medio marcado con `data-para` se mueve más lento que la página
+   mientras pasa por la pantalla. El número del atributo es cuántos
+   píxeles se corre de punta a punta. El layout escribe `--para` cuadro a
+   cuadro; acá sólo se usa. Va en `translate` para no pisar la `scale`. */
+[data-para] { translate: 0 var(--para, 0px); will-change: translate; }
+
+/* La barra de navegación baja al cargar. */
+@keyframes nav-baja { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: none; } }
+.nav { animation: nav-baja .7s var(--sal) both; }
+
+/* ⚠️ QUIEN PIDIÓ NO VER MOVIMIENTO NO VE NINGUNO: ni entradas, ni
+   renglones, ni cortinas, ni paralaje. Todo puesto y quieto. */
+@media (prefers-reduced-motion: reduce) {
+  [data-entra],
+  [data-entra]:not(.viva),
+  [data-entra~="tarjeta"]:not(.viva),
+  [data-entra~="medio"],
+  [data-entra~="medio"]:not(.viva) {
+    translate: none; rotate: none; scale: none; clip-path: none; transition: none;
+  }
+  [data-entra] h1, [data-entra] h2, [data-entra] .art__titulo,
+  [data-entra]:not(.viva) h1, [data-entra]:not(.viva) h2, [data-entra]:not(.viva) .art__titulo {
+    clip-path: none; translate: none; transition: none;
+  }
+  .reng { overflow: visible; }
+  .reng__i, [data-entra] .reng__i { translate: none; transition: none; }
+  [data-entra] img, [data-entra] video,
+  [data-entra]:not(.viva) img, [data-entra]:not(.viva) video { scale: none; transition: none; }
+  .rotulo::after { transform: none; transition: none; }
+  [data-para] { translate: none; will-change: auto; }
+  .nav { animation: none; }
+}
+
+/* ⚠️ EL PARALAJE NO VA EN NINGUNA PREVIEW NI PORTADA DE PROYECTO.
+   Para poder correrse, la foto tiene que ser más alta que su caja, y con
+   `object-fit: cover` eso RECORTA la imagen: las portadas de los
+   proyectos y las fotos de los artículos quedaron mostrando menos de lo
+   que Gonzalo encuadró. Esas imágenes son la muestra de un trabajo, no
+   decoración, y el encuadre es parte del trabajo. El paralaje queda sólo
+   en las dos fotos ambientales: la del estudio y la de apertura de un
+   artículo.
+
+   ⚠️ UNA FOTO QUE HACE PARALAJE TIENE QUE SOBRAR por arriba y por abajo.
+   Si midiera exacto el contenedor, al correrse dejaría ver el fondo en un
+   borde. Sobra 22px de cada lado, así que ninguna amplitud de `data-para`
+   puede pasar de 44.
+
+   ⚠️ VA CON `!important` Y NO ES PEREZA, ES LA ÚNICA FORMA. Astro le
+   agrega a cada regla de un componente una marca propia
+   (`.estudio__foto img[data-astro-cid-…]`), así que esa regla pesa más
+   que cualquier selector razonable de acá y encima se inserta después.
+   Sin esto el alto no se aplicaba: se midió un hueco de 37px abajo de la
+   foto del estudio, con el fondo del contenedor a la vista. */
+img[data-para][data-para] {
+  position: absolute !important; left: 0; top: -22px;
+  width: 100% !important; height: calc(100% + 44px) !important;
+  object-fit: cover;
+}
+/* Y el contenedor tiene que sostenerla y recortarla. */
+.estudio__foto, .art__foto { position: relative; overflow: hidden; }
+
+/* ⚠️ TODA SECCIÓN CON TARJETAS RECORTA DE COSTADO. Las tarjetas entran
+   desde afuera y sin esto el teléfono gana scroll horizontal mientras
+   dura la entrada. Va `clip` y no `hidden`: `hidden` convertiría la
+   sección en un contenedor de scroll y rompería lo que quede pegado. */
+.hacemos, .proyectos, .articulos, .lexa, .articulos-pagina { overflow-x: clip; }
+
+/* ── LA BARRA MARCA DÓNDE ESTÁS ────────────────────────────────────────
+   La única animación de la web que además informa: el enlace de la
+   sección que estás mirando se enciende y se subraya. El subrayado se
+   dibuja desde la izquierda, con la misma curva que todo lo demás. */
+.nav__enlaces a { position: relative; }
+.nav__enlaces a::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -5px; height: 1.5px;
+  background: currentColor; border-radius: 2px;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .45s var(--sal), opacity .3s ease;
+}
+.nav__enlaces a.aqui { opacity: 1; }
+.nav__enlaces a.aqui::after, .nav__enlaces a:hover::after { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) {
+  .nav__enlaces a::after { transition: none; }
+}
+
+/* ── El aviso ─────────────────────────────────────────────── */
+.aviso {
+  position: fixed; z-index: 90; left: 20px; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom));
+  --tx: 0; transform: translate(var(--tx), 16px); opacity: 0; pointer-events: none;
+  padding: 13px 18px 13px 16px; border-radius: 14px;
+  background: rgba(11,11,15,.92); color: #fff;
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  box-shadow: 0 20px 50px -16px rgba(11,11,15,.6);
+  font-size: 14.5px; line-height: 1.45; display: flex; gap: 12px; align-items: center;
+  transition: opacity .25s ease, transform .25s cubic-bezier(.2,.7,.2,1);
+}
+.aviso--visible { opacity: 1; transform: translate(var(--tx), 0); }
+.aviso i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--marca); }
+@media (min-width: 820px) { .aviso { left: 50%; right: auto; width: max-content; max-width: 560px; --tx: -50%; } }
+
+
+/* ── Las páginas legales (términos y privacidad) ──────────────────────────
+   Una columna de lectura, la misma medida que un artículo. Sin animaciones:
+   son documentos, tienen que estar ahí desde el primer momento. */
+.legal { padding: clamp(40px, 7vh, 88px) var(--margen) clamp(56px, 9vh, 110px); }
+.legal__caja { max-width: 760px; }
+.legal__cab { display: grid; gap: 14px; margin-bottom: clamp(28px, 4.5vh, 44px); padding-bottom: clamp(20px, 3vh, 28px); border-bottom: 1px solid var(--linea); }
+.legal__volver { color: var(--gris-2); width: max-content; }
+.legal__volver:hover { color: var(--tinta); }
+.legal__cab h1 { font-size: clamp(30px, calc(21px + 2.2vw), 52px); font-weight: 600; letter-spacing: -.035em; line-height: 1.05; }
+.legal__fecha { color: var(--gris-2); }
+.legal__cuerpo { font-size: 16px; line-height: 1.7; color: var(--tinta); }
+.legal__cuerpo p { margin: 0 0 1.2em; }
+.legal__cuerpo h2 { font-size: 19px; letter-spacing: -.02em; margin: 2.2em 0 .6em; }
+.legal__cuerpo ul { margin: 0 0 1.2em; padding-left: 1.2em; display: grid; gap: .5em; }
+.legal__cuerpo li::marker { color: var(--gris-2); }
+.legal__cuerpo a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--linea-2); }
+.legal__cuerpo a:hover { text-decoration-color: #B23CFF; }
+.legal__cuerpo strong { font-weight: 600; }
+@media (max-width: 899px) { .legal__volver { display: none; } }
