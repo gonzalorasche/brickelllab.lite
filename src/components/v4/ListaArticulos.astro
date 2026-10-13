@@ -1,0 +1,108 @@
+---
+// ⚠️ LA LISTA DE ARTÍCULOS CON FILTRO POR FECHA. La usan la página de artículos
+// (`/blog/`) y el pie de cada artículo (ahí se le pasa `excluir` con el
+// slug del que se está leyendo).
+//
+// El filtro es del lado del cliente sobre las tarjetas ya renderizadas: son
+// pocas y así se ven todas aunque no corra el JS. "Ver más" muestra de a
+// `PASO` y se esconde cuando ya están todas.
+//
+// ⚠️ HUBO UN BUSCADOR POR NOMBRE Y SE SACÓ: buscaba por coincidencia exacta,
+// así que escribir "lumina" sin tilde no encontraba "Lúmina" y parecía roto.
+import { ARTICULOS } from '../../data/v4/articulos'
+interface Props {
+  excluir?: string
+  titulo?: string
+  id?: string
+  anchas?: boolean
+}
+const { excluir, titulo = 'Todos los artículos', id = 'lista-articulos', anchas = false } = Astro.props
+const LISTA = [...ARTICULOS].filter((a) => a.slug !== excluir).sort((a, b) => b.fecha.localeCompare(a.fecha))
+const ANIOS = [...new Set(LISTA.map((a) => a.fecha.slice(0, 4)))].sort((a, b) => b.localeCompare(a))
+const PASO = 6
+---
+<section class={'lista' + (anchas ? ' lista--anchas' : '')} id={id}>
+  <div class="lista__barra">
+    <h2 class="lista__titulo">{titulo}</h2>
+    <label class="lista__fecha">
+      <span class="meta">Fecha</span>
+      <select data-fecha aria-label="Filtrar por fecha">
+        <option value="">Todas</option>
+        {ANIOS.map((a) => <option value={a}>{a}</option>)}
+        <option value="viejos">Más viejos primero</option>
+      </select>
+    </label>
+  </div>
+
+  <ul class="lista__grilla" data-grilla>
+    {LISTA.map((a, k) => (
+      <li class="lista__item" data-anio={a.fecha.slice(0, 4)} hidden={k >= PASO}>
+        <a class="tarjeta" href={`/blog/${a.slug}/`}>
+          <span class="tarjeta__foto"><img src={a.imagen} alt={a.imagenAlt} width="1600" height="1000" loading="lazy" decoding="async" /></span>
+          <span class="tarjeta__cuerpo">
+            <span class="meta tarjeta__fecha">{a.fechaTexto} · {a.lectura}</span>
+            <span class="tarjeta__titulo">{a.titulo}</span>
+            <span class="tarjeta__bajada">{a.bajada}</span>
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <p class="lista__vacio" data-vacio hidden>No hay artículos de esa fecha.</p>
+  <div class="lista__pie">
+    <button class="boton boton--claro lista__mas" type="button" data-mas hidden>Ver más artículos <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</section>
+
+<script is:inline define:vars={{ id, PASO }}>
+  (function () {
+    const raiz = document.getElementById(id)
+    if (!raiz) return
+    const items = [...raiz.querySelectorAll('.lista__item')]
+    const fecha = raiz.querySelector('[data-fecha]')
+    const mas = raiz.querySelector('[data-mas]'), vacio = raiz.querySelector('[data-vacio]')
+    let tope = PASO
+
+    const pintar = () => {
+      const f = fecha.value
+      // El filtro es un año, o "viejos" (que solo cambia el orden).
+      const visibles = items.filter((li) => !f || f === 'viejos' || li.dataset.anio === f)
+      const orden = f === 'viejos' ? [...visibles].reverse() : visibles
+      items.forEach((li) => { li.hidden = true })
+      orden.forEach((li, k) => { li.hidden = k >= tope; li.style.order = k })
+      vacio.hidden = orden.length > 0
+      mas.hidden = orden.length <= tope
+    }
+    fecha.addEventListener('change', () => { tope = PASO; pintar() })
+    mas.addEventListener('click', () => { tope += PASO; pintar() })
+    pintar()
+  })()
+</script>
+
+<style>
+  .lista { display: grid; gap: clamp(22px, 3.2vh, 32px); }
+  .lista__barra { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px 32px; padding-bottom: clamp(14px, 2.2vh, 20px); border-bottom: 1px solid var(--linea); }
+  .lista__titulo { font-size: clamp(20px, 1.8vw, 24px); letter-spacing: -.02em; }
+
+  /* El filtro: sobrio, del alto de un botón chico. */
+  .lista__fecha { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 6px 0 14px; border: 1px solid var(--linea-2); border-radius: 999px; background: var(--papel); }
+  .lista__fecha .meta { color: var(--gris-2); }
+  .lista__fecha select { height: 100%; border: 0; background: none; font: inherit; font-size: 14.5px; color: var(--tinta); outline: none; cursor: pointer; padding-right: 6px; }
+
+  .lista__grilla { display: grid; gap: clamp(18px, 3vh, 28px); list-style: none; margin: 0; padding: 0; }
+  .lista__vacio { color: var(--gris); font-size: 15px; }
+  .lista__pie { display: flex; justify-content: center; }
+  .lista__mas svg { width: 14px; height: 14px; transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+  @media (hover: hover) and (pointer: fine) { .lista__mas:hover svg { transform: translateY(3px); } }
+
+  @media (min-width: 700px) { .lista--anchas .lista__grilla { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) {
+    .lista__grilla { grid-template-columns: repeat(3, 1fr); }
+    /* En la página de artículos las tarjetas son más grandes: dos por fila. */
+    .lista--anchas .lista__grilla { grid-template-columns: repeat(2, 1fr); gap: clamp(24px, 3vw, 40px); }
+    .lista--anchas :global(.tarjeta__titulo) { font-size: 21px; }
+    .lista--anchas :global(.tarjeta__bajada) { font-size: 15px; }
+    .lista--anchas :global(.tarjeta__cuerpo) { padding: clamp(20px, 2.2vw, 28px); gap: 10px; }
+  }
+</style>

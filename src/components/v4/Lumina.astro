@@ -1,0 +1,157 @@
+---
+// ⚠️ LA SECCIÓN DEL PRODUCTO INSIGNIA, VESTIDA COMO EL HERO DE LÚMINA: la
+// misma noche (#0f0c1c), la misma aurora (degradado CSS + el shader de
+// `lumina/src/lib/aurora.ts`, compilado a `public/v4/aurora.js`) y los mismos
+// dos teléfonos. Así quien pasa de acá a lumina.labbrickell.com.ar reconoce
+// el producto en el primer cuadro.
+//
+// ⚠️ LOS TELÉFONOS SON UNA CAPTURA DEL HERO DE LÚMINA, no un dibujo propio:
+// `public/v4/lumina-fonos.webp` (con transparencia, a 3x). Rehacerlos acá
+// sería copiar a mano dos componentes de React con sus datos. Sin la
+// etiqueta flotante ("Nuevas templates"), a pedido de Gonzalo. Si el hero de
+// Lúmina cambia, se vuelve a capturar.
+//
+// ⚠️ EL SHADER SOLO SE MONTA EN PANTALLAS DE MÁS DE 900 y sin
+// `prefers-reduced-motion`, igual que en Lúmina: en un teléfono cuesta
+// batería y no se ve. Abajo siempre queda el degradado CSS, que se ve bien
+// solo.
+//
+// En el teléfono vertical el dibujo no va: en su lugar la portada del sitio de
+// Lúmina apaisada, igual que las tarjetas de Proyectos. El link a Lúmina es
+// solo el botón; las redes van al lado, como íconos.
+//
+// ⚠️ NO DICE CÓMO ESTÁ CONSTRUIDA (stack, proveedores, planes): Gonzalo no
+// quiere que se sepa. El reel solo se reproduce mientras está a la vista.
+//
+// ⚠️ LÚMINA VENDE CASAMIENTOS Y FIESTAS DE QUINCE, nada más. Si esto enumera
+// eventos, son esos dos.
+import { LUMINA_URL, LUMINA_INSTAGRAM, LUMINA_TIKTOK, LUMINA_FACEBOOK } from '../../data/v4/contacto'
+const HACE = ['Invitación digital con RSVP', 'Lista de invitados y confirmaciones', 'Plano del salón y mesas', 'Transporte y paradas', 'Cronograma y tareas', 'Chat con los invitados']
+---
+<section class="lumina pantalla" id="lumina">
+  <div class="lumina__aurora" aria-hidden="true"><div class="css"></div><div class="gl"></div><div class="velo"></div></div>
+  <div class="centro lumina__caja">
+    <div class="lumina__texto">
+      <div class="cab" data-entra>
+        <p class="meta rotulo">Producto propio</p>
+        <h2>Plataforma de eventos</h2>
+        <figure class="lumina__portada">
+          <img src="/v4/lumina-portada.webp" alt="Portada del sitio de Lúmina" width="1440" height="900" loading="lazy" decoding="async" />
+        </figure>
+        <p class="bajada">Una plataforma para casamientos y fiestas de quince: la invitación digital que reciben los invitados y el panel desde el que se organiza todo. La pensamos, la diseñamos y la construimos nosotros.</p>
+      </div>
+
+      <!-- El logo va acá: después de la bajada y antes del filete de "Qué hace". -->
+      <span class="lumina__logo" role="img" aria-label="Lúmina" data-entra></span>
+
+      <div class="lumina__hace" data-entra>
+        <p class="meta">Qué hace</p>
+        <ul class="lumina__lista">{HACE.map((x) => <li>{x}</li>)}</ul>
+      </div>
+
+      <div class="acciones lumina__acciones" data-entra>
+        <a class="boton" href={LUMINA_URL} target="_blank" rel="noopener">Entrar a Lúmina <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 13 13 3M5 3h8v8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="lumina__redes">
+        <a class="rs" href={LUMINA_INSTAGRAM} target="_blank" rel="noopener" aria-label="Instagram de Lúmina"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg></a>
+        <a class="rs" href={LUMINA_TIKTOK} target="_blank" rel="noopener" aria-label="TikTok de Lúmina"><svg viewBox="0 0 24 24"><path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5M14 4c.4 2.4 2 4 4.5 4.3"/></svg></a>
+        <a class="rs" href={LUMINA_FACEBOOK} target="_blank" rel="noopener" aria-label="Facebook de Lúmina"><svg viewBox="0 0 24 24"><path d="M14 8h2.5V4.5H14A3.5 3.5 0 0 0 10.5 8v2.5H8V14h2.5v6H14v-6h2.5l.5-3.5h-3V8z"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="lumina__fono" aria-hidden="true">
+      <img class="lumina__fonos" data-entra="medio" src="/v4/lumina-fonos.webp" alt="" width="997" height="1400" loading="lazy" decoding="async" />
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    // La aurora de Lúmina: solo en pantallas grandes y sin menos-movimiento.
+    if (!window.matchMedia || matchMedia('(max-width: 900px)').matches) return
+    const host = document.querySelector('.lumina__aurora .gl')
+    if (!host) return
+    const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches
+    import('/v4/aurora.js').then(function (m) { m.montarLuz(host, quieto) }).catch(function () {})
+  })()
+</script>
+
+<style>
+  /* La noche del hero de Lúmina. */
+  .lumina { background: #0f0c1c; color: #fff; overflow: clip; position: relative; }
+  /* ⚠️ `lvh` Y NO EL `svh` DE `.pantalla`: en el iPad, al scrollear, Safari
+     achica sus barras, la pantalla visible crece y con `svh` asomaba abajo una
+     franja de la sección siguiente — en una sección oscura se ve enseguida.
+     `lvh` es el alto con las barras escondidas: siempre cubre. */
+  .lumina.pantalla { min-height: calc(100lvh - var(--barra)); }
+  /* La aurora, copiada del hero de Lúmina (`hero.css`, `.lx-aurora`): el
+     degradado que siempre está, el canvas del shader encima y el velo que la
+     apaga detrás del texto. Se sale por los bordes a propósito, y la banda
+     cruza al medio: así lo quiere Gonzalo, no se baja. */
+  .lumina__aurora { position: absolute !important; inset: -10% -10% -20%; z-index: 0; pointer-events: none; }
+  .lumina__aurora .css { position: absolute; inset: 0; background:
+    radial-gradient(70% 55% at 18% 32%, rgba(122, 59, 240, .20), transparent 68%),
+    radial-gradient(60% 50% at 78% 22%, rgba(196, 79, 224, .17), transparent 66%),
+    radial-gradient(55% 45% at 62% 78%, rgba(255, 122, 89, .11), transparent 70%); }
+  .lumina__aurora .gl { position: absolute; inset: 0; opacity: .9; }
+  .lumina__aurora .velo { position: absolute; inset: 0; background: radial-gradient(78% 100% at 0% 45%, rgba(15,12,28,.94) 0%, rgba(15,12,28,.64) 38%, transparent 74%); }
+  .lumina > * { position: relative; }
+  .lumina .rotulo { color: rgba(255,255,255,.55); }
+  .lumina h2 { color: #fff; }
+  .lumina .bajada { color: rgba(255,255,255,.7); max-width: 46ch; }
+  .lumina .boton { background: #fff; color: var(--tinta); border-color: #fff; }
+  @media (hover: hover) and (pointer: fine) { .lumina .boton:hover { background: transparent; color: #fff; } }
+  .lumina__caja { display: grid; gap: clamp(32px, 5vh, 56px); align-items: center; }
+  /* Chico y debajo de la bajada: es una firma, no un titular. */
+  .lumina__logo { display: block; width: calc(24px * 541 / 164); height: 24px; margin-top: clamp(18px, 2.6vh, 26px); background: rgba(255,255,255,.85); -webkit-mask: url('/v4/logo-lumina.png') left center / contain no-repeat; mask: url('/v4/logo-lumina.png') left center / contain no-repeat; }
+
+  /* La lista: dos columnas, con un punto tenue. Sin degradés: el único acento
+     de la sección es la rayita del rótulo. */
+  .lumina__hace { margin-top: clamp(18px, 2.6vh, 26px); margin-bottom: clamp(24px, 3.5vh, 32px); padding: clamp(20px, 3vh, 28px) 0; border-top: 1px solid rgba(255,255,255,.12); border-bottom: 1px solid rgba(255,255,255,.12); }
+  .lumina__hace .meta { color: rgba(255,255,255,.45); margin-bottom: 14px; }
+  .lumina__lista { display: grid; gap: 9px 32px; }
+  .lumina__lista li { padding-left: 16px; position: relative; font-size: 14.5px; color: rgba(255,255,255,.82); }
+  .lumina__lista li::before { content: ''; position: absolute; left: 0; top: .62em; width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.35); }
+
+  /* El botón y las redes, en una fila. */
+  .lumina__acciones { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 18px; }
+  /* Las redes en círculos del mismo alto que el botón (50 px) y con su mismo
+     borde: sueltas, los íconos pesaban la mitad que el botón y la fila se
+     veía desbalanceada. Al pasar el mouse se llenan de blanco, como él. */
+  .lumina__redes { display: flex; align-items: center; gap: 10px; }
+  .rs { display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(255,255,255,.28); color: rgba(255,255,255,.85); transition: background-color .22s ease, color .22s ease, border-color .22s ease; }
+  .rs svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  @media (hover: hover) and (pointer: fine) { .rs:hover { background: #fff; border-color: #fff; color: var(--tinta); } }
+
+  /* Los dos teléfonos: una imagen. `--radio-medio` es para la cortina de
+     entrada del sistema de movimiento. */
+  .lumina__fono { position: relative; display: flex; justify-content: center; align-items: center; }
+  .lumina__fonos { display: block; width: min(100%, 420px); height: auto; --radio-medio: 0; }
+
+  @media (min-width: 560px) { .lumina__lista { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1000px) { .lumina__caja { grid-template-columns: 1.15fr .85fr; gap: clamp(48px, 6vw, 96px); } }
+
+  /* La portada apaisada (solo teléfono vertical): la misma tarjeta que en Proyectos. */
+  .lumina__portada { display: none; position: relative; margin: 6px 0 4px; overflow: hidden; border-radius: 18px; border: 1px solid rgba(255,255,255,.14); background: #121218; aspect-ratio: 16 / 10; box-shadow: 0 30px 60px -40px rgba(0,0,0,.9); }
+  .lumina__portada img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .lumina__portada::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--marca); }
+  @media (max-width: 819px) and (orientation: portrait) {
+    .lumina__caja { gap: 32px; }
+    .lumina__fono { display: none; }
+    .lumina__portada { display: block; }
+  }
+  /* Pantallas bajas de escritorio: la columna de texto cede aire para que la sección entre entera. */
+  @media (min-width: 1000px) and (max-height: 800px) {
+    .lumina .cab { margin-bottom: 16px; }
+    .lumina__hace { margin-bottom: 16px; padding: 18px 0; }
+  }
+
+  /* ⚠️ EN ESCRITORIO EL TELÉFONO MIDE LO MISMO QUE LA COLUMNA DE TEXTO: de
+     "Producto propio" al botón. La columna es `container-type: size`, así NO
+     aporta alto a la fila (manda el texto) y el grid la estira a ese alto;
+     la imagen toma ese alto con `100cqh`. */
+  @media (min-width: 1000px) {
+    .lumina__fono { align-self: stretch; container-type: size; }
+    .lumina__fonos { width: auto; height: 100cqh; max-width: 100cqw; object-fit: contain; }
+  }
+</style>

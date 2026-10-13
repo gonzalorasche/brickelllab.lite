@@ -1,0 +1,324 @@
+---
+// ============================================================
+// 09 · CONTACTO  ·  10 · PIE
+// ============================================================
+//
+// EL CIERRE. Van juntos en un archivo porque son una sola pieza visual: el
+// contacto arriba, sobre papel, y el pie abajo en tinta, sin nada en el medio.
+//
+// ⚠️ NO HAY FORMULARIO. Los siete campos del brief están descartados. El
+// llamado a la acción es EL MAIL, ENORME: es la pieza tipográfica de la
+// sección, no un botón. Un formulario de siete campos pide trabajo antes de
+// dar nada; un mail gigante dice "escribinos" y se entiende sin leer.
+//
+// ⚠️ Y EL MAIL SE ESTIRA HASTA LOS DOS MÁRGENES, medido contra la tinta real de
+// las letras. Es la misma técnica que se probó para los nombres de las
+// disciplinas —y que ahí se descartó porque cinco renglones gigantes eran
+// demasiado—: acá es UNO SOLO y es el final de la página, que es exactamente
+// donde corresponde que algo ocupe todo el ancho.
+//
+// ⚠️ EL AJUSTE MIDE A CADA TAMAÑO Y REPITE, no mide una vez y escala: la tinta
+// no crece lineal con el cuerpo. Y el `letter-spacing` va declarado EN EL
+// RENGLÓN, no en un padre: en `em` se resuelve contra el cuerpo del elemento
+// que lo declara y después baja heredado como un valor fijo en píxeles, lo que
+// rompe la cuenta. Las dos cosas costaron encontrarlas.
+//
+// ⚠️ SIN NÚMEROS Y SIN INGLÉS, como toda la página.
+// ============================================================
+
+// ⚠️ EL MISMO ÍNDICE QUE LA BRÚJULA Y EN EL MISMO ORDEN: son la misma página
+// nombrada dos veces, y si difieren, una de las dos miente. Cuando se eliminó
+// Método, acá quedó un "#metodo" apuntando a una sección que ya no existe —un
+// enlace del pie que no llevaba a ningún lado—. Si algún día se agrega o se saca
+// una sección, se tocan LOS DOS archivos.
+const INDICE = [
+  { id: 'studio', nombre: 'El estudio' },
+  { id: 'services', nombre: 'Qué hacemos' },
+  { id: 'seo', nombre: 'SEO + GEO' },
+  { id: 'contact', nombre: 'Contacto' },
+]
+
+const AHORA = new Date().getFullYear()
+---
+
+<section class="v2-con" id="contact">
+  <header class="v2-con__top">
+    <p class="v2-meta">Contacto</p>
+  </header>
+
+  <div class="v2-con__entrada">
+    <h2 class="v2-con__titulo">Tenés una idea.<br />Hagamos algo con ella.</h2>
+    <p class="v2-con__bajada">
+      Contanos qué querés construir, qué problema querés resolver o simplemente
+      qué tenés dando vueltas. No necesitás tener el proyecto definido:
+      nosotros te ayudamos a darle forma.
+    </p>
+  </div>
+
+  <a class="v2-con__mail" href="mailto:info@labbrickell.com.ar">
+    <span class="v2-con__linea"><i>info@labbrickell.com.ar</i></span>
+  </a>
+
+  <div class="v2-con__pie">
+    <p class="v2-con__donde">Buenos Aires · Argentina</p>
+    <div class="v2-con__redes">
+      <a href="https://instagram.com/brickell.lab" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.linkedin.com/company/brickell-lab" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer class="v2-pie" id="pie">
+  <div class="v2-pie__marca">
+    <p class="v2-pie__nombre">Brickell Lab®</p>
+    <p class="v2-pie__donde">Buenos Aires · Argentina</p>
+  </div>
+
+  <nav class="v2-pie__indice" aria-label="Índice del sitio">
+    <ul>
+      {INDICE.map((s) => <li><a href={`#${s.id}`}>{s.nombre}</a></li>)}
+    </ul>
+  </nav>
+
+  <div class="v2-pie__otros">
+    <a href="/lexa">Lexa</a>
+    <a href="/privacidad">Privacidad</a>
+    <a href="/terminos">Términos</a>
+  </div>
+
+  <p class="v2-pie__firma">© {AHORA} Brickell Lab</p>
+</footer>
+
+<style>
+  .v2-con {
+    position: relative;
+    background: var(--v2-papel);
+    color: var(--v2-tinta);
+    padding: clamp(52px, 10vh, 118px) var(--v2-margen) clamp(40px, 7vh, 80px);
+  }
+
+  .v2-con__top { display: flex; align-items: center; justify-content: space-between; }
+  .v2-con__top .v2-meta { margin: 0; }
+
+  .v2-con__entrada {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 42%);
+    align-items: end;
+    gap: clamp(14px, 3vw, 56px);
+    margin-top: clamp(34px, 6vh, 72px);
+  }
+  .v2-con__titulo {
+    margin: 0;
+    /* Sangría óptica: ver la nota en `v2.css`. */
+    margin-left: calc(var(--sangria) * -1);
+    font-family: var(--v2-display);
+    font-weight: 800;
+    font-size: clamp(30px, 3.7vw, 62px);
+    line-height: .94;
+    letter-spacing: -.045em;
+    text-transform: uppercase;
+  }
+  .v2-con__bajada {
+    margin: 0;
+    font-size: clamp(14.5px, 1.05vw, 17px);
+    line-height: 1.55;
+    color: var(--v2-tinta-70);
+  }
+
+  /* ── El mail ───────────────────────────────────────────── */
+  .v2-con__mail {
+    display: block;
+    margin: clamp(40px, 7vh, 88px) 0 0;
+    color: var(--v2-tinta);
+    text-decoration: none;
+    font-family: var(--v2-display);
+    font-weight: 800;
+    line-height: .9;
+    text-transform: lowercase;
+    /* Sólo el respaldo para antes de que el script mida. */
+    font-size: clamp(26px, 7vw, 120px);
+    transition: color .25s ease-out;
+  }
+  /* ⚠️ `nowrap` ES LO QUE HACE QUE FUNCIONE: el renglón se estira al ancho
+     exacto de la columna, y si se le permitiera cortar, la cuenta dejaría de
+     valer en el mismo instante en que el texto se parte.
+     ⚠️ Y el `letter-spacing` va ACÁ, no en el padre: ver la nota de arriba. */
+  .v2-con__linea { display: block; white-space: nowrap; letter-spacing: -.045em; }
+  .v2-con__linea i { display: inline-block; font-style: normal; }
+  @media (hover: hover) and (pointer: fine) {
+    .v2-con__mail:hover { color: var(--acento); }
+  }
+  .v2-con__mail.v2-tocado { color: var(--acento); }
+
+  .v2-con__pie {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: clamp(28px, 4.5vh, 52px);
+    padding-top: clamp(18px, 3vh, 30px);
+    border-top: 1px solid var(--v2-linea);
+  }
+  .v2-con__donde,
+  .v2-con__redes a {
+    margin: 0;
+    font-family: var(--v2-mono);
+    font-size: clamp(10.5px, .85vw, 12.5px);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+  .v2-con__redes { display: flex; gap: clamp(14px, 2vw, 28px); }
+  .v2-con__redes a {
+    color: var(--v2-tinta);
+    text-decoration: none;
+    padding-bottom: 2px;
+    border-bottom: 1.5px solid transparent;
+    transition: border-color .2s ease-out, color .2s ease-out;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .v2-con__redes a:hover { color: var(--acento); border-bottom-color: var(--acento); }
+  }
+  .v2-con__redes a.v2-tocado { color: var(--acento); border-bottom-color: var(--acento); }
+
+  /* ── El pie ────────────────────────────────────────────── */
+  .v2-pie {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: start;
+    gap: clamp(24px, 4vw, 72px);
+    padding: clamp(40px, 7vh, 80px) var(--v2-margen) clamp(32px, 5vh, 56px);
+    background: var(--v2-tinta);
+    color: var(--v2-papel);
+  }
+  .v2-pie__nombre {
+    margin: 0;
+    font-family: var(--v2-display);
+    font-weight: 800;
+    font-size: clamp(20px, 1.8vw, 30px);
+    letter-spacing: -.035em;
+    text-transform: uppercase;
+  }
+  .v2-pie__donde,
+  .v2-pie__firma {
+    margin: clamp(6px, 1vh, 10px) 0 0;
+    font-family: var(--v2-mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: rgba(242, 240, 234, .58);
+  }
+  .v2-pie__indice ul { margin: 0; padding: 0; list-style: none; }
+  .v2-pie__indice li + li { margin-top: 6px; }
+  .v2-pie__indice a,
+  .v2-pie__otros a {
+    color: var(--v2-papel);
+    text-decoration: none;
+    font-size: clamp(13px, 1vw, 15px);
+    transition: color .18s ease-out;
+  }
+  .v2-pie__otros { display: flex; flex-direction: column; gap: 6px; }
+  .v2-pie__otros a { color: rgba(242, 240, 234, .72); }
+  @media (hover: hover) and (pointer: fine) {
+    .v2-pie__indice a:hover,
+    .v2-pie__otros a:hover { color: var(--acento); }
+  }
+  .v2-pie__indice a.v2-tocado,
+  .v2-pie__otros a.v2-tocado { color: var(--acento); }
+  .v2-pie__firma { grid-column: 1 / -1; margin-top: clamp(24px, 4vh, 44px); }
+
+  @media (max-width: 900px) {
+    .v2-con__entrada {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+      gap: 12px;
+      margin-top: 30px;
+    }
+    .v2-con__titulo { font-size: clamp(32px, 9vw, 48px); }
+    .v2-con__mail { margin-top: 34px; }
+    .v2-con__pie { gap: 12px; }
+    .v2-pie {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 26px 20px;
+    }
+    .v2-pie__marca { grid-column: 1 / -1; }
+  }
+
+  @media (orientation: landscape) and (max-height: 560px) {
+    .v2-con { padding: 18px var(--v2-margen) 20px; }
+    .v2-con__entrada { grid-template-columns: minmax(0, 1fr) minmax(0, 42%); align-items: end; gap: 18px; margin-top: 14px; }
+    .v2-con__titulo { font-size: clamp(20px, 3.2vw, 30px); }
+    .v2-con__bajada { font-size: 12.5px; line-height: 1.45; }
+    .v2-con__mail { margin-top: 18px; }
+    .v2-con__pie { margin-top: 16px; padding-top: 12px; }
+    .v2-pie { grid-template-columns: minmax(0, 1fr) auto auto; padding: 22px var(--v2-margen) 18px; gap: 20px; }
+    .v2-pie__nombre { font-size: 18px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v2-con__mail, .v2-con__redes a, .v2-pie__indice a, .v2-pie__otros a { transition: none; }
+  }
+</style>
+
+<script>
+  // ══════════════════════════════════════════════════════
+  // EL MAIL, AL ANCHO EXACTO DE LA PÁGINA
+  // ══════════════════════════════════════════════════════
+  //
+  // La cuenta es una regla de tres: se mide la TINTA del renglón a un cuerpo de
+  // referencia y se corrige por el cociente contra el ancho que hay.
+  //
+  // ⚠️ SE MIDE LA TINTA, NO LA CAJA, Y POR ESO HAY UN `canvas`. El ancho que
+  // devuelve el navegador para un elemento es el AVANCE del texto: incluye el
+  // hueco propio de la primera y la última letra, que es aire y no se ve. Con
+  // el avance calzado contra la columna, lo que se ve queda flojo por dentro —y
+  // el defecto crece con el cuerpo—. `measureText` sí devuelve los límites de
+  // la tinta.
+  //
+  // ⚠️ Y SE MIDE A CADA TAMAÑO, REPITIENDO, en vez de medir una vez y escalar:
+  // la tinta NO crece lineal con el cuerpo —los contornos se ajustan a la
+  // grilla de píxeles distinto en cada tamaño— y una sola multiplicación se
+  // pasa del margen por varios píxeles. Tres vueltas alcanzan y sobran.
+  (() => {
+    const linea = document.querySelector('.v2-con__linea')
+    const tinta = linea?.querySelector('i')
+    const caja = linea?.parentElement
+    if (!linea || !tinta || !caja) return
+
+    const REF = 100
+    const lienzo = document.createElement('canvas').getContext('2d')
+
+    const medir = (texto, cuerpo) => {
+      const c = getComputedStyle(linea)
+      lienzo.font = `${c.fontStyle} ${c.fontWeight} ${cuerpo}px ${c.fontFamily}`
+      const esp = parseFloat(c.letterSpacing)
+      const actual = parseFloat(c.fontSize) || 1
+      lienzo.letterSpacing = (Number.isFinite(esp) ? (esp / actual) * cuerpo : 0) + 'px'
+      const m = lienzo.measureText(texto)
+      return { ancho: m.actualBoundingBoxLeft + m.actualBoundingBoxRight, izq: m.actualBoundingBoxLeft }
+    }
+
+    const estirar = () => {
+      const disponible = caja.getBoundingClientRect().width
+      const texto = (tinta.textContent || '').trim()
+      if (!disponible || !texto) return
+      let cuerpo = REF
+      for (let vuelta = 0; vuelta < 3; vuelta++) {
+        const m = medir(texto, cuerpo)
+        if (!m.ancho) return
+        cuerpo = (cuerpo * disponible) / m.ancho
+      }
+      linea.style.fontSize = cuerpo.toFixed(2) + 'px'
+      // Y se apoya en el margen por la tinta, no por la caja.
+      linea.style.marginLeft = medir(texto, cuerpo).izq.toFixed(2) + 'px'
+    }
+
+    estirar()
+    // ⚠️ Y otra vez cuando llegan las tipografías: medir con la de respaldo da
+    // un ancho que no es el que se va a ver.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(estirar)
+
+    let reloj
+    addEventListener('resize', () => { clearTimeout(reloj); reloj = setTimeout(estirar, 120) })
+  })()
+</script>

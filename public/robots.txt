@@ -1,33 +1,52 @@
 # Brickell Lab — robots.txt
 # https://labbrickell.com.ar/
 
-# Permitir todos los crawlers estándar
+# Todos los crawlers estándar
 User-agent: *
 Allow: /
+# Los sitios de muestra del portfolio (se abren en el visor de Proyectos) son
+# negocios inventados: no se indexan (además llevan noindex en su propio HTML).
+Disallow: /v4/proyectos/
 
-# ── GEO — Crawlers de motores de IA ──
+# ── GEO — Crawlers de motores de IA: bienvenidos ──
+# El resumen para asistentes está en /llms.txt
 User-agent: GPTBot
 Allow: /
+Disallow: /v4/proyectos/
 
 User-agent: ChatGPT-User
-Allow: /
-
-User-agent: Google-Extended
 Allow: /
 
 User-agent: OAI-SearchBot
 Allow: /
 
+User-agent: Google-Extended
+Allow: /
+
 User-agent: ClaudeBot
+Allow: /
+Disallow: /v4/proyectos/
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
 Allow: /
 
 User-agent: PerplexityBot
+Allow: /
+Disallow: /v4/proyectos/
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Applebot-Extended
 Allow: /
 
 User-agent: cohere-ai
 Allow: /
 
-# ── Social media crawlers — necesarios para og:image ──
+# ── Redes sociales — necesarios para la vista previa al compartir ──
 User-agent: facebookexternalhit
 Allow: /
 
@@ -46,5 +65,4 @@ Allow: /
 User-agent: TelegramBot
 Allow: /
 
-# Sitemap
 Sitemap: https://labbrickell.com.ar/sitemap-index.xml

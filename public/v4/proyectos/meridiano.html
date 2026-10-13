@@ -1,0 +1,1465 @@
+<!doctype html>
+<html lang="es">
+<head>
+<!-- Sitio de muestra del portfolio: no se indexa. -->
+<meta name="robots" content="noindex, nofollow"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridiano · Viajes a medida</title>
+
+<!-- ============================================================
+     MERIDIANO — agencia de viajes a medida · landing completa
+     ============================================================
+     ⚠️ EL HERO ES UNA PISTA: EL VIDEO DE ITALIA Y DOS FOTOS FIJAS (Marruecos y
+     Tokio), CON EL BUSCADOR FLOTANDO SOBRE EL BORDE INFERIOR. Italia va en
+     H.264 1920x1080 CRF 26 a 24 fps sin audio (y 1080x1350 para el telefono),
+     con el moov al principio para arrancar sin bajar todo. Marruecos y Tokio
+     son las fotos HD de Gonzalo a 2560 de ancho (y 1080x1350 en el telefono). Los originales (2560x1440,
+     10-20 MB cada uno) quedan en /viajes. El buscador NO está dentro del hero: es el primer elemento
+     de la página con margen negativo, así que pisa la foto y la sección de
+     abajo a la vez. Es lo que hace que la portada parezca una sola pieza y no
+     dos bloques apilados.
+
+     ⚠️ LO QUE SOSTIENE LA PÁGINA ES EL ITINERARIO ABIERTO: doce días de un
+     viaje real, con la ciudad, dónde se duerme y qué se hace, dibujado como una
+     ficha. Una agencia que muestra un itinerario entero está diciendo "así
+     trabajamos" sin necesidad de decirlo. Está hecho en CSS.
+
+     ⚠️ FOTOS: las cinco están. La de Japón es Kioto (la pagoda de Yasaka), así
+     que la ruta se llama "Kioto y el sur de Japón" y no "Kyushu": la foto
+     manda sobre el texto, nunca al revés.
+
+     ⚠️ NI UNA SERIF. Archivo para el display —una grotesca ancha con mucho
+     carácter en negrita— e Inter Tight para el cuerpo, que es compacta y deja
+     respirar el buscador. El acento es un cobalto (#2540D8): un solo color
+     vivo, que cae sólo en botones y en el dato que importa.
+
+     ⚠️ Sin voseo (tuteo neutro), sin teléfono, sin dirección, sin mail. Precios
+     en dólares, que es lo que cotiza una agencia internacional.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Inter+Tight:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --blanco:  #FFFFFF;
+    --hielo:   #F4F5F8;
+    --hielo-2: #E9EBF1;
+    --tinta:   #12141C;
+    --gris:    #5F6472;
+    --gris-2:  #9CA1AE;
+    --linea:   #E1E4EB;
+    --cobalto: #2540D8;
+    --cobalto-2: #1B31B0;
+    --cobalto-suave: #EEF0FC;
+
+    --display: 'Archivo', system-ui, sans-serif;
+    --texto:   'Inter Tight', system-ui, sans-serif;
+
+    --margen: clamp(20px, 5vw, 72px);
+    --ancho: 1280px;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  /* ScrollSmoother y `scroll-behavior:smooth` se pelean: cuando manda el smoother, fuera. */
+  html.smooth { scroll-behavior: auto; }
+  body {
+    margin: 0; background: var(--blanco); color: var(--tinta);
+    font-family: var(--texto); font-size: 16px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--cobalto); outline-offset: 2px; }
+  .centro { max-width: var(--ancho); margin-inline: auto; }
+
+  .rotulo { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--cobalto); }
+  h2 {
+    margin: 0; font-family: var(--display); font-weight: 600;
+    font-size: clamp(28px, 4.2vw, 50px); line-height: 1.04; letter-spacing: -.035em;
+  }
+  .bajada { margin: 16px 0 0; max-width: 54ch; color: var(--gris); font-size: clamp(15.5px, 1.2vw, 18px); }
+  .cab { display: grid; gap: 12px; margin-bottom: clamp(32px, 4.5vw, 56px); }
+
+  .boton {
+    display: inline-flex; align-items: center; justify-content: center; height: 50px; padding: 0 24px;
+    background: var(--cobalto); color: #FFF; border-radius: 12px; border: 0; cursor: pointer;
+    font-family: var(--texto); font-size: 15px; font-weight: 600; white-space: nowrap;
+    transition: background-color .2s ease, transform .2s ease;
+  }
+  .boton:hover { background: var(--cobalto-2); transform: translateY(-1px); }
+  .boton--linea { background: transparent; color: var(--tinta); border: 1.5px solid var(--linea); }
+  .boton--linea:hover { background: var(--hielo); border-color: var(--tinta); }
+  .boton--blanco { background: #FFF; color: var(--tinta); }
+  .boton--blanco:hover { background: var(--hielo); }
+
+  /* ── La barra, sobre la foto ───────────────────────────── */
+  /* ⚠️ LA BARRA SE ALINEA AL MISMO CONTENEDOR QUE EL TITULAR (`.centro`,
+     1280px). Sin eso, a 1440 el logo caia 80px mas a la izquierda que el
+     texto del hero y la portada tenia dos margenes distintos. */
+  .barra { position: absolute; z-index: 5; inset: 0 0 auto; padding: clamp(18px, 2.6vw, 28px) var(--margen); color: #FFF; }
+  .barra__caja { display: flex; align-items: center; gap: 30px; }
+  /* ⚠️ EL LOGO VA EN BLANCO PORQUE CAE SOBRE LA FOTO. La versión en tinta
+     está en img/logo-meridiano.png, y la usa el pie. */
+  .marca { display: flex; align-items: center; height: 28px; }
+  .marca img { height: 100%; width: auto; object-fit: contain; }
+  .barra nav { display: none; gap: 28px; }
+  .barra nav a { font-size: 15px; font-weight: 500; color: rgba(255,255,255,.82); transition: color .2s ease; }
+  .barra nav a:hover { color: #FFF; }
+  .barra__fin { margin-left: auto; }
+  .barra .boton { height: 42px; padding: 0 18px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.4); backdrop-filter: blur(8px); font-size: 14px; }
+  .barra .boton:hover { background: #FFF; color: var(--tinta); transform: none; }
+  @media (min-width: 900px) { .marca { height: 32px; } .barra nav { display: flex; } }
+
+  /* ── El hero ───────────────────────────────────────────── */
+  /* ⚠️ EN EL TELEFONO EL HERO NO LLENA LA PANTALLA A PROPOSITO: mide 60svh
+     para que el buscador ENTERO, boton incluido, entre en la primera pantalla. Con 100svh asomaban 92px de tarjeta al borde de abajo y parecia
+     un pie de pagina, no un buscador. */
+  .hero { position: relative; min-height: 60svh; display: grid; align-items: end; overflow: hidden; }
+  /* ⚠️ EL HERO ES UNA PISTA DE TRES VIDEOS, NO UN VIDEO. Los tres estan uno
+     al lado del otro en una pista de 300% de ancho; cuando el que se ve
+     termina, la pista se corre un tercio a la izquierda y el siguiente ya
+     estaba ahi, cargado y en pausa. Al terminar el tercero, vuelve al primero
+     sin animar (para que no se vea rebobinar) y sigue.
+     ⚠️ CADA VIDEO TIENE SU POSTER: el hero pinta al instante con el primer
+     cuadro mientras baja el archivo. Y con `prefers-reduced-motion` no se
+     reproduce nada: quedan los posters, y el paso de uno a otro es un corte. */
+  .hero__foto { position: absolute; inset: 0; overflow: hidden; }
+  .pista { display: flex; height: 100%; width: 300%; transition: transform .9s cubic-bezier(.65,0,.2,1); will-change: transform; }
+  .pista--sin-animar { transition: none; }
+  /* ⚠️ El velo le roba color al video; se compensa con saturacion, no
+     sacando el velo (sin velo el titular no pasa 3:1 sobre Roma). */
+  .pista > * { flex: none; width: calc(100% / 3); height: 100%; object-fit: cover; object-position: 50% 50%; display: block; background: #12141C; filter: saturate(1.25) contrast(1.04); }
+  @media (prefers-reduced-motion: reduce) { .pista { transition: none; } }
+  /* ⚠️ EL VELO NO SE AFLOJA EN EL MEDIO. La primera version bajaba a .08 al
+     42% y ahi cae el titular: "El itine" quedaba blanco sobre la hoja blanca del
+     cuaderno. Con .26 en el medio, saturacion 1.25 en el video y; el velo LATERAL —el titular vive a la
+     izquierda— es lo que lo pasa de 3:1 sin apagar la foto entera. Se mide con
+     el pixel mas claro bajo el h1, no a ojo. */
+  .hero__velo {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg, rgba(18,20,28,.5) 0%, rgba(18,20,28,.26) 45%, rgba(18,20,28,.72) 100%),
+      linear-gradient(90deg, rgba(18,20,28,.5) 0%, rgba(18,20,28,0) 58%);
+  }
+  /* ⚠️ EL ANCHO MAXIMO INCLUYE LOS DOS MARGENES. Con `max-width: var(--ancho)`
+     y el padding adentro (border-box), el texto arrancaba 72px mas adentro que
+     el logo y que todas las secciones, que usan `.centro` + padding fuera. */
+  .hero__dicho {
+    position: relative; z-index: 2; width: 100%; max-width: calc(var(--ancho) + 2 * var(--margen)); margin-inline: auto;
+    padding: clamp(110px, 18vh, 220px) var(--margen) clamp(120px, 16vh, 200px); color: #FFF;
+  }
+  .hero__dicho > * { animation: subir .9s cubic-bezier(.2,.7,.2,1) both; }
+  .hero__dicho > *:nth-child(2) { animation-delay: .14s }
+  .hero__dicho > *:nth-child(3) { animation-delay: .28s }
+  @keyframes subir { from { opacity: 0; transform: translateY(16px) } to { opacity: 1; transform: none } }
+  @media (prefers-reduced-motion: reduce) { .hero__dicho > * { animation: none } }
+  /* ⚠️ EL COLOR DEL HERO VA EN FONDOS, NO EN RELLENOS DE TEXTO. Una palabra
+     en cobalto claro sobre el video daba 1,2:1 en el peor pixel (la cupula).
+     Blanco sobre una pildora cobalto da 8:1 y el color esta igual. */
+  .hero .rotulo {
+    display: inline-block; margin: 0 0 20px; padding: 7px 12px; border-radius: 999px;
+    background: rgba(37,64,216,.92); color: #FFF; letter-spacing: .12em;
+    box-shadow: 0 8px 24px -8px rgba(37,64,216,.6);
+  }
+  /* El "tú" queda blanco —sobre el video, un relleno de color no pasa el
+     contraste— y el color va en un subrayado cobalto grueso. Hubo una version
+     con la palabra en una caja cobalto: no. */
+  .hero h1 em {
+    font-style: normal;
+    text-decoration: underline; text-decoration-color: #5B74FF;
+    text-decoration-thickness: .075em; text-underline-offset: .08em; text-decoration-skip-ink: none;
+  }
+  .hero h1 {
+    margin: 0; max-width: 12ch;
+    font-family: var(--display); font-weight: 700;
+    font-size: clamp(44px, 8.6vw, 108px); line-height: .96; letter-spacing: -.045em;
+    /* La sombra grande es un velo LOCAL: oscurece solo detras de las letras,
+       y es lo que deja aflojar el velo general para que el video tenga color. */
+    text-shadow: 0 2px 4px rgba(18,20,28,.4), 0 16px 48px rgba(18,20,28,.7), 0 0 90px rgba(18,20,28,.5);
+  }
+  /* ⚠️ EL TEXTO LLEVA SOMBRA DOBLE, Y ES LA SEGUNDA LA QUE TRABAJA. La de 1px
+     recorta el borde; la de 40px de desenfoque es un velo local que oscurece
+     el mapa SOLO detras de las letras, sin apagar el resto de la foto. La
+     bajada ademas sube a 500 y a blanco casi pleno: a 16px y peso 400 sobre
+     un mapa se empastaba aunque el velo ya diera contraste. */
+  .hero__bajada {
+    margin: 24px 0 0; max-width: 44ch; color: rgba(255,255,255,.94); font-weight: 500;
+    font-size: clamp(16px, 1.3vw, 19px);
+    text-shadow: 0 1px 3px rgba(18,20,28,.45), 0 10px 32px rgba(18,20,28,.65);
+  }
+
+  /* ── El buscador, flotando ─────────────────────────────── */
+  /* ⚠️ MARGEN NEGATIVO Y NADA MÁS. El buscador pisa la foto porque es el
+     primer bloque del flujo y sube 92px. No es `absolute` ni está dentro del
+     hero: así su alto lo decide el contenido y en el teléfono, cuando los
+     campos se apilan, no tapa nada ni se corta. */
+  .buscador {
+    position: relative; z-index: 6;
+    /* Mismo ancho que `.centro`: el buscador cae en la columna del logo y del titular. */
+    max-width: var(--ancho); margin: -92px auto 0; width: calc(100% - 2 * var(--margen));
+    /* ⚠️ VIDRIO, NO PAPEL. Blanco al 74% con la foto desenfocada detras, un
+       borde blanco fino que marca el canto y una sombra larga. En el telefono
+       la tarjeta blanca opaca sobre la foto parecia pegada encima; asi es parte
+       del hero. En escritorio va un poco mas opaca (82%) porque la tarjeta es
+       ancha y con menos opacidad los campos pierden fondo. */
+    background: rgba(255,255,255,.74);
+    -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4);
+    border: 1px solid rgba(255,255,255,.65);
+    border-radius: 20px; padding: 10px;
+    box-shadow: 0 30px 80px -24px rgba(18,20,28,.45), 0 1px 0 rgba(255,255,255,.5) inset;
+    display: grid; gap: 6px; grid-template-columns: 1fr;
+  }
+  .campo { display: grid; gap: 3px; padding: 9px 16px; border-radius: 12px; transition: background-color .2s ease; }
+  .campo:hover { background: rgba(255,255,255,.55); }
+  .campo label { font-size: 11.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gris-2); }
+  /* ⚠️ NADA DE <select> NATIVO. Cada campo es un boton que abre un panel
+     propio; el destino es un combobox: se escribe para filtrar, pero solo se
+     puede dejar un valor que exista en la lista. Si se escribe algo que no
+     esta y se sale del campo, vuelve al ultimo valor valido. Nadie busca
+     "Bariloche" en una agencia que no lo vende y se queda mirando un vacio. */
+  .campo { position: relative; cursor: pointer; }
+  .campo--abierto { background: rgba(255,255,255,.7); }
+  .campo__valor {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    height: 24px; font-size: 16px; font-weight: 500; color: var(--tinta); white-space: nowrap; overflow: hidden;
+  }
+  .campo__valor span { overflow: hidden; text-overflow: ellipsis; }
+  .campo__valor input {
+    appearance: none; border: 0; background: transparent; padding: 0; margin: 0; width: 100%;
+    font-family: var(--texto); font-size: 16px; font-weight: 500; color: var(--tinta); outline: 0;
+  }
+  .campo__valor input::placeholder { color: var(--gris-2); font-weight: 400; }
+  .campo__flecha { flex: none; width: 12px; height: 8px; transition: transform .2s ease; }
+  .campo--abierto .campo__flecha { transform: rotate(180deg); }
+  .panel {
+    position: absolute; z-index: 20; left: 0; top: calc(100% + 6px); min-width: 100%;
+    background: rgba(255,255,255,.92); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    border: 1px solid rgba(18,20,28,.08); border-radius: 14px; padding: 6px;
+    box-shadow: 0 24px 60px -18px rgba(18,20,28,.35);
+    max-height: 288px; overflow: auto; display: none;
+    animation: abrir .18s cubic-bezier(.2,.7,.2,1);
+  }
+  @keyframes abrir { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: none } }
+  .panel__grupo { padding: 10px 12px 4px; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gris-2); }
+  .opcion {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 9px 12px; border-radius: 9px; font-size: 15px; color: var(--tinta); cursor: pointer; white-space: nowrap;
+  }
+  .opcion:hover, .opcion--foco { background: var(--cobalto-suave); }
+  .opcion--elegida { font-weight: 600; }
+  .opcion--elegida::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--cobalto); flex: none; }
+  .opcion small { font-size: 12.5px; color: var(--gris-2); font-weight: 400; }
+  .panel__nada { padding: 12px; font-size: 14px; color: var(--gris-2); }
+  /* ⚠️ LOS MESES SON UNA GRILLA DE SEIS, NO UNA LISTA. Un ano entero como
+     lista son doce renglones; como grilla son dos filas y se ve completo de
+     un vistazo. El elegido se pinta en cobalto, no con un tilde. */
+  .meses { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 2px 6px 8px; }
+  .mes {
+    appearance: none; border: 1.5px solid var(--linea); background: #FFF; border-radius: 10px; height: 40px;
+    font-family: var(--texto); font-size: 12.5px; font-weight: 600; letter-spacing: .04em; color: var(--tinta); cursor: pointer;
+    transition: border-color .15s ease, background-color .15s ease, color .15s ease;
+  }
+  .mes:hover { border-color: var(--cobalto); color: var(--cobalto); }
+  .mes--elegido, .mes--elegido:hover { background: var(--cobalto); border-color: var(--cobalto); color: #FFF; }
+  .hoja .mes { height: 46px; font-size: 14px; }
+  .hoja .meses { gap: 8px; }
+  /* ⚠️ "VIAJAN" ES UN CONTADOR, NO UNA LISTA. Tres filas —adultos, ninos,
+     bebes— con menos/mas. Los botones tienen 40px de alto porque se tocan
+     con el dedo, y el `-` se apaga en el minimo (un adulto como poco) en vez
+     de desaparecer, para que la fila no salte. */
+  .cuenta { display: grid; gap: 2px; padding: 4px 2px; }
+  .cuenta__fila { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 10px 10px; border-radius: 10px; }
+  .cuenta__fila + .cuenta__fila { border-top: 1px solid rgba(18,20,28,.06); border-radius: 0; }
+  .cuenta__que b { display: block; font-size: 15px; font-weight: 600; }
+  .cuenta__que small { display: block; font-size: 12.5px; color: var(--gris-2); margin-top: 1px; }
+  .cuenta__ctrl { display: flex; align-items: center; gap: 12px; flex: none; }
+  .cuenta__btn {
+    appearance: none; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--linea); background: #FFF;
+    font-size: 20px; line-height: 1; color: var(--tinta); cursor: pointer; display: grid; place-items: center;
+    transition: border-color .15s ease, background-color .15s ease;
+  }
+  .cuenta__btn:hover { border-color: var(--cobalto); color: var(--cobalto); }
+  .cuenta__btn:disabled { opacity: .3; cursor: default; border-color: var(--linea); color: var(--tinta); }
+  .cuenta__n { min-width: 22px; text-align: center; font-family: var(--display); font-weight: 600; font-size: 17px; font-variant-numeric: tabular-nums; }
+  .cuenta__listo { margin: 8px 8px 4px; }
+  .cuenta__listo .boton { width: 100%; height: 44px; }
+
+  /* ⚠️ EN EL TELEFONO NO HAY DESPLEGABLE: HAY UNA HOJA. Un panel que se abre
+     bajo el campo obliga a scrollear para ver las opciones y despues volver.
+     La hoja sube desde abajo, tapa lo justo y se cierra con el telon.
+     ⚠️ VIVE EN EL BODY, NO DENTRO DEL BUSCADOR: la tarjeta tiene
+     `backdrop-filter`, y eso la convierte en containing block de cualquier
+     `position:fixed` que tenga adentro. Puesta ahi, la hoja se recortaba a la
+     tarjeta. El JS la rellena segun el filtro abierto.
+     ⚠️ EN EL TELEFONO VA A PANTALLA COMPLETA. Una hoja al 80% dejaba ver la
+     pagina detras y parecia un desplegable grande; a pantalla entera es una
+     pantalla mas, con su titulo y su cierre, como una app.
+     `dvh` y no `svh`: es un modal, tiene que LLENAR aunque Safari mueva su
+     barra. Y el pie lleva el inset de la barra de inicio mas un colchon. */
+  .telon { position: fixed; inset: 0; z-index: 60; background: rgba(18,20,28,.38); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); display: none; }
+  .hoja {
+    position: fixed; z-index: 61; inset: 0; display: none;
+    height: 100dvh; flex-direction: column;
+    background: rgba(255,255,255,.94); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+    border-radius: 0; box-shadow: none;
+    padding: calc(10px + env(safe-area-inset-top)) 12px calc(14px + env(safe-area-inset-bottom) + 10px);
+    animation: subirHoja .24s cubic-bezier(.2,.7,.2,1);
+  }
+  body.con-hoja .telon, body.con-hoja .hoja { display: flex; }
+  body.con-hoja { overflow: hidden; }
+  @keyframes subirHoja { from { transform: translateY(18px); opacity: 0 } to { transform: none; opacity: 1 } }
+  .hoja__asa { display: none; }
+  .hoja__cab { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 6px 14px; flex: none; }
+  .hoja__cab b { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spacing: -.03em; }
+  .hoja__cerrar { appearance: none; border: 0; background: var(--hielo); width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; font-size: 18px; line-height: 1; color: var(--gris); }
+  /* El buscador de la hoja: 16px como minimo, o iOS hace zoom al tocarlo. */
+  .hoja__buscar {
+    flex: none; margin: 0 4px 10px; height: 46px; padding: 0 14px; border-radius: 12px;
+    border: 1.5px solid var(--linea); background: #FFF; font-family: var(--texto); font-size: 16px; font-weight: 500; color: var(--tinta); outline: 0;
+  }
+  .hoja__buscar:focus { border-color: var(--cobalto); }
+  .hoja__lista { overflow: auto; flex: 1; min-height: 0; }
+  .hoja .opcion { padding: 13px 12px; font-size: 16px; }
+  .hoja .panel__grupo { padding-top: 12px; }
+  /* ⚠️ EN ESCRITORIO ES EL MISMO MODAL, CENTRADO. `inset:0 + margin:auto` con
+     alto `fit-content` lo centra sin `transform`, que ya lo usa la animacion
+     de entrada: si se centrara con translate(-50%,-50%) la animacion lo
+     pisaria y el modal apareceria en la esquina. */
+  @media (min-width: 820px) {
+    .hoja {
+      inset: 0; margin: auto; width: min(560px, calc(100% - 48px)); height: fit-content;
+      max-height: 82dvh; border-radius: 22px; padding: 14px 14px 16px;
+      box-shadow: 0 40px 100px -30px rgba(18,20,28,.5);
+      animation: aparecerHoja .2s cubic-bezier(.2,.7,.2,1);
+    }
+    .hoja__asa { display: none; }
+    .hoja__cab { padding-top: 4px; }
+  }
+  @keyframes aparecerHoja { from { opacity: 0; transform: scale(.985) } to { opacity: 1; transform: none } }
+
+  /* ── El aviso de demostracion ── */
+  /* ⚠️ TODO BOTON QUE EN LA VIDA REAL DISPARARIA ALGO —buscar, reservar, un
+     enlace muerto— muestra este aviso en vez de no hacer nada. Que la persona
+     no se quede esperando. Es fixed en el body, fuera del buscador (que tiene
+     backdrop-filter y atraparia el fixed). */
+  /* ⚠️ EN EL TELEFONO VA DE MARGEN A MARGEN, NO CENTRADA CON left:50%. Un
+     fixed con left:50% solo puede crecer hasta el borde derecho —la mitad de
+     la pantalla, 195px— y la caja salia enana con el texto en cuatro renglones.
+     En escritorio si se centra, con el ancho a contenido. */
+  .aviso {
+    position: fixed; z-index: 70; left: 20px; right: 20px; bottom: calc(22px + env(safe-area-inset-bottom));
+    --tx: 0; transform: translate(var(--tx), 16px); opacity: 0; pointer-events: none;
+    padding: 13px 18px 13px 16px;
+    background: rgba(18,20,28,.9); color: #FFF; border-radius: 14px;
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    box-shadow: 0 20px 50px -16px rgba(18,20,28,.6);
+    font-size: 14.5px; line-height: 1.45; display: flex; gap: 12px; align-items: center;
+    transition: opacity .25s ease, transform .25s cubic-bezier(.2,.7,.2,1);
+  }
+  .aviso--visible { opacity: 1; transform: translate(var(--tx), 0); }
+  @media (min-width: 820px) { .aviso { left: 50%; right: auto; width: max-content; max-width: 560px; --tx: -50%; } }
+  .aviso i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: #8FA0FF; box-shadow: 0 0 0 4px rgba(143,160,255,.25); }
+  .aviso b { font-weight: 600; }
+  @media (prefers-reduced-motion: reduce) { .aviso { transition: opacity .2s ease; transform: translate(var(--tx), 0); } }
+
+  /* ── Limpiar ── */
+  .limpiar {
+    appearance: none; border: 0; background: transparent; cursor: pointer;
+    font-family: var(--texto); font-size: 13.5px; font-weight: 500; color: var(--gris); padding: 8px 10px;
+    text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--linea);
+    transition: color .15s ease;
+  }
+  .limpiar:hover { color: var(--cobalto); text-decoration-color: currentColor; }
+  .limpiar:disabled { opacity: .35; cursor: default; text-decoration: none; }
+  .buscador .boton { height: 56px; border-radius: 14px; }
+  .buscador .limpiar { justify-self: center; }
+  @media (min-width: 820px) {
+    .buscador { grid-template-columns: 1.4fr 1fr 1fr 1fr auto auto; align-items: stretch; gap: 0; }
+    .limpiar { align-self: center; margin-right: 6px; }
+    .buscador { background: rgba(255,255,255,.82); }
+    .campo { border-right: 1px solid rgba(18,20,28,.1); border-radius: 0; padding: 14px 20px; }
+    .campo:first-child { border-radius: 12px 0 0 12px; }
+    .campo:nth-child(4) { border-right: 0; }
+    .buscador .boton { align-self: center; margin: 0 4px 0 10px; }
+  }
+
+  section { padding: clamp(60px, 9vw, 130px) var(--margen); }
+
+  /* ── Seleccionados del mes ─────────────────────────────── */
+  .destinos { padding-top: clamp(70px, 9vw, 120px); }
+  /* ⚠️ TIRAS, NO BENTO. La primera ruta va destacada —foto grande a la
+     izquierda, texto a la derecha— y las otras dos son filas debajo, con foto
+     chica, titulo, descripcion y precio, separadas por filete. Se lee como una
+     lista y la seccion entera entra en una pantalla. Hubo un bento de tres
+     tarjetas: media pantalla de scroll para tres rutas. */
+  .grilla { display: grid; gap: 0; grid-template-columns: 1fr; }
+  /* En el telefono las tres tiras se apilan igual: foto a todo el ancho y el
+     texto debajo. Con foto chica al lado, la informacion quedaba comprimida en
+     una columna de 200px. Las filas solo existen en escritorio. */
+  .viaje { display: grid; gap: 14px; padding: clamp(18px, 2.4vw, 26px) 0; border-top: 1px solid var(--linea); align-items: center; grid-template-columns: 1fr; }
+  .viaje:first-child { border-top: 0; padding-top: 0; grid-template-columns: 1fr; gap: 16px; padding-bottom: clamp(24px, 3vw, 34px); }
+  .viaje:nth-child(2) { margin-top: clamp(8px, 1.5vw, 18px); }
+  .viaje__foto { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 16 / 10; background: var(--hielo-2); }
+  .viaje:first-child .viaje__foto { border-radius: 18px; }
+  .viaje__foto img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .viaje:hover .viaje__foto img { transform: scale(1.04); }
+  .viaje__sello { position: absolute; left: 14px; top: 14px; background: #FFF; color: var(--tinta); font-size: 12px; font-weight: 600; letter-spacing: .04em; padding: 7px 11px; border-radius: 999px; }
+  .viaje__texto { display: grid; gap: 8px; align-content: center; }
+  .viaje h3 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(19px, 1.8vw, 23px); letter-spacing: -.03em; }
+  .viaje:first-child h3 { font-size: clamp(24px, 2.6vw, 34px); }
+  .viaje p { margin: 0; color: var(--gris); font-size: 14.5px; max-width: 56ch; }
+  .viaje:first-child p { font-size: clamp(15px, 1.2vw, 17px); }
+  .viaje__meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+  .viaje__meta span { font-size: 12.5px; font-weight: 500; color: var(--gris); background: var(--hielo); padding: 6px 10px; border-radius: 8px; }
+  .viaje__dato { white-space: nowrap; align-self: center; }
+  .viaje__dato b { display: block; font-family: var(--display); font-weight: 600; font-size: clamp(17px, 1.6vw, 20px); letter-spacing: -.02em; }
+  .viaje__dato span { font-size: 12.5px; color: var(--gris-2); }
+  .viaje:first-child .viaje__dato b { font-size: clamp(20px, 2vw, 26px); }
+  /* Cada tira tiene su CTA. En la destacada es un boton con borde; en las
+     filas, un enlace con flecha bajo el precio. Todos avisan que es una demo. */
+  .viaje__cta { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--cobalto); white-space: nowrap; }
+  .viaje__cta::after { content: '→'; transition: transform .2s ease; }
+  .viaje__cta:hover::after { transform: translateX(3px); }
+  .viaje:first-child .viaje__cta { height: 46px; padding: 0 20px; border: 1.5px solid var(--tinta); color: var(--tinta); border-radius: 12px; justify-self: start; margin-top: 6px; transition: background-color .2s ease, color .2s ease; }
+  .viaje:first-child .viaje__cta:hover { background: var(--tinta); color: #FFF; }
+  .viaje__precio { display: grid; gap: 8px; justify-items: end; align-self: center; }
+  @media (min-width: 760px) {
+    .viaje { grid-template-columns: 200px 1fr auto; gap: 0 28px; }
+    .viaje__foto { aspect-ratio: 4 / 3; border-radius: 14px; grid-row: 1 / -1; }
+    .viaje:first-child .viaje__foto { grid-row: auto; }
+    /* ⚠️ LA DESTACADA ES UNA CARD, Y LA FOTO SANGRA A TRES LADOS. La tarjeta
+       tiene borde y radio; la foto va pegada arriba, abajo y a la izquierda
+       (sin padding de su lado, radio 0, alto 100%) y el texto lleva el
+       padding. El alto lo decide el texto, no la foto: por eso queda mas
+       chica que antes, cuando la foto de 16:10 mandaba. */
+    .viaje:first-child {
+      grid-template-columns: 42% 1fr; gap: 0; align-items: stretch;
+      background: #FFF; border: 1px solid var(--linea); border-radius: 20px; overflow: hidden;
+      padding: 0; box-shadow: 0 20px 50px -30px rgba(18,20,28,.25);
+    }
+    .viaje:first-child .viaje__foto { aspect-ratio: auto; height: 100%; min-height: 300px; border-radius: 0; }
+    .viaje:first-child .viaje__texto { padding: clamp(24px, 3vw, 36px) clamp(24px, 3vw, 40px); align-content: center; }
+    .viaje:first-child h3 { font-size: clamp(22px, 2.2vw, 28px); }
+    .viaje:first-child p { font-size: 15.5px; }
+    .viaje:first-child .viaje__dato b { font-size: clamp(19px, 1.8vw, 23px); }
+    .viaje:first-child .viaje__dato { justify-self: start; padding-top: 2px; }
+    .viaje__precio { text-align: right; }
+    .viaje__dato { text-align: right; }
+    .viaje:first-child .viaje__dato { text-align: left; }
+  }
+  @media (max-width: 759px) {
+    .viaje__precio { justify-items: start; }
+    .viaje__dato { text-align: left; }
+    .viaje__dato b { display: inline; }
+    .viaje__dato span { margin-left: 6px; }
+    .viaje h3 { font-size: 24px; }
+  }
+
+  /* ── Cómo se arma ──────────────────────────────────────── */
+  .como { background: var(--hielo); }
+  .pasos { display: grid; gap: clamp(18px, 2.4vw, 28px); grid-template-columns: 1fr; counter-reset: paso; }
+  /* ⚠️ LAS CUATRO TARJETAS COMPARTEN LINEAS. Filas fijas: numero, titulo,
+     texto (1fr: absorbe la diferencia de largo) y la nota con filete. Como
+     la grilla estira las tarjetas a la misma altura, el numero, el titulo, el
+     arranque del texto y el filete caen a la misma altura en las cuatro. */
+  .paso { background: #FFF; border-radius: 18px; padding: clamp(22px, 3vw, 30px); display: grid; gap: 10px; grid-template-rows: auto auto 1fr auto; align-content: stretch; }
+  .paso p { align-self: start; }
+  .paso b { align-self: end; }
+  .paso::before { counter-increment: paso; content: counter(paso, decimal-leading-zero); font-family: var(--display); font-weight: 700; font-size: 13px; letter-spacing: .1em; color: var(--cobalto); }
+  .paso h3 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(19px, 1.9vw, 23px); letter-spacing: -.03em; }
+  .paso p { margin: 0; color: var(--gris); font-size: 14.5px; }
+  .paso b { display: block; margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--linea); font-size: 13px; font-weight: 600; color: var(--tinta); }
+  @media (min-width: 680px)  { .pasos { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1080px) { .pasos { grid-template-columns: repeat(4, 1fr); } }
+
+  /* ── El itinerario abierto ─────────────────────────────── */
+  /* ⚠️ ESTA ES LA PIEZA DE LA PÁGINA. Doce días, uno por fila, con una raya
+     vertical que los une y un punto por noche. Ciudad, dónde se duerme y qué
+     se hace. Se lee de arriba abajo como un viaje y no hace falta ninguna
+     foto: el itinerario ES la imagen. */
+  .itinerario .cab { margin-bottom: clamp(24px, 3vw, 40px); }
+  .itinerario__banda { display: grid; gap: 18px; margin-bottom: clamp(30px, 4vw, 48px); }
+  .itinerario__foto { aspect-ratio: 16 / 10; border-radius: 18px; overflow: hidden; }
+  .itinerario__foto img { width: 100%; height: 100%; object-fit: cover; }
+  .ficha { margin: 0; display: grid; gap: 1px; background: var(--linea); border: 1px solid var(--linea); border-radius: 14px; overflow: hidden; }
+  .ficha div { background: #FFF; padding: 13px 16px; display: flex; justify-content: space-between; gap: 12px; }
+  .ficha span { font-size: 13.5px; color: var(--gris); }
+  .ficha b { font-size: 13.5px; font-weight: 600; text-align: right; }
+  .dias__cab { display: none; }
+  .dias { display: grid; }
+  .dia { display: grid; grid-template-columns: 34px 1fr; gap: 0 14px; position: relative; padding: 0 0 22px; }
+  .dia__n { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--gris-2); letter-spacing: .04em; padding-top: 3px; position: relative; }
+  .dia__n::after { content: ''; position: absolute; left: 10px; top: 26px; bottom: -22px; width: 1px; background: var(--linea); }
+  .dia:last-child .dia__n::after { display: none; }
+  .dia__que { display: grid; gap: 3px; padding-bottom: 6px; border-bottom: 1px solid var(--linea); }
+  .dia__cab { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+  .dia h4 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -.02em; }
+  .dia__duerme { font-size: 12.5px; color: var(--cobalto); font-weight: 600; }
+  .dia__duerme i { font-style: normal; }
+  .dia p { margin: 0; color: var(--gris); font-size: 14.5px; max-width: 60ch; }
+  .itinerario__pie { margin-top: clamp(26px, 3vw, 36px); display: grid; gap: 14px; align-items: center; }
+  .itinerario__pie p { margin: 0; color: var(--gris); font-size: 14.5px; max-width: 52ch; }
+  .itinerario__pie .boton { justify-self: start; }
+
+  /* ⚠️ EL DOCUMENTO, SOLO EN ESCRITORIO. La foto pasa a banda 21:9 y la ficha
+     se le monta encima como una tira de cinco datos con vidrio. Los dias se
+     vuelven una tabla: `display:contents` en la fila y sus cajas deja que las
+     cuatro hojas —dia, ciudad, noche, que se hace— caigan en las columnas de
+     `.dias`. Nada de esto toca el telefono, que sigue siendo una lista. */
+  @media (min-width: 960px) {
+    /* Cabecera y foto entran en una pantalla; la tabla viene despues. */
+    .itinerario { padding-top: clamp(56px, 6vw, 80px); }
+    .itinerario .cab { max-width: 760px; margin-bottom: 26px; }
+    .itinerario .cab h2 { font-size: clamp(28px, 3.4vw, 42px); }
+    .itinerario .bajada { font-size: 16px; }
+    .itinerario__banda { position: relative; display: block; }
+    /* 3:1 y no 21:8: al llegar por el ancla, la foto terminaba a 100px del
+       borde de abajo y parecia pegada al pie. Asi queda aire debajo. */
+    .itinerario__foto { aspect-ratio: 3 / 1; border-radius: 22px; }
+    /* Pantallas bajas (portatiles de 720): la banda cede un poco mas. */
+    @media (max-height: 780px) { .itinerario { padding-top: 44px; } .itinerario__foto { aspect-ratio: 3.4 / 1; } .itinerario .cab { margin-bottom: 20px; } }
+    .ficha {
+      position: absolute; left: 18px; right: 18px; bottom: 18px;
+      grid-template-columns: repeat(5, 1fr); gap: 0; border: 1px solid rgba(255,255,255,.6);
+      background: rgba(255,255,255,.84); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+      border-radius: 16px; box-shadow: 0 20px 50px -24px rgba(18,20,28,.5);
+    }
+    .ficha div { background: transparent; flex-direction: column; justify-content: center; gap: 3px; padding: 14px 18px; border-left: 1px solid rgba(18,20,28,.08); }
+    .ficha div:first-child { border-left: 0; }
+    .ficha span { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--gris-2); }
+    .ficha b { text-align: left; font-family: var(--display); font-size: 16px; }
+
+    .dias { grid-template-columns: 64px 1.1fr .7fr 2fr; column-gap: 24px; }
+    .dias__cab { display: contents; }
+    .dias__cab span { font-size: 11.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gris-2); padding: 0 0 12px; border-bottom: 1.5px solid var(--tinta); }
+    .dia, .dia__que, .dia__cab { display: contents; }
+    /* Sin `align-self:start`: cada celda se estira al alto de la fila y el
+       filete de D1 cae en la misma linea que el de ciudad, noche y texto. */
+    .dia__n, .dia h4, .dia__duerme, .dia p { padding: 14px 0; border-bottom: 1px solid var(--linea); align-self: stretch; }
+    .dia__n { padding-top: 16px; }
+    .dia__n::after { display: none; }
+    .dia h4 { font-size: 16px; }
+    .dia__duerme { font-size: 13.5px; padding-top: 16px; }
+    /* Bajo la cabecera "Noche en" sobra repetirlo en cada fila. */
+    .dia__duerme i { display: none; }
+    .dia p { max-width: none; }
+    .dia:last-child .dia__n, .dia:last-child h4, .dia:last-child .dia__duerme, .dia:last-child p { border-bottom: 0; }
+    .itinerario__pie { grid-template-columns: 1fr auto; margin-top: 30px; padding-top: 22px; border-top: 1.5px solid var(--tinta); }
+    .itinerario__pie .boton { justify-self: end; }
+  }
+
+  /* ── Incluye y no ──────────────────────────────────────── */
+  .incluye { background: var(--tinta); color: #FFF; }
+  .incluye .rotulo { color: #8FA0FF; }
+  .incluye .bajada { color: rgba(255,255,255,.7); }
+  .incluye__cols { display: grid; gap: clamp(24px, 3vw, 40px); grid-template-columns: 1fr; }
+  .lista { margin: 0; padding: 0; list-style: none; display: grid; gap: 0; }
+  .lista li { padding: 14px 0; border-top: 1px solid rgba(255,255,255,.12); display: grid; grid-template-columns: 22px 1fr; gap: 12px; font-size: 15px; color: rgba(255,255,255,.86); }
+  .lista li::before { content: '+'; font-family: var(--display); font-weight: 700; color: #8FA0FF; }
+  .lista--no li::before { content: '—'; color: rgba(255,255,255,.4); }
+  .lista--no li { color: rgba(255,255,255,.6); }
+  .lista h3 { margin: 0 0 10px; font-family: var(--display); font-weight: 600; font-size: 20px; letter-spacing: -.03em; }
+  /* ⚠️ LAS DOS COLUMNAS COMPARTEN FILAS (subgrid). Sin eso, un renglon que
+     parte en dos en una columna corre todos los filetes de esa columna y las
+     rayas de izquierda y derecha dejan de coincidir. Con subgrid, la fila n
+     mide lo mismo a los dos lados y cada filete cae en la misma linea. */
+  @media (min-width: 820px) {
+    .incluye__cols { grid-template-columns: 1fr 1fr; grid-template-rows: auto repeat(6, auto); column-gap: clamp(32px, 4vw, 56px); }
+    .lista { display: grid; grid-row: span 7; grid-template-rows: subgrid; }
+    .lista h3 { margin: 0; align-self: end; padding-bottom: 12px; }
+    .lista li { align-self: stretch; }
+  }
+
+  /* ── Quién viaja: reseñas en carrusel ──────────────────── */
+  /* ⚠️ RESEÑAS COMO LAS DE GOOGLE: avatar con inicial, nombre, fecha, cinco
+     estrellas y la G. Seis tarjetas en una pista con scroll-snap: tres a la
+     vista en escritorio, una y un poco en el telefono (para que se vea que
+     sigue). `overflow-y: clip` para que el eje vertical no scrollee ni corte
+     la sombra. Las flechas mueven una tarjeta; en el telefono se desliza. */
+  .voces { background: var(--hielo); }
+  .voces__cab { display: flex; align-items: end; justify-content: space-between; gap: 20px; }
+  .voces__nota { display: flex; align-items: center; gap: 12px; margin-bottom: clamp(32px, 4.5vw, 56px); }
+  .voces__nota b { font-family: var(--display); font-weight: 700; font-size: 30px; letter-spacing: -.03em; line-height: 1; }
+  .voces__nota small { display: block; font-size: 13px; color: var(--gris); }
+  .estrellas { display: inline-flex; gap: 2px; }
+  .estrellas i { width: 16px; height: 16px; background: #F5B301; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+  .voces__pista {
+    display: grid; grid-auto-flow: column; grid-auto-columns: 86%; gap: 14px;
+    overflow-x: auto; overflow-y: clip; scroll-snap-type: x mandatory; scroll-padding-inline: var(--margen);
+    padding: 6px var(--margen) 18px; margin: 0 calc(-1 * var(--margen));
+    scrollbar-width: none;
+  }
+  .voces__pista::-webkit-scrollbar { display: none; }
+  .voz {
+    scroll-snap-align: start; background: #FFF; border-radius: 18px; padding: clamp(20px, 2.4vw, 26px);
+    display: grid; grid-template-rows: auto auto 1fr auto; gap: 12px; border: 1px solid var(--linea);
+  }
+  .voz__cab { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; }
+  .voz__avatar { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: #FFF; font-family: var(--display); font-weight: 700; font-size: 17px; }
+  .voz__quien b { display: block; font-size: 14.5px; font-weight: 600; }
+  .voz__quien span { font-size: 12.5px; color: var(--gris-2); }
+  .voz__g { width: 22px; height: 22px; }
+  .voz p { margin: 0; font-size: 15px; line-height: 1.55; color: var(--tinta); }
+  .voz footer { border-top: 1px solid var(--linea); padding-top: 10px; font-size: 12.5px; color: var(--gris-2); }
+  .voces__ctrl { display: flex; gap: 10px; }
+  .voces__btn { appearance: none; width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--linea); background: #FFF; cursor: pointer; display: grid; place-items: center; color: var(--tinta); transition: border-color .15s ease, color .15s ease; }
+  .voces__btn:hover { border-color: var(--cobalto); color: var(--cobalto); }
+  .voces__btn svg { width: 16px; height: 16px; }
+  @media (min-width: 680px)  { .voces__pista { grid-auto-columns: calc((100% - 14px) / 2); } }
+  @media (min-width: 1000px) { .voces__pista { grid-auto-columns: calc((100% - 2 * 18px) / 3); gap: 18px; } }
+
+  /* ── Preguntas: acordeon ───────────────────────────────── */
+  /* ⚠️ UNA ABIERTA A LA VEZ, Y LA ALTURA SE ANIMA. Un <details> no anima su
+     alto, asi que cada respuesta es una grilla de 0fr → 1fr (el unico truco
+     que anima "auto" sin medir en JS). El JS solo pone aria-expanded en el
+     boton y la clase en el item; el resto es CSS. La abierta se marca con
+     fondo y borde cobalto suave, y el icono + gira a ×. */
+  .preguntas__lista { max-width: 860px; display: grid; gap: 10px; }
+  .faq { background: #FFF; border: 1px solid var(--linea); border-radius: 16px; transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease; }
+  .faq--abierta { border-color: rgba(37,64,216,.35); background: var(--cobalto-suave); box-shadow: 0 12px 30px -20px rgba(37,64,216,.4); }
+  .faq__btn {
+    appearance: none; width: 100%; border: 0; background: transparent; cursor: pointer; text-align: left;
+    display: grid; grid-template-columns: 1fr 34px; gap: 16px; align-items: center;
+    padding: 18px 18px 18px 22px; font-family: var(--display); font-weight: 600; color: var(--tinta);
+    font-size: clamp(16px, 1.5vw, 18px); letter-spacing: -.02em; line-height: 1.3;
+  }
+  .faq__ico { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--linea); display: grid; place-items: center; position: relative; background: #FFF; transition: transform .25s cubic-bezier(.2,.7,.2,1), border-color .2s ease; }
+  .faq__ico::before, .faq__ico::after { content: ''; position: absolute; background: var(--tinta); border-radius: 1px; }
+  .faq__ico::before { width: 12px; height: 1.6px; }
+  .faq__ico::after { width: 1.6px; height: 12px; }
+  .faq--abierta .faq__ico { transform: rotate(45deg); border-color: var(--cobalto); }
+  .faq--abierta .faq__ico::before, .faq--abierta .faq__ico::after { background: var(--cobalto); }
+  .faq__panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s cubic-bezier(.2,.7,.2,1); }
+  .faq--abierta .faq__panel { grid-template-rows: 1fr; }
+  .faq__panel > div { overflow: hidden; }
+  .faq__panel p { margin: 0; padding: 0 22px 20px; color: var(--gris); font-size: 15.5px; max-width: 64ch; }
+  @media (prefers-reduced-motion: reduce) { .faq__panel, .faq__ico { transition: none; } }
+
+  /* ── Cierre ────────────────────────────────────────────── */
+  .cierre { background: var(--cobalto); color: #FFF; text-align: center; }
+  .cierre .rotulo { color: rgba(255,255,255,.7); }
+  .cierre h2 { max-width: 18ch; margin: 14px auto 0; font-size: clamp(30px, 5vw, 60px); }
+  .cierre .bajada { color: rgba(255,255,255,.8); margin-inline: auto; }
+  .cierre__acciones { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 30px; }
+
+  /* ── Pie ───────────────────────────────────────────────── */
+  footer.pie { border-top: 1px solid var(--linea); padding: clamp(44px, 6vw, 72px) var(--margen) clamp(28px, 4vw, 40px); }
+  .pie__caja { display: grid; gap: clamp(30px, 4vw, 50px); }
+  .pie__marca { display: grid; gap: 14px; justify-items: start; align-content: start; }
+  .pie__marca img { height: 26px; width: auto; }
+  .pie__marca p { margin: 0; color: var(--gris); font-size: 14.5px; max-width: 34ch; }
+  .pie__cols { display: grid; gap: 28px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pie__col h4 { margin: 0 0 14px; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--gris-2); }
+  .pie__col ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; }
+  .pie__col a { color: var(--gris); font-size: 14.5px; transition: color .2s ease; }
+  .pie__col a:hover { color: var(--cobalto); }
+  /* ⚠️ LA FIRMA DE BRICKELL LAB, SUTIL. Va a la derecha de la fila legal, en el
+     mismo gris y tamano que "Aviso legal". El isotipo es una MASCARA CSS
+     rellena con currentColor: toma el gris del pie de cada pagina y no trae
+     su propio negro. Al pasar el mouse sube al color del texto. */
+  .hecho { margin-left: auto; display: inline-flex; align-items: center; gap: 7px; color: inherit; white-space: nowrap; transition: color .2s ease; }
+  .hecho:hover { color: var(--tinta); }
+  /* La marca entera (isotipo + wordmark) como IMAGEN, ya teñida al gris de
+     este pie: una mascara CSS no pintaba en todos los navegadores. 16px de alto. */
+  .hecho img { display: block; height: 16px; width: auto; opacity: .9; }
+  .hecho:hover img { opacity: 1; }
+  @media (max-width: 599px) { .hecho { margin-left: 0; flex-basis: 100%; } }
+  /* El cierre en escritorio: una fila, copyright · legales · hecho por (a la derecha). */
+  .pie__fin {  margin-top: clamp(30px, 4vw, 50px); padding-top: 18px; border-top: 1px solid var(--linea); display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; color: var(--gris-2); font-size: 13px; }
+  .pie__legales { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+  /* ── El pie en el teléfono (< 900px) ──────────────────────────────────
+     Las columnas de enlaces quedan como siempre (dos columnas); lo que se
+     rediseñó es el cierre, en dos escalones con su línea cada uno:
+     1. los legales en una fila y el copyright debajo, chicos;
+     2. "Hecho por brickell lab", solo, centrado, en su propio escalón. */
+  @media (max-width: 899px) {
+    .pie__fin { display: grid; gap: 8px; margin-top: 30px; padding-top: 18px; font-size: 12.5px; }
+    .pie__fin > span:first-child { order: 2; }
+    .pie__legales { order: 1; gap: 6px 16px; }
+    .hecho { order: 3; width: 100%; margin: 16px 0 0; padding: 16px 0 0; border-top: 1px solid var(--linea); justify-content: center; }
+  }
+  @media (min-width: 900px) {
+    .pie__caja { grid-template-columns: 1fr 1.5fr; }
+    .pie__cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  /* ⚠️ ESTOS DOS MEDIA QUERIES VAN AL FINAL DE LA HOJA A PROPOSITO: pisan
+     `margin` y `padding` shorthand declarados mas arriba, y a igual
+     especificidad gana el que va despues. Puestos junto al hero no hacian nada.
+     En pantallas bajas (iPhone SE y similares, 667px) 60svh no alcanza: al
+     buscador le faltaban 31px. Ahi el hero cede un poco mas. */
+  @media (max-height: 700px) and (max-width: 819px) {
+    .hero { min-height: 52svh; }
+    /* Ahi la altura la fija el CONTENIDO, no el min-height: hay que ceder padding. */
+    .hero__dicho { padding-top: 84px; padding-bottom: 120px; }
+  }
+  /* ⚠️ EN ESCRITORIO EL BUSCADOR SUBE 170px, NO 92: con 92 terminaba justo en
+     el pliegue (901 de 900) y se leia como el borde de la seccion siguiente, no
+     como parte del hero. Para que no pise la bajada, el hero le deja mas aire
+     abajo al texto. */
+  @media (min-width: 820px) {
+    .hero { min-height: 100svh; }
+    .hero__dicho { padding-bottom: clamp(220px, 26vh, 290px); }
+    .buscador { margin-top: -170px; }
+  }
+  /* En el telefono el desplegable del campo se apaga (la hoja lo reemplaza) y
+     el input del destino deja de recibir el toque: el campo entero es boton.
+     Va al final porque tiene que pisar `.campo--abierto .panel {display:block}`. */
+  .campo__valor input { pointer-events: none; }
+</style>
+</head>
+
+<body>
+<div id="smooth-wrapper"><div id="smooth-content">
+
+<header class="hero" id="hero">
+  <div class="barra"><div class="centro barra__caja">
+    <a class="marca" href="#"><img src="img/logo-meridiano-blanco.png" alt="Meridiano"></a>
+    <nav>
+      <a href="#destinos">Destinos</a>
+      <a href="#como">Cómo trabajamos</a>
+      <a href="#itinerario">Un itinerario</a>
+      <a href="#preguntas">Preguntas</a>
+    </nav>
+    <div class="barra__fin"><a class="boton" href="#hero">Armar mi viaje</a></div>
+  </div></div>
+
+  <div class="hero__foto">
+    <!-- ⚠️ SIN `src` FIJO: el JS elige la version de escritorio (1600x900) o la
+         del telefono (720x900) segun el ancho, antes de cargar nada. Solo el
+         primero lleva preload=auto; los otros dos arrancan en `none` y el JS
+         los manda a bajar cuando empieza el anterior. `muted` + `playsinline` es lo que permite el autoplay
+         en iOS. -->
+    <!-- ⚠️ UN VIDEO Y DOS FOTOS EN LA MISMA PISTA. Italia es el unico video
+         (1920x1080, y 1080x1350 en el telefono); Marruecos y Tokio son cuadros
+         fijos en HD (2560 de ancho) sacados de sus videos. El video corre
+         entero; cada foto se sostiene `data-dura` segundos y pasa. -->
+    <div class="pista" id="pista">
+      <video muted playsinline preload="auto" poster="video/italia.jpg" data-video="italia" aria-label="Roma desde arriba"></video>
+      <img data-foto="marruecos" alt="Chefchaouen, la ciudad azul de Marruecos, al atardecer" data-dura="6" loading="eager">
+      <img data-foto="tokio" alt="Un cruce de Akihabara, en Tokio" data-dura="6" loading="eager">
+    </div>
+    <div class="hero__velo"></div>
+  </div>
+
+  <div class="hero__dicho">
+    <p class="rotulo">Viajes a medida · desde 2009</p>
+    <h1>El itinerario lo escribes <em>tú.</em></h1>
+    <p class="hero__bajada">Nosotros lo hacemos posible. Sin paquetes, sin grupos, sin un solo día que no hayas elegido.</p>
+  </div>
+</header>
+
+<!-- ⚠️ El buscador va FUERA del hero, con margen negativo. Ver el CSS. -->
+<form class="buscador" id="buscador" onsubmit="window.avisar('Aquí se buscarían los itinerarios con estos filtros.'); return false" autocomplete="off">
+  <div class="campo" data-campo="destino">
+    <label for="f-destino">Destino</label>
+    <div class="campo__valor">
+      <input id="f-destino" type="text" placeholder="Cualquier destino" spellcheck="false" readonly tabindex="-1">
+      <svg class="campo__flecha" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="#9CA1AE" stroke-width="1.6"/></svg>
+    </div>
+  </div>
+  <div class="campo" data-campo="mes">
+    <label>Cuándo</label>
+    <div class="campo__valor"><span></span><svg class="campo__flecha" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="#9CA1AE" stroke-width="1.6"/></svg></div>
+  </div>
+  <div class="campo" data-campo="dias">
+    <label>Duración</label>
+    <div class="campo__valor"><span></span><svg class="campo__flecha" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="#9CA1AE" stroke-width="1.6"/></svg></div>
+  </div>
+  <div class="campo" data-campo="gente">
+    <label>Viajan</label>
+    <div class="campo__valor"><span></span><svg class="campo__flecha" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="#9CA1AE" stroke-width="1.6"/></svg></div>
+  </div>
+  <button class="boton" type="submit" id="f-ir">Ver 34 itinerarios</button>
+  <button class="limpiar" type="button" id="f-limpiar">Limpiar</button>
+</form>
+
+<!-- ── Seleccionados ─────────────────────────────────────── -->
+<section class="destinos" id="destinos">
+  <div class="centro">
+    <div class="cab">
+      <p class="rotulo">Seleccionados del mes</p>
+      <h2>Tres rutas que armamos este año y volveríamos a hacer.</h2>
+      <p class="bajada">Ninguna es un paquete. Son itinerarios que salieron de una conversación y se ajustaron hasta el último día. Sirven de punto de partida, no de molde.</p>
+    </div>
+
+    <div class="grilla">
+      <article class="viaje">
+        <div class="viaje__foto">
+          <img src="img/meridiano-lagos.jpg" alt="Una carretera bordeando un lago alpino, vista desde arriba">
+          <span class="viaje__sello">La más pedida</span>
+        </div>
+        <div class="viaje__texto">
+          <h3>Lagos del Norte</h3>
+          <p>Milán, Como, Bellagio y Verona. Traslados privados entre lagos, dos noches en una casa sobre el agua y dos días enteros sin plan.</p>
+          <div class="viaje__meta"><span>12 días</span><span>Italia</span><span>Coche con conductor</span></div>
+          <div class="viaje__dato"><b>USD 3.480</b><span>por persona</span></div>
+          <a class="viaje__cta" href="#" data-aviso="Aquí se abriría el itinerario completo de Lagos del Norte, día por día.">Ver el itinerario</a>
+        </div>
+      </article>
+
+      <article class="viaje">
+        <div class="viaje__foto">
+          <img src="img/meridiano-atlantico.jpg" alt="Acantilados sobre el Atlántico al atardecer">
+        </div>
+        <div class="viaje__texto">
+          <h3>Atlántico portugués</h3>
+          <p>Lisboa, Comporta y la costa alentejana. Coche propio y tres casas, una por tramo.</p>
+          <div class="viaje__meta"><span>9 días</span><span>Portugal</span><span>Coche propio</span></div>
+        </div>
+        <div class="viaje__precio">
+          <div class="viaje__dato"><b>USD 2.150</b><span>por persona</span></div>
+          <a class="viaje__cta" href="#" data-aviso="Aquí se abriría el itinerario del Atlántico portugués.">Ver ruta</a>
+        </div>
+      </article>
+
+      <article class="viaje">
+        <div class="viaje__foto">
+          <img src="img/meridiano-japon.jpg" alt="Una calle de casas de madera con una pagoda al fondo">
+        </div>
+        <div class="viaje__texto">
+          <h3>Kioto y el sur de Japón</h3>
+          <p>Kioto, Nara y la isla de Kyushu en tren. Dieciséis días sin un solo madrugón obligado.</p>
+          <div class="viaje__meta"><span>16 días</span><span>Japón</span><span>Tren</span></div>
+        </div>
+        <div class="viaje__precio">
+          <div class="viaje__dato"><b>USD 5.900</b><span>por persona</span></div>
+          <a class="viaje__cta" href="#" data-aviso="Aquí se abriría el itinerario de Kioto y el sur de Japón.">Ver ruta</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ── Cómo se arma ──────────────────────────────────────── -->
+<section class="como" id="como">
+  <div class="centro">
+    <div class="cab">
+      <p class="rotulo">Cómo trabajamos</p>
+      <h2>Un viaje se arma en cuatro pasos. El primero es una conversación.</h2>
+      <p class="bajada">No hay formulario que reemplace media hora hablando de qué quieres y qué no. Después de eso, todo lo demás es trabajo nuestro.</p>
+    </div>
+
+    <div class="pasos">
+      <div class="paso">
+        <h3>La conversación</h3>
+        <p>Media hora, por videollamada o en la oficina. Hablamos de ritmo, de presupuesto y de lo que no quieres ni ver.</p>
+        <b>Sin compromiso · 30 minutos</b>
+      </div>
+      <div class="paso">
+        <h3>El borrador</h3>
+        <p>En tres días te llega un itinerario completo, día por día, con precios cerrados y alternativas donde las hay.</p>
+        <b>72 horas después</b>
+      </div>
+      <div class="paso">
+        <h3>Los ajustes</h3>
+        <p>Se cambia lo que haga falta, las veces que haga falta. La mayoría de los viajes se cierran en la segunda versión.</p>
+        <b>Las vueltas que hagan falta</b>
+      </div>
+      <div class="paso">
+        <h3>El cuaderno</h3>
+        <p>Una semana antes de salir te llega el cuaderno de viaje: reservas, mapas, horarios y a quién llamar si algo se tuerce.</p>
+        <b>Impreso y en el teléfono</b>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Un itinerario abierto ─────────────────────────────── -->
+<section class="itinerario" id="itinerario">
+  <div class="centro">
+    <!-- ⚠️ CABECERA A DOS COLUMNAS Y DEBAJO LA FICHA + LOS DIAS. Antes la foto,
+         el titulo y la ficha iban juntos en una columna pegada de 900px que
+         apenas se movia. Ahora la columna fija es solo la ficha. En el
+         telefono el orden es texto → foto → ficha → dias. -->
+    <!-- ⚠️ EN ESCRITORIO ES UN DOCUMENTO: la seccion dice "asi se ve un viaje
+         nuestro antes de salir", y se ve como el documento. Foto en banda
+         ancha con los cinco datos encima, y los doce dias como tabla —dia,
+         ciudad, noche, que se hace—. En el telefono el mismo markup se apila:
+         texto → foto → ficha → dias en lista. -->
+    <div class="cab">
+      <p class="rotulo">Un itinerario abierto</p>
+      <h2>Lagos del Norte, día por día.</h2>
+      <p class="bajada">Así se ve un viaje nuestro antes de salir. Este es el que más veces hemos armado, y cada vez fue distinto: esta es la versión de una pareja que viajó en mayo.</p>
+    </div>
+
+    <div class="itinerario__banda">
+      <div class="itinerario__foto">
+        <img src="img/meridiano-lago-caminante.jpg" alt="Un viajero de espaldas mirando un lago entre pinos">
+      </div>
+      <div class="ficha">
+        <div><span>Duración</span><b>12 días · 11 noches</b></div>
+        <div><span>Alojamientos</span><b>4, todos con desayuno</b></div>
+        <div><span>Traslados</span><b>Coche con conductor</b></div>
+        <div><span>Ritmo</span><b>Tranquilo</b></div>
+        <div><span>Precio por persona</span><b>USD 3.480</b></div>
+      </div>
+    </div>
+
+    <div class="dias">
+      <div class="dias__cab" aria-hidden="true"><span>Día</span><span>Ciudad</span><span>Noche en</span><span>Qué se hace</span></div>
+      <div class="dia"><span class="dia__n">D1</span><div class="dia__que"><div class="dia__cab"><h4>Llegada a Milán</h4><span class="dia__duerme"><i>Noche en </i>Milán</span></div><p>Recogida en el aeropuerto. Tarde libre y cena reservada en Brera.</p></div></div>
+      <div class="dia"><span class="dia__n">D2</span><div class="dia__que"><div class="dia__cab"><h4>Milán</h4><span class="dia__duerme"><i>Noche en </i>Milán</span></div><p>La Última Cena a las 9, con entrada reservada desde hace tres meses. Resto del día sin plan.</p></div></div>
+      <div class="dia"><span class="dia__n">D3</span><div class="dia__que"><div class="dia__cab"><h4>Milán → Como</h4><span class="dia__duerme"><i>Noche en </i>Como</span></div><p>Una hora de coche. Llegada a media mañana y el funicular a Brunate antes de comer.</p></div></div>
+      <div class="dia"><span class="dia__n">D4</span><div class="dia__que"><div class="dia__cab"><h4>Como → Bellagio, en barco</h4><span class="dia__duerme"><i>Noche en </i>Bellagio</span></div><p>El coche va por tierra con el equipaje; ustedes van por agua. Dos horas de lago.</p></div></div>
+      <div class="dia"><span class="dia__n">D5</span><div class="dia__que"><div class="dia__cab"><h4>Bellagio</h4><span class="dia__duerme"><i>Noche en </i>Bellagio</span></div><p>Día libre. Sugerimos Villa Melzi por la mañana y nada por la tarde.</p></div></div>
+      <div class="dia"><span class="dia__n">D6</span><div class="dia__que"><div class="dia__cab"><h4>Bellagio</h4><span class="dia__duerme"><i>Noche en </i>Bellagio</span></div><p>Varenna y Villa Monastero en barco. Cena en Bellagio en un sitio que no está en ninguna guía.</p></div></div>
+      <div class="dia"><span class="dia__n">D7</span><div class="dia__que"><div class="dia__cab"><h4>Bellagio → Lago de Garda</h4><span class="dia__duerme"><i>Noche en </i>Sirmione</span></div><p>Tres horas de coche con parada en Bérgamo alta para comer.</p></div></div>
+      <div class="dia"><span class="dia__n">D8</span><div class="dia__que"><div class="dia__cab"><h4>Sirmione</h4><span class="dia__duerme"><i>Noche en </i>Sirmione</span></div><p>Las grutas de Catulo temprano, antes del calor. Tarde en el lago.</p></div></div>
+      <div class="dia"><span class="dia__n">D9</span><div class="dia__que"><div class="dia__cab"><h4>Sirmione → Verona</h4><span class="dia__duerme"><i>Noche en </i>Verona</span></div><p>Cuarenta minutos de coche. Verona entera se hace a pie, y así está pensado el día.</p></div></div>
+      <div class="dia"><span class="dia__n">D10</span><div class="dia__que"><div class="dia__cab"><h4>Verona</h4><span class="dia__duerme"><i>Noche en </i>Verona</span></div><p>Ópera en la Arena si hay temporada; si no, cena larga y paseo. Las entradas ya están.</p></div></div>
+      <div class="dia"><span class="dia__n">D11</span><div class="dia__que"><div class="dia__cab"><h4>Verona</h4><span class="dia__duerme"><i>Noche en </i>Verona</span></div><p>Día libre. Valpolicella con conductor si apetece, sin conductor si no.</p></div></div>
+      <div class="dia"><span class="dia__n">D12</span><div class="dia__que"><div class="dia__cab"><h4>Verona → aeropuerto de Milán</h4><span class="dia__duerme">Vuelta</span></div><p>Dos horas de coche. Salida de la casa a la hora que haga falta, y ni un minuto antes.</p></div></div>
+    </div>
+
+    <div class="itinerario__pie">
+      <p>Este es el punto de partida. A partir de aquí, rediseñamos el itinerario a tu gusto: cambia lo que quieras, las veces que haga falta.</p>
+      <a class="boton" href="#" data-aviso="Aquí se pediría este itinerario como punto de partida para tu viaje.">Pedir este itinerario como base</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Incluye y no ──────────────────────────────────────── -->
+<section class="incluye">
+  <div class="centro">
+    <div class="cab">
+      <p class="rotulo">Sin letra chica</p>
+      <h2>Lo que incluye el precio, y lo que no.</h2>
+      <p class="bajada">Lo escribimos así de claro porque es lo primero que todo el mundo pregunta y lo último que la mayoría de las agencias contesta.</p>
+    </div>
+
+    <div class="incluye__cols">
+      <ul class="lista">
+        <h3>Incluye</h3>
+        <li>Todos los alojamientos, con desayuno</li>
+        <li>Todos los traslados del itinerario</li>
+        <li>Las entradas que hay que reservar con meses</li>
+        <li>El cuaderno de viaje impreso y digital</li>
+        <li>Alguien que contesta a cualquier hora durante el viaje</li>
+        <li>Seguro de cancelación hasta 48 h antes</li>
+      </ul>
+      <ul class="lista lista--no">
+        <h3>No incluye</h3>
+        <li>Los vuelos internacionales, salvo que lo pidas</li>
+        <li>Comidas y cenas, aunque las reservamos</li>
+        <li>Propinas</li>
+        <li>Lo que decidas hacer en los días libres</li>
+        <li>Seguro médico de viaje, que recomendamos y gestionamos aparte</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── Quién viaja ───────────────────────────────────────── -->
+<section class="voces">
+  <div class="centro">
+    <div class="voces__cab">
+      <div class="cab" style="margin-bottom:0">
+        <p class="rotulo">Quién viaja con nosotros</p>
+        <h2>Gente que no quería un paquete.</h2>
+      </div>
+      <div class="voces__ctrl">
+        <button class="voces__btn" type="button" id="voces-ant" aria-label="Anterior"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3L5 8l5 5"/></svg></button>
+        <button class="voces__btn" type="button" id="voces-sig" aria-label="Siguiente"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3l5 5-5 5"/></svg></button>
+      </div>
+    </div>
+    <div class="voces__nota" style="margin-top:18px">
+      <b>4,9</b>
+      <div><span class="estrellas" aria-label="5 de 5"><i></i><i></i><i></i><i></i><i></i></span><small>Sobre 128 reseñas en Google</small></div>
+    </div>
+
+    <div class="voces__pista" id="voces-pista">
+      <article class="voz">
+        <div class="voz__cab">
+          <span class="voz__avatar" style="background:#2540D8">L</span>
+          <div class="voz__quien"><b>Lucía Fernández</b><span>hace 2 semanas</span></div>
+          <svg class="voz__g" viewBox="0 0 48 48" aria-label="Reseña en Google"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.5 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.3l7.8 6C12.3 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 2.9-2.2 5.4-4.7 7.1l7.6 5.9c4.4-4.1 6.9-10.1 6.9-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.7-4.1-13.6-9.9l-7.8 6C6.5 42.6 14.6 48 24 48z"/></svg>
+        </div>
+        <span class="estrellas" aria-label="5 de 5"><i></i><i></i><i></i><i></i><i></i></span>
+        <p>Pedimos un viaje sin madrugones y sin museos. Nos armaron doce días sin uno solo de los dos, y aun así vimos más de lo que esperábamos.</p>
+        <footer>Lagos del Norte · mayo</footer>
+      </article>
+      <article class="voz">
+        <div class="voz__cab">
+          <span class="voz__avatar" style="background:#0F9D58">J</span>
+          <div class="voz__quien"><b>Javier Ortega</b><span>hace 1 mes</span></div>
+          <svg class="voz__g" viewBox="0 0 48 48" aria-label="Reseña en Google"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.5 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.3l7.8 6C12.3 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 2.9-2.2 5.4-4.7 7.1l7.6 5.9c4.4-4.1 6.9-10.1 6.9-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.7-4.1-13.6-9.9l-7.8 6C6.5 42.6 14.6 48 24 48z"/></svg>
+        </div>
+        <span class="estrellas" aria-label="5 de 5"><i></i><i></i><i></i><i></i><i></i></span>
+        <p>Cambiamos el itinerario cuatro veces. La cuarta era la buena, y nadie nos hizo sentir que estábamos molestando. Con dos niños, eso vale oro.</p>
+        <footer>Atlántico portugués · julio</footer>
+      </article>
+      <article class="voz">
+        <div class="voz__cab">
+          <span class="voz__avatar" style="background:#C2185B">M</span>
+          <div class="voz__quien"><b>Marta Salinas</b><span>hace 1 mes</span></div>
+          <svg class="voz__g" viewBox="0 0 48 48" aria-label="Reseña en Google"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.5 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.3l7.8 6C12.3 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 2.9-2.2 5.4-4.7 7.1l7.6 5.9c4.4-4.1 6.9-10.1 6.9-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.7-4.1-13.6-9.9l-7.8 6C6.5 42.6 14.6 48 24 48z"/></svg>
+        </div>
+        <span class="estrellas" aria-label="5 de 5"><i></i><i></i><i></i><i></i><i></i></span>
+        <p>Viajé sola por primera vez. El cuaderno de viaje lo tenía todo, hasta el número de andén del tren de Nagasaki.</p>
+        <footer>Kioto y el sur · octubre</footer>
+      </article>
+      <article class="voz">
+        <div class="voz__cab">
+          <span class="voz__avatar" style="background:#E8710A">A</span>
+          <div class="voz__quien"><b>Andrés Cabrera</b><span>hace 2 meses</span></div>
+          <svg class="voz__g" viewBox="0 0 48 48" aria-label="Reseña en Google"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.5 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.3l7.8 6C12.3 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 2.9-2.2 5.4-4.7 7.1l7.6 5.9c4.4-4.1 6.9-10.1 6.9-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.7-4.1-13.6-9.9l-7.8 6C6.5 42.6 14.6 48 24 48z"/></svg>
+        </div>
+        <span class="estrellas" aria-label="5 de 5"><i></i><i></i><i></i><i></i><i></i></span>
+        <p>Lo que más agradecí fue la respuesta a las once de la noche cuando perdimos un tren. En diez minutos teníamos otro y el hotel avisado.</p>
+        <footer>Toscana y Umbría · septiembre</footer>
+      </article>
+      <article class="voz">
+        <div class="voz__cab">
+          <span class="voz__avatar" style="background:#6A1B9A">C</span>
+          <div class="voz__quien"><b>Carmen Ruiz</b><span>hace 3 meses</span></div>
+          <svg class="voz__g" viewBox="0 0 48 48" aria-label="Reseña en Google"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.5 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.3l7.8 6C12.3 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 2.9-2.2 5.4-4.7 7.1l7.6 5.9c4.4-4.1 6.9-10.1 6.9-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.7-4.1-13.6-9.9l-7.8 6C6.5 42.6 14.6 48 24 48z"/></svg>
+        </div>
+        <span class="estrellas" aria-label="5 de 5"><i></i><i></i><i></i><i></i><i></i></span>
+        <p>Fuimos con mis padres, de setenta y tantos. Cada día tenía una versión con menos caminata por si hacía falta. La usamos dos veces.</p>
+        <footer>Andalucía interior · abril</footer>
+      </article>
+      <article class="voz">
+        <div class="voz__cab">
+          <span class="voz__avatar" style="background:#00796B">P</span>
+          <div class="voz__quien"><b>Pablo Serrano</b><span>hace 4 meses</span></div>
+          <svg class="voz__g" viewBox="0 0 48 48" aria-label="Reseña en Google"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.5 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.3l7.8 6C12.3 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 2.9-2.2 5.4-4.7 7.1l7.6 5.9c4.4-4.1 6.9-10.1 6.9-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.7-4.1-13.6-9.9l-7.8 6C6.5 42.6 14.6 48 24 48z"/></svg>
+        </div>
+        <span class="estrellas" aria-label="5 de 5"><i></i><i></i><i></i><i></i><i></i></span>
+        <p>La primera videollamada fue media hora hablando de comida. Después entendí por qué: no hubo una sola cena mal elegida en nueve días.</p>
+        <footer>Islas griegas · junio</footer>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ── Preguntas ─────────────────────────────────────────── -->
+<section class="preguntas" id="preguntas">
+  <div class="centro">
+    <div class="cab">
+      <p class="rotulo">Preguntas</p>
+      <h2>Lo que nos preguntan antes de empezar.</h2>
+    </div>
+    <div class="preguntas__lista" id="faq">
+      <div class="faq faq--abierta">
+        <button class="faq__btn" type="button" aria-expanded="true" aria-controls="faq-0"><span>¿Cuánto cuesta armar el itinerario?</span><span class="faq__ico" aria-hidden="true"></span></button>
+        <div class="faq__panel" id="faq-0"><div><p>Nada, hasta que decides viajar. La conversación y el borrador son gratis. Si el viaje sale, el trabajo está incluido en el precio; si no sale, no se cobra.</p></div></div>
+      </div>
+      <div class="faq">
+        <button class="faq__btn" type="button" aria-expanded="false" aria-controls="faq-1"><span>¿Con cuánta antelación hay que empezar?</span><span class="faq__ico" aria-hidden="true"></span></button>
+        <div class="faq__panel" id="faq-1"><div><p>Tres meses es lo cómodo. Con menos también se puede, pero algunas entradas —la Última Cena, la Arena de Verona— se agotan antes y habría que buscar alternativas.</p></div></div>
+      </div>
+      <div class="faq">
+        <button class="faq__btn" type="button" aria-expanded="false" aria-controls="faq-2"><span>¿Puedo cambiar cosas durante el viaje?</span><span class="faq__ico" aria-hidden="true"></span></button>
+        <div class="faq__panel" id="faq-2"><div><p>Sí. Hay alguien de guardia todos los días del viaje. Lo que se pueda cambiar sin coste se cambia; lo que tenga coste se consulta antes.</p></div></div>
+      </div>
+      <div class="faq">
+        <button class="faq__btn" type="button" aria-expanded="false" aria-controls="faq-3"><span>¿Trabajan con cualquier presupuesto?</span><span class="faq__ico" aria-hidden="true"></span></button>
+        <div class="faq__panel" id="faq-3"><div><p>Con casi cualquiera. Lo que no hacemos es viajes de menos de siete días ni viajes de grupo abierto. Todo lo demás se conversa.</p></div></div>
+      </div>
+      <div class="faq">
+        <button class="faq__btn" type="button" aria-expanded="false" aria-controls="faq-4"><span>¿Y si el viaje se cancela?</span><span class="faq__ico" aria-hidden="true"></span></button>
+        <div class="faq__panel" id="faq-4"><div><p>Hasta 48 horas antes se devuelve todo salvo las entradas nominativas ya emitidas. Con menos de 48 horas depende de cada proveedor, y lo peleamos uno por uno.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Cierre ────────────────────────────────────────────── -->
+<section class="cierre">
+  <div class="centro">
+    <p class="rotulo">Empezar cuesta media hora</p>
+    <h2>Cuéntanos el viaje que tienes en la cabeza.</h2>
+    <p class="bajada">Aunque esté a medias. Sobre todo si está a medias: de eso se trata la conversación.</p>
+    <div class="cierre__acciones">
+      <a class="boton boton--blanco" href="#hero">Armar mi viaje</a>
+      <a class="boton boton--linea" style="color:#FFF;border-color:rgba(255,255,255,.5)" href="#destinos">Ver rutas</a>
+    </div>
+  </div>
+</section>
+
+<footer class="pie">
+  <div class="centro pie__caja">
+    <div class="pie__marca">
+      <img src="img/logo-meridiano.png" alt="Meridiano">
+      <p>Viajes a medida desde 2009. Sin paquetes, sin grupos, sin un solo día que no hayas elegido.</p>
+    </div>
+    <div class="pie__cols">
+      <div class="pie__col">
+        <h4>Viajar</h4>
+        <ul>
+          <li><a href="#destinos">Rutas seleccionadas</a></li>
+          <li><a href="#como">Cómo trabajamos</a></li>
+          <li><a href="#itinerario">Un itinerario abierto</a></li>
+          <li><a href="#">Viajes en grupo cerrado</a></li>
+        </ul>
+      </div>
+      <div class="pie__col">
+        <h4>Antes de salir</h4>
+        <ul>
+          <li><a href="#preguntas">Preguntas</a></li>
+          <li><a href="#">Condiciones y cancelaciones</a></li>
+          <li><a href="#">Seguros</a></li>
+          <li><a href="#">El cuaderno de viaje</a></li>
+        </ul>
+      </div>
+      <div class="pie__col">
+        <h4>Meridiano</h4>
+        <ul>
+          <li><a href="#">Quiénes somos</a></li>
+          <li><a href="#">Trabajar con nosotros</a></li>
+          <li><a href="#">Prensa</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="centro pie__fin">
+    <span>© Meridiano · Viajes a medida</span>
+    <span class="pie__legales"><span>Aviso legal</span><span>Privacidad</span><span>Cookies</span></span>
+    <a class="hecho" href="https://labbrickell.com.ar" target="_blank" rel="noopener">Hecho por <img src="img/brickell-lab-viajes.png" alt="brickell lab"></a>
+  </div>
+</footer>
+
+</div></div><!-- /smooth -->
+
+<div class="aviso" id="aviso" role="status" aria-live="polite"><i></i><span id="aviso-texto"></span></div>
+<div class="telon" id="telon"></div>
+<div class="hoja" id="hoja" role="dialog" aria-modal="true">
+  <div class="hoja__asa"></div>
+  <div class="hoja__cab"><b id="hoja-titulo"></b><button class="hoja__cerrar" type="button" id="hoja-cerrar" aria-label="Cerrar">×</button></div>
+  <input class="hoja__buscar" id="hoja-buscar" type="text" placeholder="Buscar destino" spellcheck="false" autocomplete="off">
+  <div class="hoja__lista" id="hoja-lista"></div>
+</div>
+
+<!-- ⚠️ SCROLLSMOOTHER (GSAP), SOLO EN ESCRITORIO. Fija la pagina y mueve el
+     contenido con transform persiguiendo la posicion real de scroll: por eso
+     la rueda, la barra Y el teclado quedan con inercia (Lenis solo suavizaba
+     la rueda). Pide dos divs —#smooth-wrapper > #smooth-content— y que todo lo
+     `position:fixed` (modal, telon, aviso) quede FUERA del wrapper, porque
+     adentro el transform lo atraparia. En tactil no se activa (smoothTouch
+     apagado) y con prefers-reduced-motion tampoco. GSAP es gratis desde 3.13. -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+<script>
+// ── El scroll suave (ScrollSmoother), solo escritorio ───────
+(function () {
+  const escritorio = window.matchMedia('(min-width: 820px) and (pointer: fine)').matches
+  const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (!escritorio || quieto || typeof gsap === 'undefined' || typeof ScrollSmoother === 'undefined') return
+  gsap.registerPlugin(ScrollTrigger, ScrollSmoother)
+  const smoother = ScrollSmoother.create({
+    wrapper: '#smooth-wrapper', content: '#smooth-content',
+    smooth: 1.2,          // segundos que tarda en alcanzar la barra: el preset de makeit-pro
+    effects: false,
+    smoothTouch: false,
+    normalizeScroll: true,
+  })
+  window.smoother = smoother
+  document.documentElement.classList.add('smooth')
+  // Los anclas: el smoother lleva hasta el destino con la misma inercia.
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]')
+    if (!a || a.getAttribute('href') === '#') return
+    const destino = document.querySelector(a.getAttribute('href'))
+    if (!destino) return
+    e.preventDefault()
+    smoother.scrollTo(destino, true)
+  })
+  // El modal congela la pagina de atras.
+  const cuerpo = document.body
+  new MutationObserver(() => { smoother.paused(cuerpo.classList.contains('con-hoja')) }).observe(cuerpo, { attributes: true, attributeFilter: ['class'] })
+})();
+
+// ── El aviso: esto es una demostracion ─────────────────────
+(function () {
+  const aviso = document.getElementById('aviso'), texto = document.getElementById('aviso-texto')
+  let reloj = null
+  window.avisar = (que) => {
+    texto.innerHTML = '<b>Es una demostración.</b> ' + que
+    aviso.classList.add('aviso--visible')
+    clearTimeout(reloj); reloj = setTimeout(() => aviso.classList.remove('aviso--visible'), 3800)
+  }
+  // Los enlaces muertos (href="#") avisan en vez de saltar arriba de la pagina.
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href="#"]')
+    if (!a) return
+    e.preventDefault()
+    window.avisar(a.dataset.aviso || ('Aquí se abriría <b>' + a.textContent.trim() + '</b>.'))
+  })
+})();
+
+// ── Las preguntas: abrir una cierra la anterior ────────────
+(function () {
+  const faqs = [...document.querySelectorAll('#faq .faq')]
+  faqs.forEach((f) => f.querySelector('.faq__btn').addEventListener('click', () => {
+    const abrir = !f.classList.contains('faq--abierta')
+    faqs.forEach((o) => { o.classList.remove('faq--abierta'); o.querySelector('.faq__btn').setAttribute('aria-expanded', 'false') })
+    if (abrir) { f.classList.add('faq--abierta'); f.querySelector('.faq__btn').setAttribute('aria-expanded', 'true') }
+  }))
+})();
+
+// ── Las reseñas: las flechas mueven una tarjeta ────────────
+(function () {
+  const pista = document.getElementById('voces-pista')
+  if (!pista) return
+  const paso = () => pista.firstElementChild.getBoundingClientRect().width + parseFloat(getComputedStyle(pista).columnGap || 14)
+  document.getElementById('voces-ant').addEventListener('click', () => pista.scrollBy({ left: -paso(), behavior: 'smooth' }))
+  document.getElementById('voces-sig').addEventListener('click', () => pista.scrollBy({ left: paso(), behavior: 'smooth' }))
+})();
+
+// ── El hero: tres videos, uno detras del otro ──────────────
+(function () {
+  const pista = document.getElementById('pista')
+  const cuadros = [...pista.children]
+  const tel = window.matchMedia('(max-width: 819px)').matches
+  const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  // Video y fotos eligen version por ancho: 1920x1080 / 2560 en escritorio,
+  // 1080x1350 en el telefono. Sin `src` en el HTML para no bajar dos veces.
+  cuadros.forEach((c) => { c.src = 'video/' + (c.dataset.video || c.dataset.foto) + (tel ? '-tel' : '') + (c.tagName === 'VIDEO' ? '.mp4' : '.jpg') })
+
+  let i = 0, reloj = null
+  const mover = (animar) => {
+    pista.classList.toggle('pista--sin-animar', !animar)
+    pista.style.transform = 'translateX(' + (-i * 100 / 3) + '%)'
+    if (!animar) void pista.offsetWidth
+  }
+  const arrancar = () => {
+    clearTimeout(reloj)
+    const c = cuadros[i]
+    if (c.tagName === 'VIDEO') {
+      // Solo se rebobina si ya corrio: poner currentTime=0 sobre un video que
+      // todavia esta bajando aborta la peticion en vuelo y la pide de nuevo.
+      if (c.currentTime > 0) c.currentTime = 0
+      const p = c.play()
+      if (p && p.catch) p.catch(() => {})
+    } else {
+      // Una foto se sostiene lo que diga y pasa. Las dos van con
+      // `loading=eager`: con lazy, la de Tokio llegaba a la pista sin bajar.
+      reloj = setTimeout(siguiente, Number(c.dataset.dura || 6) * 1000)
+    }
+  }
+  const siguiente = () => {
+    const ultimo = i === cuadros.length - 1
+    i = (i + 1) % cuadros.length
+    // ⚠️ DEL ULTIMO AL PRIMERO NO SE ANIMA: la pista volveria deslizandose
+    // por los tres a la vez y se veria el rebobinado. Corte seco y a seguir.
+    mover(!ultimo)
+    arrancar()
+  }
+  cuadros.filter((c) => c.tagName === 'VIDEO').forEach((v) => v.addEventListener('ended', siguiente))
+  if (!quieto) arrancar()
+  // Si la pestana se oculta, el navegador pausa el video; al volver, sigue.
+  document.addEventListener('visibilitychange', () => {
+    const c = cuadros[i]
+    if (!document.hidden && !quieto && c.tagName === 'VIDEO') { const p = c.play(); if (p && p.catch) p.catch(() => {}) }
+  })
+})();
+// ⚠️ EL `;` DE ARRIBA NO ES ESTILO. Sin el, `})()` seguido de `(function` se lee
+// como UNA llamada —el resultado de la primera IIFE invocado con la segunda
+// como argumento—, tira TypeError y el buscador nunca arranca.
+
+// ⚠️ EL BUSCADOR SOLO OFRECE LO QUE LA AGENCIA VENDE. Los destinos son una
+// lista cerrada con la cantidad de itinerarios de cada uno; el boton suma los
+// del destino elegido (o todos). Escribir filtra, pero al salir del campo el
+// valor tiene que ser uno de la lista o vuelve al anterior.
+(function () {
+  const DESTINOS = [
+    { zona: 'Europa', n: 'Norte de Italia', k: 6 }, { zona: 'Europa', n: 'Toscana y Umbría', k: 4 },
+    { zona: 'Europa', n: 'Costa amalfitana', k: 3 }, { zona: 'Europa', n: 'Portugal atlántico', k: 4 },
+    { zona: 'Europa', n: 'Andalucía interior', k: 3 }, { zona: 'Europa', n: 'Provenza', k: 2 },
+    { zona: 'Europa', n: 'Islas griegas', k: 3 }, { zona: 'Europa', n: 'Escocia', k: 2 },
+    { zona: 'Europa', n: 'Fiordos noruegos', k: 2 },
+    { zona: 'Asia', n: 'Kioto y el sur de Japón', k: 2 }, { zona: 'Asia', n: 'Vietnam de norte a sur', k: 1 },
+    { zona: 'África', n: 'Marruecos', k: 1 }, { zona: 'Oceanía', n: 'Nueva Zelanda', k: 1 },
+  ]
+  // ⚠️ LOS MESES SE CALCULAN, NO SE ESCRIBEN: lo que queda del año en curso
+  // (desde el mes que viene) y el año entero siguiente. La maqueta no envejece.
+  const MES_N = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+  const MES_L = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+  const HOY = new Date()
+  const ANIOS = [
+    { a: HOY.getFullYear(),     desde: HOY.getMonth() + 1 },
+    { a: HOY.getFullYear() + 1, desde: 0 },
+  ]
+  const DIAS = [['7 a 9 días', 'lo justo para una región'], ['10 a 14 días', 'el formato más pedido'], ['15 a 21 días', 'dos regiones con calma'], ['Más de 21', 'a conversar']]
+  // Quienes viajan: cuenta, no lista. Un adulto como minimo; el resto puede ser cero.
+  const GENTE = [
+    { k: 'adultos', n: 'Adultos', sub: 'desde 12 años', min: 1, max: 8 },
+    { k: 'ninos',   n: 'Niños',   sub: 'de 2 a 11',     min: 0, max: 6 },
+    { k: 'bebes',   n: 'Bebés',   sub: 'menores de 2',  min: 0, max: 3 },
+  ]
+
+  const estado = { destino: 'Norte de Italia', mes: MES_L[4] + ' ' + (HOY.getFullYear() + 1), dias: '10 a 14 días', gente: { adultos: 2, ninos: 0, bebes: 0 } }
+  // ⚠️ LIMPIO NO ES VACIO: es "cualquier destino, cuando sea, el formato mas
+  // pedido, dos adultos". Un buscador en cero no le sirve a nadie.
+  const LIMPIO = () => ({ destino: '', mes: 'Todavía no sé', dias: '10 a 14 días', gente: { adultos: 2, ninos: 0, bebes: 0 } })
+  const estaLimpio = () => JSON.stringify(estado) === JSON.stringify(LIMPIO())
+  const plural = (n, uno, varios) => n + ' ' + (n === 1 ? uno : varios)
+  const resumenGente = () => {
+    const g = estado.gente, partes = [plural(g.adultos, 'adulto', 'adultos')]
+    if (g.ninos) partes.push(plural(g.ninos, 'niño', 'niños'))
+    if (g.bebes) partes.push(plural(g.bebes, 'bebé', 'bebés'))
+    return partes.join(' · ')
+  }
+  const campos = [...document.querySelectorAll('.campo')]
+  const boton = document.getElementById('f-ir')
+  const entrada = document.getElementById('f-destino')
+
+  const total = () => {
+    const d = DESTINOS.find((x) => x.n === estado.destino)
+    return d ? d.k : DESTINOS.reduce((a, x) => a + x.k, 0)
+  }
+  const pintarBoton = () => { const t = total(); boton.textContent = 'Ver ' + t + (t === 1 ? ' itinerario' : ' itinerarios') }
+
+  const opcion = (texto, sub, elegida) => {
+    const o = document.createElement('div'); o.className = 'opcion' + (elegida ? ' opcion--elegida' : ''); o.setAttribute('role', 'option')
+    o.innerHTML = '<span>' + texto + (sub ? ' <small>' + sub + '</small>' : '') + '</span>'
+    return o
+  }
+
+  const hoja = document.getElementById('hoja'), telon = document.getElementById('telon')
+  const hojaLista = document.getElementById('hoja-lista'), hojaBuscar = document.getElementById('hoja-buscar')
+  const TITULOS = { destino: '¿A dónde?', mes: '¿Cuándo?', dias: '¿Cuántos días?', gente: '¿Quiénes viajan?' }
+  let campoEnHoja = null
+
+  // ⚠️ El mismo render pinta en el desplegable (escritorio) o en la hoja
+  // (teléfono): cambia el contenedor, no la lógica.
+  const pintarPanel = (campo, filtro) => {
+    const clave = campo.dataset.campo
+    const panel = hojaLista
+    panel.innerHTML = ''
+    if (clave === 'destino') {
+      const f = (filtro || '').trim().toLowerCase()
+      const lista = DESTINOS.filter((d) => !f || d.n.toLowerCase().includes(f))
+      if (!lista.length) { panel.innerHTML = '<p class="panel__nada">No armamos viajes ahí todavía.</p>'; return }
+      if (!f) {
+        const todo = opcion('Cualquier destino', DESTINOS.reduce((a, x) => a + x.k, 0) + ' itinerarios', estado.destino === '')
+        todo.addEventListener('mousedown', (e) => { e.preventDefault(); elegir(campo, '') })
+        panel.appendChild(todo)
+      }
+      let zona = ''
+      for (const d of lista) {
+        if (d.zona !== zona) { zona = d.zona; const g = document.createElement('div'); g.className = 'panel__grupo'; g.textContent = zona; panel.appendChild(g) }
+        const o = opcion(d.n, d.k + (d.k === 1 ? ' itinerario' : ' itinerarios'), d.n === estado.destino)
+        o.addEventListener('mousedown', (e) => { e.preventDefault(); elegir(campo, d.n) })
+        panel.appendChild(o)
+      }
+      return
+    }
+    if (clave === 'gente') {
+      const caja = document.createElement('div'); caja.className = 'cuenta'
+      for (const f of GENTE) {
+        const fila = document.createElement('div'); fila.className = 'cuenta__fila'
+        fila.innerHTML = '<div class="cuenta__que"><b>' + f.n + '</b><small>' + f.sub + '</small></div>'
+          + '<div class="cuenta__ctrl"><button type="button" class="cuenta__btn" data-d="-1" aria-label="Menos ' + f.n.toLowerCase() + '">−</button>'
+          + '<span class="cuenta__n">' + estado.gente[f.k] + '</span>'
+          + '<button type="button" class="cuenta__btn" data-d="1" aria-label="Más ' + f.n.toLowerCase() + '">+</button></div>'
+        const [menos, mas] = fila.querySelectorAll('button'), num = fila.querySelector('.cuenta__n')
+        const pintar = () => { num.textContent = estado.gente[f.k]; menos.disabled = estado.gente[f.k] <= f.min; mas.disabled = estado.gente[f.k] >= f.max }
+        // ⚠️ mousedown + preventDefault: el clic no llega al documento y el
+        // panel no se cierra; en escritorio tampoco se pierde el foco.
+        for (const b of [menos, mas]) b.addEventListener('mousedown', (e) => {
+          e.preventDefault(); e.stopPropagation()
+          const d = Number(b.dataset.d), v = Math.min(f.max, Math.max(f.min, estado.gente[f.k] + d))
+          if (v === estado.gente[f.k]) return
+          estado.gente[f.k] = v; pintar(); pintarTodo()
+        })
+        pintar(); caja.appendChild(fila)
+      }
+      const listo = document.createElement('div'); listo.className = 'cuenta__listo'
+      listo.innerHTML = '<button type="button" class="boton">Listo</button>'
+      listo.querySelector('button').addEventListener('mousedown', (e) => { e.preventDefault(); cerrar() })
+      caja.appendChild(listo); panel.appendChild(caja)
+      return
+    }
+    if (clave === 'mes') {
+      for (const { a, desde } of ANIOS) {
+        if (desde > 11) continue
+        const g = document.createElement('div'); g.className = 'panel__grupo'; g.textContent = a; panel.appendChild(g)
+        const grilla = document.createElement('div'); grilla.className = 'meses'
+        for (let m = desde; m < 12; m++) {
+          const t = MES_L[m] + ' ' + a
+          const o = document.createElement('button'); o.type = 'button'
+          o.className = 'mes' + (t === estado.mes ? ' mes--elegido' : ''); o.textContent = MES_N[m].toUpperCase()
+          o.setAttribute('aria-label', t)
+          o.addEventListener('mousedown', (e) => { e.preventDefault(); elegir(campo, t) })
+          grilla.appendChild(o)
+        }
+        panel.appendChild(grilla)
+      }
+      const o = opcion('Todavía no sé', 'lo vemos en la conversación', estado.mes === 'Todavía no sé')
+      o.style.marginTop = '6px'
+      o.addEventListener('mousedown', (e) => { e.preventDefault(); elegir(campo, 'Todavía no sé') })
+      panel.appendChild(o)
+      return
+    }
+    for (const [t, sub] of DIAS) {
+      const o = opcion(t, sub, t === estado[clave])
+      o.addEventListener('mousedown', (e) => { e.preventDefault(); elegir(campo, t) })
+      panel.appendChild(o)
+    }
+  }
+
+  const pintarValor = (campo) => {
+    const clave = campo.dataset.campo
+    if (clave === 'destino') entrada.value = estado.destino
+    else campo.querySelector('.campo__valor span').textContent = clave === 'gente' ? resumenGente() : estado[clave]
+  }
+
+  const cerrar = () => {
+    campos.forEach((c) => c.classList.remove('campo--abierto'))
+    document.body.classList.remove('con-hoja'); document.body.style.paddingRight = ''; campoEnHoja = null
+  }
+  const abrir = (campo) => {
+    cerrar()
+    pintarPanel(campo, campo.dataset.campo === 'destino' ? '' : undefined)
+    campo.classList.add('campo--abierto')
+    campoEnHoja = campo
+    document.getElementById('hoja-titulo').textContent = TITULOS[campo.dataset.campo]
+    hojaBuscar.style.display = campo.dataset.campo === 'destino' ? '' : 'none'
+    hojaBuscar.value = ''
+    // ⚠️ EL BODY COMPENSA LA BARRA DE SCROLL. Con overflow:hidden la barra
+    // desaparece y la pagina se corre 17px a la derecha (Windows). Se mide su
+    // ancho ANTES de esconderla y se pone como padding derecho; el telon es
+    // fixed y tapa la franja. `scrollbar-gutter: stable` dejaba un canal
+    // vacio al lado del telon; esto no.
+    const barra = window.innerWidth - document.documentElement.clientWidth
+    document.body.style.paddingRight = barra > 0 ? barra + 'px' : ''
+    document.body.classList.add('con-hoja')
+    // ⚠️ SIN autoFocus: en iOS el teclado subiría antes que la hoja y la
+    // animación se rompe. Quien quiere escribir, toca el buscador.
+  }
+  const pintarTodo = () => { campos.forEach(pintarValor); pintarBoton(); limpiar.disabled = estaLimpio() }
+  const limpiar = document.getElementById('f-limpiar')
+  limpiar.addEventListener('click', () => { Object.assign(estado, LIMPIO()); pintarTodo(); cerrar() })
+  hojaBuscar.addEventListener('input', () => { if (campoEnHoja) pintarPanel(campoEnHoja, hojaBuscar.value) })
+  hojaBuscar.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return
+    e.preventDefault()
+    const f = hojaBuscar.value.trim().toLowerCase()
+    const primero = DESTINOS.find((d) => d.n.toLowerCase().includes(f))
+    if (primero && campoEnHoja) elegir(campoEnHoja, primero.n)
+  })
+  telon.addEventListener('click', cerrar)
+  document.getElementById('hoja-cerrar').addEventListener('click', cerrar)
+  const elegir = (campo, valor) => { estado[campo.dataset.campo] = valor; pintarTodo(); cerrar() }
+
+  campos.forEach((campo) => {
+    pintarValor(campo)
+    campo.addEventListener('click', (e) => {
+      abrir(campo)
+    })
+  })
+
+  document.addEventListener('click', (e) => { if (!e.target.closest('.campo') && !e.target.closest('.hoja')) cerrar() })
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrar() })
+  pintarTodo()
+})()
+</script>
+
+</body>
+</html>

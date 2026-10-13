@@ -22,3 +22,11 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# ⚠️ MATERIAL DE TRABAJO, NO EL SITIO. `docs/` pesa 460 MB: adentro están la web
+# vieja completa (`descartes/sitio-viejo/`), los videos del hero que se
+# descartaron, las capturas a tamaño original y los originales de las fotos del
+# blog. Nada de eso lo necesita el sitio para construirse —lo que el sitio usa
+# vive en `public/`— y subirlo volvería el repositorio imposible de clonar.
+# Si alguna vez hay que versionar algo de ahí, se saca el archivo puntual.
+docs/

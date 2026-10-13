@@ -1,0 +1,93 @@
+---
+// ⚠️ EL BLOG, CON LA ANATOMÍA DE QUÉ HACEMOS. Junta temas para que el sitio se
+// encuentre en Google y novedades de la marca: por eso se llama "Blog" (ni
+// "Lo que pensamos" ni "Novedades", que se quedaban cortos) y vive en /blog/
+// (se cambió desde /articulos/ antes de publicar la v4, cuando no costaba
+// nada). No lleva bajada de sección. Se probó armarla como portada de diario (nota
+// grande + titulares con miniatura cuadrada) y se descartó: se iba del
+// sistema y mezclaba cuatro tamaños de letra.
+//
+// Tiene la anatomía de Qué hacemos: tres columnas con filete gris; en cada
+// una la sección y la fecha (mono), el título, la bajada y la foto abajo.
+// (Antes se probó con la tarjeta de Proyectos y quedaba como un catálogo.)
+// Las tres más nuevas, alineadas con subgrid. Cada
+// nota lleva su sección (`seccion` en data/v4/articulos.ts).
+//
+// La página con todas sigue usando la tarjeta de `styles/v4-tarjeta-articulo.css`.
+import { ARTICULOS } from '../../data/v4/articulos'
+// Fecha corta ("22 sep 2026"), igual de corta que el año de un proyecto.
+const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+const corta = (iso: string) => { const [a, m, d] = iso.split('-'); return `${+d} ${MESES[+m - 1]} ${a}` }
+const ULTIMOS = [...ARTICULOS].sort((a, b) => b.fecha.localeCompare(a.fecha)).slice(0, 3)
+---
+<section class="articulos pantalla pantalla--alta" id="blog">
+  <div class="centro">
+    <div class="cab articulos__cab" data-entra>
+      <div>
+        <p class="meta rotulo">Blog</p>
+        <h2>Lo último del estudio.</h2>
+      </div>
+      <a class="boton articulos__todas articulos__todas--cab" href="/blog/">Ver todo el blog <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+
+    <ul class="notas">
+      {ULTIMOS.map((a) => (
+        <li class="nota" data-entra="tarjeta">
+          <p class="meta nota__tipo">{a.seccion} · <time datetime={a.fecha}>{corta(a.fecha)}</time></p>
+          <h3 class="nota__titulo"><a href={`/blog/${a.slug}/`}>{a.titulo}</a></h3>
+          <p class="nota__bajada">{a.bajada}</p>
+          <a class="nota__portada" href={`/blog/${a.slug}/`} tabindex="-1" aria-hidden="true">
+            <img src={a.imagen} alt="" width="1600" height="1000" loading="lazy" decoding="async" />
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    {/* En el teléfono el botón va debajo de la última nota; en escritorio, en la cabecera. */}
+    <a class="boton articulos__todas articulos__todas--pie" data-entra href="/blog/">Ver todo el blog <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </div>
+</section>
+
+<style>
+  .articulos { padding-top: clamp(40px, 6vh, 72px); padding-bottom: clamp(40px, 6vh, 72px); }
+  .articulos__cab { gap: 14px 48px; }
+  /* El botón del sistema (el de "Hablemos"), con flecha. */
+  .articulos__todas { width: max-content; }
+  .articulos__todas--cab { display: none; }
+  .articulos__todas--pie { margin-top: 36px; }
+  @media (min-width: 1000px) {
+    .articulos__todas--cab { display: inline-flex; }
+    .articulos__todas--pie { display: none; }
+  }
+
+  /* ── La nota: la anatomía de Qué hacemos ──
+     Tres columnas separadas por un filete gris fino. En cada una: la sección
+     y la fecha (mono), el título, la bajada con límite de ancho y sin viudas,
+     y la foto abajo. Comparten filas (subgrid): cada cosa arranca en la misma
+     línea en las tres. En el teléfono, una abajo de la otra. */
+  .notas { display: grid; grid-template-columns: minmax(0, 1fr); gap: 44px; list-style: none; margin: 0; padding: 0; }
+  .nota { display: grid; gap: 10px; align-content: start; }
+  .nota__tipo { color: var(--gris-2); }
+  .nota__titulo { font-size: clamp(22px, 1.9vw, 26px); font-weight: 600; letter-spacing: -.03em; line-height: 1.15; text-wrap: balance; }
+  .nota__titulo a { color: inherit; text-decoration: none; }
+  .nota__bajada { color: var(--gris); font-size: 15.5px; line-height: 1.5; max-width: 29em; text-wrap: balance; }
+  .nota__portada { display: block; margin-top: 8px; overflow: hidden; border-radius: 14px; border: 1px solid var(--linea); background: var(--suave); aspect-ratio: 16 / 10; }
+  .nota__portada img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s cubic-bezier(.16,.8,.3,1); }
+  @media (hover: hover) and (pointer: fine) {
+    .nota:hover .nota__portada img { transform: scale(1.03); }
+    .nota__titulo a:hover { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+  }
+  @media (min-width: 900px) { .articulos__cab { grid-template-columns: 1fr auto; align-items: end; } }
+  @media (min-width: 1000px) {
+    .articulos { --col-gap: clamp(28px, 3vw, 56px); }
+    /* ⚠️ LAS TRES COLUMNAS MIDEN LO MISMO: el aire es el `column-gap` de la
+       grilla y el filete se dibuja en el medio de ese aire. Con padding a
+       cada lado del filete, la del medio quedaba más angosta y su foto,
+       más chica. */
+    .notas { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 var(--col-gap); }
+    .nota { position: relative; grid-row: span 4; grid-template-rows: subgrid; row-gap: 10px; }
+    .nota + .nota::before { content: ''; position: absolute; top: 0; bottom: 0; left: calc(var(--col-gap) / -2); width: 1px; background: var(--linea); }
+    /* Techo según la pantalla, para que la sección entre entera. */
+    .nota__portada { width: 100%; max-height: max(180px, calc(100svh - 545px)); }
+  }
+</style>

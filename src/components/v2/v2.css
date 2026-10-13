@@ -1,0 +1,428 @@
+/* ============================================================
+   v2.css — la base del rediseño
+   ============================================================
+
+   LO QUE HAY ACÁ es el sistema: papel, tinta, tipografía, grilla y las dos
+   piezas de navegación. Cada sección trae su CSS propio; esto es lo que
+   comparten.
+
+   ⚠️ NO USA `design-tokens.css`. Los tokens viejos son la identidad que se
+   está reemplazando —magenta de marca, degradé, jewel-tones— y mezclarlos con
+   esto daría una página mitad y mitad. Cuando la v2 pase a ser `/`, ese archivo
+   se borra con el resto.
+
+   ⚠️ EL PREFIJO ES `v2-`. Mientras las dos webs convivan, ni una clase puede
+   pisarse con las de `components.css`.
+
+   ⚠️ DOS COLORES Y CADA UNO CON SU TRABAJO. El ACENTO (`--acento`) es el que se
+   toca —botón lleno, links, la lengüeta— y lleva texto encima, así que su tono
+   se elige por contraste. El DESTAQUE (`--destaque`) es el que sólo se ve
+   —filetes, subrayados, un relleno con tinta encima—: no lleva texto claro
+   nunca, y por eso puede ser mucho más brillante. Ver la nota de más abajo.
+   ============================================================ */
+
+/* Las fuentes, servidas desde el proyecto (no desde Google): una petición menos
+   a un tercero y cero salto tipográfico al cargar.
+     · Archivo   — la grotesca de los titulares. Editorial, ancha, con carácter.
+     · Inter     — el texto. Es la del logo, así que la marca y la página hablan
+                   con la misma voz.
+     · JetBrains Mono — la metadata chiquita. Es el 20% de tecnología. */
+@import '@fontsource-variable/archivo';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+/* 700: para "Estudio digital" bajo el titular del hero. Sin este archivo el
+   navegador inventa la negrita engordando la 500, y en una mono se nota. */
+@import '@fontsource/jetbrains-mono/700.css';
+
+:root {
+  /* ⚠️ PAPEL BLANCO, NO HUESO. La primera versión usaba un hueso tibio
+     (#F2F0EA) y se leía como crema: "estás poniendo un color de fondo raro tipo
+     crema" (Gonzalo). Un estudio digital tiene el fondo del papel de una
+     pantalla —blanco— y el segundo plano apenas frío para separar bloques sin
+     pintarlos. El calor lo pone el acento, no el fondo. */
+  --v2-papel: #FFFFFF;
+  --v2-papel-2: #F4F4F8;
+  --v2-tinta: #101014;
+  --v2-tinta-70: #494952;
+  --v2-tinta-45: #83838E;
+  --v2-linea: rgba(16, 16, 20, .14);
+  --v2-linea-suave: rgba(16, 16, 20, .07);
+
+  /* EL ACENTO es el color que se toca: el botón lleno, los links, la lengüeta.
+     Lleva texto encima, así que su tono está elegido por contraste, no por
+     gusto. EL DESTAQUE es el color que sólo se ve: filetes, subrayados, un
+     relleno con tinta encima. Nunca lleva texto claro, así que puede ser mucho
+     más brillante. Por defecto son el mismo. */
+
+  --v2-display: 'Archivo Variable', 'Archivo', system-ui, sans-serif;
+  --v2-texto: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --v2-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* El margen lateral de toda la página. Una sola medida: si cambia, cambia
+     la página entera y nada queda desalineado. */
+  --v2-margen: clamp(20px, 5vw, 96px);
+
+  /* ═══════════════════════════════════════════════
+     LA SANGRÍA ÓPTICA
+     ═══════════════════════════════════════════════
+
+     ⚠️ ALINEAR CAJAS NO ES ALINEAR TEXTO. Toda letra trae un hueco propio a su
+     izquierda —el prosa, o *side bearing*— que es parte del gliso y no del
+     margen. Si se apoyan dos textos de cuerpos distintos contra la misma
+     línea, sus CAJAS quedan perfectas y su TINTA no: el hueco crece con el
+     cuerpo. Medido en esta página, a 1440 de ancho:
+
+         rótulo (mono, 11,5px)     la tinta empieza en 72,0
+         nombre (display, 56px)    la tinta empieza en 75,0
+         titular (display, 92px)   la tinta empieza en 78,0
+
+     Seis píxeles. Nadie sabría decir qué pasa, pero el titular se ve metido
+     para adentro —"es casi imperceptible pero yo lo veo" (Gonzalo,
+     20/09/2026)—.
+
+     El valor sale de medir la tinta real de la primera letra contra el borde de
+     su caja: da entre 0,053 y 0,065 em según la letra (las redondas —D, O, C—
+     un poco más que las rectas —L, I, E—). 0,058 es el promedio y deja el error
+     abajo de medio píxel aun a noventa píxeles de cuerpo.
+
+     ⚠️ VA EN `em`, NUNCA EN PÍXELES: el hueco escala con el cuerpo, así que un
+     valor fijo corregiría el titular de escritorio y arruinaría el del
+     teléfono.
+
+     ⚠️ Y SÓLO SE LE PONE AL TEXTO GRANDE. A 15 píxeles el hueco mide menos de un
+     píxel: corregirlo no se ve y ensucia el CSS. */
+  --sangria: .058em;
+}
+
+/* ⚠️ EL ACENTO SE CAMBIA ACÁ Y EN NINGÚN OTRO LADO. Toda la página lo toma de
+   esta variable: los botones, las flechas, las viñetas, el dorso de las
+   tarjetas de disciplinas y la pantalla de la declaración. No hay un solo
+   color escrito a mano en ninguna sección —verificado—, así que probar otro es
+   cambiar este renglón.
+
+   ⚠️ Y EL CANDIDATO TIENE QUE DAR 4,5 CON BLANCO ENCIMA. No es un capricho:
+   sobre el acento va texto blanco de cuerpo chico —la mono de 11,5 px del
+   dorso de las tarjetas, el párrafo de la declaración—, y abajo de 4,5 eso
+   deja de leerse al sol. Medido:
+
+     texto blanco encima del color · hace falta 4,5 para texto normal
+       #FF2D1F  el rojo vivo que gustaba      3,72  ← el botón no pasaba
+       #E8210F  el mismo, un punto abajo      4,51  ← pasa, y se ve igual de vivo
+       #EC1E79  el magenta de la web vieja    4,18  ← no pasa
+       #FF0090  magenta eléctrico            3,71  ← no pasa
+       #E6007E  magenta proceso               4,50  ← pasa, y es el gemelo exacto
+                                                     del rojo: mismo peso, mismo
+                                                     contraste, no hay que
+                                                     recalcular nada más
+       #FFC400  amarillo                      1,60  ← nunca lleva texto blanco
+                amarillo con tinta encima    11,60  ← por eso es DESTAQUE, no acento
+
+   ⚠️ Y EL ACENTO SIGUE SIENDO UNA VARIABLE a propósito: cada caso de Selected
+   Work puede pisarlo con el color de ese proyecto, y el de la casa vuelve entre
+   caso y caso. Es lo que pide el brief y lo que hace que la página no compita
+   con el trabajo que muestra. */
+:root {
+  /* Probando el magenta (20/09/2026, a pedido de Gonzalo).
+     Para volver al rojo: --acento: #E8210F; */
+  --acento: #E6007E;
+  --acento-ink: #FFFFFF;
+  --destaque: #FFC400;
+
+  /* ═══════════════════════════════════════════════════════
+     EL DEGRADADO DE LA CASA
+     ═══════════════════════════════════════════════════════
+
+     Nace en la tapa de Lúmina de la portada y de ahí se reparte: el botón
+     lleno y el remate del titular usan el mismo. Es lo que hace que esas tres
+     cosas se lean como una familia y no como tres colores sueltos.
+
+     ⚠️ SON DOS Y NO UNO, Y LA DIFERENCIA ES DE CONTRASTE:
+
+       · `--v2-degrade` va de violeta profundo a ámbar, y es para PINTAR
+         SUPERFICIES GRANDES. Lleva texto blanco encima sólo del lado oscuro.
+       · `--v2-degrade-texto` corta antes del ámbar. Es para TEXTO: el ámbar
+         sobre papel da 1,6 de contraste y desaparece. Cortado en el naranja,
+         el peor punto da 3,0 — que alcanza para un titular grande.
+
+     ⚠️ Y LOS DOS COLORES DEL MEDIO SON LOS DE LA CASA, no una paleta nueva:
+     si cambia el acento, cambian los dos degradados con él. */
+  --v2-degrade:
+    linear-gradient(104deg,
+      #2E0A6E 0%,
+      #6B0FA6 24%,
+      color-mix(in srgb, var(--acento) 92%, #2E0A6E) 52%,
+      #FF5C2B 84%,
+      color-mix(in srgb, var(--destaque) 86%, #FF5C2B) 100%);
+  --v2-degrade-texto:
+    linear-gradient(104deg,
+      #6B0FA6 0%,
+      color-mix(in srgb, var(--acento) 92%, #2E0A6E) 46%,
+      var(--acento) 74%,
+      #FF5C2B 100%);
+}
+
+/* ── El grano ────────────────────────────────────────────
+   Una capa de ruido finísima encima de todo. No se ve: se nota. Es lo que hace
+   que los fondos planos —el papel y la tinta— dejen de parecer un color de CSS
+   y pasen a parecer una superficie. Va fija, así que no se arrastra con el
+   scroll, y no recibe clicks. */
+.v2::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: .04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.v2 {
+  background: var(--v2-papel);
+  color: var(--v2-tinta);
+  font-family: var(--v2-texto);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Tipografía ──────────────────────────────────────────
+   Un solo titular por sección, enorme, con el tracking cerrado que pide una
+   grotesca a ese tamaño. Abajo de 900 px las líneas se rompen solas. */
+.v2-titulo {
+  font-family: var(--v2-display);
+  font-weight: 800;
+  font-size: clamp(44px, 9vw, 150px);
+  line-height: .9;
+  letter-spacing: -.045em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.v2-p {
+  font-size: clamp(15px, 1.1vw, 17px);
+  line-height: 1.65;
+  letter-spacing: -.005em;
+  color: var(--v2-tinta-70);
+  max-width: 46ch;
+}
+.v2-meta {
+  font-family: var(--v2-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--v2-tinta-45);
+}
+
+/* ── La marca ────────────────────────────────────────────
+   ⚠️ EL LOGO NUNCA VA A COLOR: tinta sobre papel, o papel sobre tinta. Nada
+   más. Por eso va como MÁSCARA y no como imagen —el PNG tiene los colores de
+   marca adentro y una máscara los descarta: lo único que sobrevive es la forma,
+   pintada con el color que le diga la página—. De paso, el mismo archivo sirve
+   para fondo claro y oscuro.
+
+   ⚠️ Y EL COLOR VA EXPLÍCITO, no heredado. La primera versión lo pintaba con
+   `currentColor` sobre un `<a>` sin regla de color: el navegador puso su azul
+   de link de fábrica y el logo salió azul. */
+.v2-marca {
+  display: block;
+  width: 178px;
+  height: calc(178px * 234 / 1262);
+  color: var(--v2-tinta);
+  background: currentColor;
+  -webkit-mask: url('/logobrickell.png') left center / contain no-repeat;
+  mask: url('/logobrickell.png') left center / contain no-repeat;
+}
+/* Sobre fondo oscuro. */
+.v2-marca--papel { color: var(--v2-papel); }
+
+/* ── Botones ─────────────────────────────────────────────
+   Dos: uno lleno y uno de línea. Nada más en toda la página. */
+.v2-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 28px;
+  border-radius: 999px;
+  font-family: var(--v2-texto);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform .25s cubic-bezier(.2, .7, .3, 1), background-color .25s, color .25s, border-color .25s;
+}
+/* ⚠️ EL BOTÓN LLENO LLEVA EL DEGRADADO, PERO RECORTADO. Se lo pinta con el de
+   texto y se lo estira al 185%, así que en la pastilla entra sólo el tramo de
+   la izquierda —violeta a magenta— y nunca el naranja del final: sobre naranja
+   el blanco da 3,0 y una etiqueta de botón necesita 4,5. Es el mismo degradado
+   de la tapa, mirado por una ventanita. */
+.v2-btn--lleno {
+  background-image: var(--v2-degrade-texto);
+  background-size: 185% 100%;
+  background-position: 0% 50%;
+  color: var(--acento-ink);
+}
+.v2-btn--linea { border: 1.5px solid var(--v2-linea); color: var(--v2-tinta); }
+/* ⚠️ CADA ESTADO DE HOVER SE ESCRIBE DOS VECES: una para `:hover` (mouse y
+   trackpad) y otra para `.v2-tocado`, que es la clase que el script le pone a
+   lo que tiene el dedo encima. Ver la nota de "táctil" más abajo. */
+@media (hover: hover) and (pointer: fine) {
+  .v2-btn:hover { transform: translateY(-2px); }
+  .v2-btn--linea:hover { border-color: var(--v2-tinta); }
+}
+.v2-btn.v2-tocado { transform: translateY(-2px); }
+.v2-btn--linea.v2-tocado { border-color: var(--v2-tinta); }
+.v2-btn:active { transform: scale(.97); transition-duration: .08s; }
+
+/* ── El empalme ──────────────────────────────────────────
+   La portada se queda clavada y la sección que sigue le sube por encima. Es el
+   único gesto de profundidad de la página y vale por diez animaciones: el que
+   scrollea siente que la página tiene capas, no que se desliza una tira larga.
+   La portada queda `sticky` en su lugar; todo lo que viene después va por
+   arriba, con fondo propio. */
+/* ═════════════════════════════════════════════════
+   EL EMPALME, Y EL COLCHÓN QUE NECESITA SAFARI
+   ═════════════════════════════════════════════════
+
+   La portada se queda clavada y la sección de abajo le pasa por encima. Hasta
+   acá, dos líneas.
+
+   ⚠️ EL `padding-bottom` ES LO QUE EVITA QUE LA SECCIÓN DE ABAJO SE ASOME. Y no
+   alcanza con poner la portada en `dvh`, que fue el primer intento y no arregló
+   nada. La secuencia en Safari es esta:
+
+     · Arriba de todo la barra está desplegada, así que la ventana mide lo chico
+       (`svh`) y la portada, en `dvh`, mide exactamente eso. Perfecto.
+     · Scrolleás treinta píxeles. La barra se contrae y la ventana CRECE hasta
+       `lvh`. La portada crece con ella —para eso está `dvh`—, pero la sección
+       de abajo sigue empezando donde empezaba, y esos treinta píxeles ya te
+       corrieron el papel: ves el borde de la roja asomando abajo.
+
+   El colchón es la diferencia entre las dos ventanas, `100lvh - 100svh`: el
+   alto que gana la página cuando la barra se esconde. Con él, la siguiente
+   sección arranca siempre más abajo del borde, mida lo que mida la ventana en
+   ese momento. En escritorio las dos unidades valen lo mismo y el colchón da
+   cero, así que no cambia nada.
+
+   ⚠️ Y VA COMO PADDING DEL CONTENEDOR, no como alto de la portada: el elemento
+   pegajoso se mueve dentro de la caja de padding del padre, así que el colchón
+   le suma recorrido clavado en vez de estirarle el dibujo. */
+.v2-pegado {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  padding-bottom: calc(100lvh - 100svh);
+}
+/* ⚠️ OPACA, SIEMPRE. Todo lo que viene después de la portada pasa POR ENCIMA
+   de ella, y la portada se queda clavada abajo para siempre. Si alguna sección
+   de acá adentro no pinta su propio fondo, lo que se ve por el hueco es la
+   portada —el teléfono, los botones, la marquesina— flotando en el medio de la
+   página. El papel va acá una sola vez y el problema no puede volver a pasar. */
+.v2-encima {
+  position: relative;
+  z-index: 1;
+  background: var(--v2-papel);
+  /* ⚠️ LA SOMBRA VA HACIA ARRIBA —de ahí el desplazamiento negativo— y es lo
+     único que hace falta para que la página se lea por DELANTE de la portada
+     mientras sube a taparla: sin ella, la ciudad no desaparece atrás de una
+     hoja, se cambia por otro fondo.
+
+     ⚠️ VA EN EL CONTENEDOR Y NO EN LA PRIMERA SECCIÓN. El día que cambie cuál
+     va primera —ya pasó dos veces esta semana— esto sigue estando bien. */
+  box-shadow: 0 -30px 64px -12px rgba(8, 4, 20, .5);
+}
+
+/* ══════════════════════════════════
+   NADA ENTRA: LA PÁGINA YA SE MUEVE SOLA
+   ══════════════════════════════════
+
+   Acá vivía una entrada por scroll: todo lo que llevara `data-entra` empezaba
+   corrido y apagado y se encendía al aparecer. Se eliminó el 23/09/2026 y el
+   motivo vale más que el sistema:
+
+   > "ya el parallax es el propio efecto" (Gonzalo)
+
+   La portada es `sticky` y la página le pasa por encima. ESE es el movimiento
+   del sitio, y cada bloque que además entra por su cuenta compite con él. Dos
+   movimientos a la vez no son el doble de movimiento: son ruido. Sin esto, lo
+   único que se mueve es lo que mueve el visitante.
+
+   Está entera en `docs/descartes/entrada-por-scroll.txt` —hoja, script y cómo
+   se reponía el marcado— por si alguna vez vuelve.
+
+   ⚠️ Y LO QUE LA REEMPLAZA NO ES UNA ANIMACIÓN: es la sombra de `.v2-encima`,
+   unas líneas más arriba. */
+
+/* ══════════════════════════════════════════════════════
+   TÁCTIL: EL HOVER NO EXISTE, EL TOQUE SÍ
+   ══════════════════════════════════════════════════════
+
+   ⚠️ TODO `:hover` VA ADENTRO DE `@media (hover: hover) and (pointer: fine)`.
+   En un teléfono o una tablet no hay puntero: el navegador simula el hover al
+   tocar y lo DEJA PEGADO hasta que tocás otra cosa, así que el botón queda
+   "apretado" después de usarlo. Con la consulta puesta, el hover sólo corre
+   donde hay mouse o trackpad.
+
+   ⚠️ Y EN TÁCTIL RESPONDE `:active`, que es el estado mientras el dedo está
+   apoyado: es la única devolución inmediata que el aparato puede dar. Va con
+   un cambio chico y una transición corta —si tarda, el dedo ya se levantó y
+   no se ve—.
+
+   ⚠️ `-webkit-tap-highlight-color: transparent` saca el recuadro gris que
+   pinta Safari y Chrome de Android sobre lo que se toca: nos da la respuesta
+   el `:active`, no el sistema.
+
+   ⚠️ Y `:focus-visible` se queda: es el que ve quien navega con teclado, y no
+   se dispara con el mouse ni con el dedo.
+   ══════════════════════════════════════════════════════ */
+a, button { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; border-radius: 4px; }
+
+/* ── La brújula: la línea y la lengüeta ──────────────────
+   Ver `docs/REDISENO.md` §3.1. No hay barra de navegación: esto es todo. */
+.v2-linea-scroll {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: var(--v2-linea-suave);
+  z-index: 40;
+}
+.v2-linea-scroll span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--acento);
+  transform-origin: left;
+}
+
+.v2-lengueta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  writing-mode: vertical-rl;
+  padding: 20px 9px;
+  border-radius: 12px 0 0 12px;
+  background: var(--v2-tinta);
+  color: var(--v2-papel);
+  border: 0;
+  cursor: pointer;
+  font-family: var(--v2-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* La brújula entera arranca escondida: en la portada no hay de dónde volver.
+   El script la enciende pasado el hero. */
+.v2-brujula { opacity: 0; pointer-events: none; transition: transform .5s cubic-bezier(.2,.7,.3,1), opacity .4s; }
+
+@media (max-width: 900px) {
+  /* ⚠️ EN TELÉFONO NO VA NADA DE LA BRÚJULA, NI LA LÍNEA. Estaba pensada para
+     quedarse la línea de progreso, pero en Safari el rebote del scroll mueve la
+     página por fuera de sus límites mientras lo fijo se queda clavado: la línea
+     queda flotando y por detrás pasa el contenido. En un teléfono se scrollea y
+     con eso alcanza; la navegación de verdad es el índice del pie. */
+  .v2-lengueta, .v2-linea-scroll { display: none; }
+}

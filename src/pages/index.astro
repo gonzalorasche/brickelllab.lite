@@ -1,26 +1,287 @@
 ---
-import Base from '../layouts/Base.astro';
-import SeoSchema from '../components/SeoSchema.astro';
-import Header from '../components/Header.astro';
-import Hero from '../components/Hero.astro';
-import Ecosistema from '../components/Ecosistema.astro';
-import Agencia from '../components/Agencia.astro';
-import Servicios from '../components/Servicios.astro';
-import Contacto from '../components/Contacto.astro';
-import Footer from '../components/Footer.astro';
+// ============================================================
+// LA HOME NUEVA · /v4
+// ============================================================
+// Portada · Qué hacemos · El estudio · Proyectos · Lúmina · Lexa · Artículos ·
+// Contacto · Pie. Todo el contenido variable (proyectos, artículos, contactos)
+// vive en `src/data/v4/`. Los componentes están en `src/components/v4/`.
+//
+// ⚠️ EL SCROLL SUAVE ES ScrollSmoother (GSAP), SOLO EN ESCRITORIO. Fija la
+// página y traslada el contenido, así que todo lo `fixed` —la barra, el visor,
+// el aviso— vive FUERA de #smooth-wrapper. En táctil, scroll nativo.
+import V4 from '../layouts/V4.astro'
+import Nav from '../components/v4/Nav.astro'
+import Hero from '../components/v4/Hero.astro'
+import Hacemos from '../components/v4/Hacemos.astro'
+import Proyectos from '../components/v4/Proyectos.astro'
+import Visor from '../components/v4/Visor.astro'
+import Lumina from '../components/v4/Lumina.astro'
+import Lexa from '../components/v4/Lexa.astro'
+import Estudio from '../components/v4/Estudio.astro'
+import Articulos from '../components/v4/Articulos.astro'
+import Contacto from '../components/v4/Contacto.astro'
+import Pie from '../components/v4/Pie.astro'
+import Cookies from '../components/v4/Cookies.astro'
+import { SITIO, MAIL, LUMINA_URL } from '../data/v4/contacto'
+
+// ⚠️ UN SOLO GRAFO, Y LOS `@id` NO SE TOCAN. `#organization` es el que usaba la
+// web anterior y el que declara Lúmina en su propio sitio (lumina/src/lib/seo/
+// rutas.ts, ID_ORGANIZACION): si difieren en una letra, Google ve dos empresas.
+// Lo mismo el logo y las redes (`sameAs`): están escritos exactamente como en
+// Lúmina, que es lo que le da a Google confianza para fusionar los nodos.
+// Lúmina se referencia con SU `@id` (el de su sitio), no con uno inventado acá.
+const ORG = SITIO + '/#organization'
+const LUMINA_ID = LUMINA_URL + '/#lumina'
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': ['Organization', 'ProfessionalService'],
+      '@id': ORG,
+      name: 'Brickell Lab',
+      url: SITIO + '/',
+      logo: SITIO + '/brickellLogoBlack.png',
+      image: SITIO + '/v4/og.jpg',
+      description: 'Estudio independiente de diseño y desarrollo web en Buenos Aires. Sitios, plataformas y productos digitales de la idea al código. Creadores de Lúmina y Lexa.',
+      email: MAIL,
+      telephone: '+5491124609038',
+      priceRange: '$$$',
+      areaServed: ['AR', 'Latinoamérica'],
+      address: { '@type': 'PostalAddress', addressLocality: 'Ciudad Autónoma de Buenos Aires', addressRegion: 'CABA', addressCountry: 'AR' },
+      sameAs: ['https://www.instagram.com/brickell.lab/', 'https://www.linkedin.com/company/brickell-lab/', 'https://x.com/LabBrickell'],
+      knowsAbout: ['Desarrollo web a medida', 'Landing pages', 'Productos digitales', 'Aplicaciones web a medida', 'Diseño UX/UI', 'Identidad visual y branding', 'Diseño de packaging', 'SEO técnico', 'GEO — Generative Engine Optimization', 'Traducción pública de inglés'],
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Servicios de Brickell Lab',
+        itemListElement: [
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Desarrollo web', description: 'Sitios corporativos, landing pages y experiencias web desarrolladas desde cero: rápidas, responsive, escalables y fáciles de encontrar. Sin plantillas.', provider: { '@id': ORG } } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Productos digitales', description: 'Plataformas y aplicaciones web con usuarios y datos reales: paneles, sistemas internos, herramientas a medida y MVPs.', provider: { '@id': ORG } } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Identidad y diseño', description: 'Sistemas visuales que viven igual en una web, un packaging o una pantalla.', provider: { '@id': ORG } } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Traducción pública de inglés', description: 'Traducciones de inglés con matrícula de traductor público, a través de Lexa.', provider: { '@id': SITIO + '/#lexa' } } },
+        ],
+      },
+      owns: { '@id': LUMINA_ID },
+      subOrganization: { '@id': SITIO + '/#lexa' },
+    },
+    {
+      '@type': 'WebApplication',
+      '@id': LUMINA_ID,
+      name: 'Lúmina',
+      url: LUMINA_URL + '/',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web',
+      description: 'Plataforma de gestión de eventos: invitación digital y panel para casamientos y fiestas de quince.',
+      inLanguage: 'es-AR',
+      parentOrganization: { '@id': ORG },
+      subjectOf: { '@type': 'WebPage', url: SITIO + '/#lumina' },
+    },
+    {
+      '@type': 'Organization',
+      '@id': SITIO + '/#lexa',
+      name: 'Lexa',
+      url: SITIO + '/#lexa',
+      description: 'Servicio de traducción profesional de inglés con matrícula de traductor público, para trámites y documentación oficial.',
+      parentOrganization: { '@id': ORG },
+      hasCredential: { '@type': 'EducationalOccupationalCredential', credentialCategory: 'Traductor Público Matriculado' },
+    },
+    // El sitio y la home: los mismos `@id` que la web anterior.
+    {
+      '@type': 'WebSite',
+      '@id': SITIO + '/#website',
+      url: SITIO + '/',
+      name: 'Brickell Lab',
+      description: 'Estudio de diseño y desarrollo web — Buenos Aires, Argentina.',
+      publisher: { '@id': ORG },
+      inLanguage: 'es-AR',
+    },
+    {
+      '@type': 'WebPage',
+      '@id': SITIO + '/#webpage',
+      url: SITIO + '/',
+      name: 'Brickell Lab — Diseño y desarrollo web en Buenos Aires',
+      description: 'Estudio independiente de diseño y desarrollo web. Sitios, plataformas y productos digitales de la idea al código. Creadores de Lúmina.',
+      isPartOf: { '@id': SITIO + '/#website' },
+      about: { '@id': ORG },
+      inLanguage: 'es-AR',
+      speakable: { '@type': 'SpeakableSpecification', cssSelector: ['.hero h1', '.hero__bajada'] },
+    },
+  ],
+}
 ---
-<Base
-  title="Brickell Lab | Agencia de Desarrollo Web & Diseño Digital"
-  schema={true}
->
-  <SeoSchema slot="schema" />
-  <Header lang="es" />
-  <main>
-    <Hero />
-    <Ecosistema lang="es" />
-    <Agencia lang="es" />
-    <Servicios lang="es" />
-    <Contacto lang="es" />
-  </main>
-  <Footer lang="es" />
-</Base>
+<V4 jsonld={jsonld}>
+  <Nav />
+
+  <div id="smooth-wrapper"><div id="smooth-content">
+    <main>
+      <Hero />
+      <Hacemos />
+      {/* El estudio va entre Qué hacemos y Proyectos a propósito: las dos
+          muestran pantallas y pegadas se leían como una sola sección. */}
+      <Estudio />
+      <Proyectos />
+      <Lumina />
+      <Lexa />
+      <Articulos />
+      <Contacto />
+    </main>
+    <Pie />
+  </div></div>
+
+  <Cookies />
+
+  <Visor />
+  <div class="aviso" id="aviso" role="status" aria-live="polite"><i></i><span id="aviso-texto"></span></div>
+
+  <script is:inline>
+    // ⚠️ GSAP SOLO EN ESCRITORIO. El scroll suave no corre en el teléfono, así
+    // que ahí ni se bajan las tres librerías (eran ~440 kB de más). Se cargan
+    // en orden y recién entonces arranca el resto.
+    (function () {
+      var arranque = function () { document.dispatchEvent(new Event('gsap:listo')) }
+      if (!matchMedia('(min-width: 820px) and (pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) { arranque(); return }
+      var urls = [
+        'https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js',
+        'https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js',
+        'https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js',
+      ]
+      var i = 0
+      var siguiente = function () {
+        if (i >= urls.length) return arranque()
+        var s = document.createElement('script')
+        s.src = urls[i++]; s.onload = siguiente; s.onerror = arranque
+        document.head.appendChild(s)
+      }
+      siguiente()
+    })()
+  </script>
+  <script is:inline>
+    // Espera a que estén las librerías. Se entra por `alListo` y no por el
+    // evento pelado: en el teléfono el aviso llega antes de que nadie escuche.
+    alListo(function () {
+      const $ = (s, r = document) => r.querySelector(s)
+      const $$ = (s, r = document) => [...r.querySelectorAll(s)]
+      const escritorio = matchMedia('(min-width: 820px) and (pointer: fine)').matches
+      const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      // ── El scroll suave, sólo escritorio ──────────────────
+      let smoother = null
+      if (escritorio && !quieto && window.gsap && window.ScrollSmoother) {
+        gsap.registerPlugin(ScrollTrigger, ScrollSmoother)
+        smoother = ScrollSmoother.create({ wrapper: '#smooth-wrapper', content: '#smooth-content', smooth: 1.2, effects: false, smoothTouch: false, normalizeScroll: true })
+        window.smoother = smoother
+        document.documentElement.classList.add('smooth')
+        // Con el smoother recién creado: arriba de todo, o en el ancla si la URL la trae.
+        const ancla = location.hash && document.querySelector(location.hash)
+        // El alto real de la barra: `--barra` leída del :root podía venir vacía y quedaba NaN.
+        const irAlAncla = () => smoother.scrollTo(ancla, false, 'top ' + Math.round(document.getElementById('nav').getBoundingClientRect().height) + 'px')
+        // Se repite al `load` (y después del refresh de ScrollTrigger, que al
+        // recalcular medidas devolvía la página a cero).
+        // Igual que arriba: si ya empezaste a scrollear, no se te mueve la página.
+        if (ancla) { irAlAncla(); addEventListener('load', () => { ScrollTrigger.refresh(); requestAnimationFrame(() => setTimeout(() => { if (!window.__tocado) irAlAncla() }, 80)) }) }
+        else smoother.scrollTo(0, false)
+      }
+      const scrollTop = () => smoother ? smoother.scrollTop() : window.scrollY
+      const irA = (el) => {
+        const barra = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--barra'))
+        if (smoother) smoother.scrollTo(el, true, 'top ' + barra + 'px')
+        else window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - barra, behavior: 'smooth' })
+      }
+      document.addEventListener('click', (e) => {
+        const a = e.target.closest('a[href^="#"]')
+        if (!a || a.getAttribute('href') === '#') return
+        const destino = $(a.getAttribute('href'))
+        if (!destino) return
+        e.preventDefault(); irA(destino)
+      })
+
+      // ── La barra: blanca sobre el hero, tinta después ─────
+      const nav = $('#nav'), hero = $('#inicio')
+      const pintarNav = () => {
+        const y = scrollTop()
+        // >= y con un margen de 2px: justo en el borde del hero (a donde llevan las anclas) tiene que estar ya en tinta.
+        // El hero es claro: la barra es tinta siempre. (Con un hero oscuro sería `y >= hero.offsetHeight - alto de la barra`.)
+        nav.classList.add('nav--tinta')
+      }
+      if (smoother) ScrollTrigger.create({ onUpdate: pintarNav }); else addEventListener('scroll', pintarNav, { passive: true })
+      pintarNav()
+
+      // Las entradas por scroll viven en el layout (valen para todas las páginas).
+
+      // ── El aviso ──────────────────────────────────────────
+      const aviso = $('#aviso'), texto = $('#aviso-texto'); let reloj = null
+      window.avisar = (que) => { texto.textContent = que; aviso.classList.add('aviso--visible'); clearTimeout(reloj); reloj = setTimeout(() => aviso.classList.remove('aviso--visible'), 3600) }
+
+      // ── El visor ──────────────────────────────────────────
+      // ⚠️ iPad si la ventana tiene 1000×640; iPhone si no. Se recalcula al
+      // girar el teléfono con el visor abierto.
+      const visor = $('#visor'), aparato = $('#aparato'), iframe = $('#visor-iframe'), escena = $('#visor-escena')
+      let abierto = false
+      const medir = () => {
+        if (!abierto) return
+        const ipad = innerWidth >= 1000 && innerHeight >= 640
+        aparato.classList.toggle('aparato--ipad', ipad)
+        aparato.classList.toggle('aparato--iphone', !ipad)
+        const w = ipad ? 1194 + 44 : 390 + 24, h = ipad ? 834 + 44 : 844 + 24
+        const cab = $('.visor__cab').getBoundingClientRect().height
+        const dispW = innerWidth - 32, dispH = innerHeight - cab - 32
+        const escala = Math.min(dispW / w, dispH / h, 1)
+        aparato.style.setProperty('--escala', escala)
+        aparato.style.transform = 'scale(' + escala + ')'
+        // El aparato escalado sigue ocupando su caja original: se le da a la
+        // escena el alto real para que centre bien.
+        aparato.style.marginTop = aparato.style.marginBottom = ((h * escala - h) / 2) + 'px'
+        aparato.style.marginLeft = aparato.style.marginRight = ((w * escala - w) / 2) + 'px'
+        // ⚠️ El zoom del proyecto NO va como `zoom` adentro del sitio: los mapas
+        // de Google se pintan mal. Se le da al iframe una pantalla más grande
+        // (1194/z × 834/z) y se lo achica con transform: el sitio se maqueta
+        // como en un monitor normal y entra entero igual. Solo en el iPad: en
+        // el teléfono el sitio ya tiene su versión mobile y entra.
+        iframe.style.width = iframe.style.height = iframe.style.transform = ''
+      }
+      const abrir = (sitio, nombre) => {
+        abierto = true
+        $('#visor-nombre').textContent = nombre
+        aparato.classList.remove('aparato--lista')
+        visor.hidden = false
+        document.body.style.overflow = 'hidden'
+        if (smoother) smoother.paused(true)
+        medir()
+        iframe.src = sitio
+      }
+      const cerrar = () => {
+        if (!abierto) return
+        abierto = false
+        visor.hidden = true
+        iframe.src = 'about:blank'
+        document.body.style.overflow = ''
+        if (smoother) smoother.paused(false)
+      }
+      // ⚠️ Mismo origen: al cargar se le esconde la barra de scroll al sitio
+      // de adentro. Ningún iPad ni iPhone dibuja una.
+      iframe.addEventListener('load', () => {
+        try {
+          const d = iframe.contentDocument
+          if (d && d.head) {
+            // El zoom del proyecto va acá adentro (solo iPad): agrandar el
+            // iframe no servía, porque el titular de ese sitio crece con el
+            // ancho y el hero volvía a pasarse.
+            const z = iframe.dataset.zoom
+            const st = d.createElement('style')
+            st.textContent = 'html{scrollbar-width:none' + (z ? ';zoom:' + z : '') + '}::-webkit-scrollbar{display:none}'
+            d.head.appendChild(st)
+            // Con zoom, el mapa de Google se pinta con el tamaño equivocado:
+            // un resize después de cargar lo hace volver a dibujarse.
+            if (z) setTimeout(() => { try { iframe.contentWindow.dispatchEvent(new Event('resize')) } catch (_) {} }, 400)
+          }
+        } catch (_) {}
+        if (iframe.src && iframe.src !== 'about:blank') aparato.classList.add('aparato--lista')
+      })
+      // El zoom solo tiene sentido en el iPad: en el teléfono el sitio ya tiene su versión mobile.
+      $$('[data-visor]').forEach((b) => b.addEventListener('click', () => { iframe.dataset.zoom = (innerWidth >= 1000 && innerHeight >= 640 && b.dataset.zoom) || ''; abrir(b.dataset.sitio, b.dataset.nombre) }))
+      $('#visor-cerrar').addEventListener('click', cerrar)
+      $('#visor-telon').addEventListener('click', cerrar)
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrar() })
+      addEventListener('resize', medir)
+    })
+  </script>
+</V4>

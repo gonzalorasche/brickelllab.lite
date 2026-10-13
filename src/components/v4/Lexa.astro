@@ -1,0 +1,112 @@
+---
+// ⚠️ LEXA ES LA SECCIÓN SERIA DE LA PÁGINA, y por eso NO TIENE ANIMACIONES ni
+// objetos dibujados (hubo un "pliego" que se escribía solo: se descartó), ni
+// tarjetas flotando (una ficha blanca sobre el fondo suave se veía de otra
+// web). Cabecera en UNA columna —título, bajada y botón arrancan en el mismo
+// eje que las columnas de abajo—, después los servicios en columnas con filete arriba, y al
+// cierre una banda con los datos verificables (matrícula, años, par de
+// idiomas), que SOLO SE MUESTRA EN ESCRITORIO. En el teléfono los servicios se
+// apilan en filas con filete, como las demás secciones. Un solo acento: la rayita del rótulo.
+//
+// ⚠️ NINGÚN TELÉFONO ESCRITO: el WhatsApp va siempre como botón. El de Lexa es
+// el de la traductora, distinto del de la casa.
+import { LEXA_WHATSAPP_URL } from '../../data/v4/contacto'
+const SERVICIOS = [
+  { n: 'Traducción pública', d: 'Certificada por el CTPCBA: documentos personales, legales, médicos y educativos con validez oficial.' },
+  { n: 'Traducción simple', d: 'Especializada por área: textos técnicos, comerciales, páginas web y contenido de marca.' },
+  { n: 'Localización', d: 'No es lo mismo un texto para un lector estadounidense que para uno británico: se adapta a la variedad que haga falta.' },
+  { n: 'Edición y revisión', d: 'Control de calidad de textos en inglés y español, con estándar profesional.' },
+]
+const DATOS = [
+  { r: 'Matrícula', v: 'Traductora pública · CTPCBA' },
+  { r: 'Experiencia', v: 'Veinte años' },
+  { r: 'Par de idiomas', v: 'Inglés ⇄ Español' },
+  { r: 'Áreas', v: 'Legal · Médico · RR. HH. · Documentos personales · Educación · Web' },
+]
+---
+<section class="lexa pantalla" id="lexa">
+  <div class="centro">
+    <div class="cab lexa__cab" data-entra>
+      <p class="meta rotulo">También en la casa</p>
+      <h2>Traducción de inglés con matrícula.</h2>
+      <p class="bajada">Lexa es el servicio de traducción de Brickell Lab: inglés y español, documentos personales, legales, médicos y técnicos traducidos por una traductora pública matriculada en el CTPCBA, con veinte años de oficio. Trabajo artesanal, no automático.</p>
+      <!-- El logo cierra la cabecera, a 23px del filete de los servicios. -->
+      <span class="lexa__logo" role="img" aria-label="Lexa"></span>
+    </div>
+
+    <ul class="lexa__servicios">
+      {SERVICIOS.map((s, k) => (
+        <li data-entra="tarjeta">
+          <h3>{s.n}</h3>
+          <p>{s.d}</p>
+        </li>
+      ))}
+    </ul>
+
+    <dl class="lexa__datos" data-entra>
+      {DATOS.map((d) => (
+        <div>
+          <dt class="meta">{d.r}</dt>
+          <dd>{d.v}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <!-- El botón cierra la sección: abajo de todo. -->
+    <div class="acciones lexa__acciones" data-entra>
+      <a class="boton lexa__boton" href={LEXA_WHATSAPP_URL} target="_blank" rel="noopener">Escribir por WhatsApp <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 13 13 3M5 3h8v8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .lexa { background: var(--suave); }
+  /* Todo en una columna: el título, la bajada y el botón arrancan en el mismo
+     eje que las columnas de abajo (la bajada a la derecha no cerraba con la
+     retícula de los servicios). */
+  .lexa__cab { justify-items: start; }
+  .lexa .bajada { max-width: 56ch; }
+  .lexa__acciones { margin-top: clamp(26px, 4vh, 40px); }
+  /* Chico y al pie del bloque, como la firma de Lúmina: 24px de alto, en
+     tinta (el color de siempre) y a 23px de la línea, igual que allá. La
+     cabecera pierde su margen de abajo para que esa distancia la fije el logo. */
+  .lexa__logo { display: block; width: calc(24px * 92 / 34); height: 24px; margin: clamp(16px, 2.4vh, 24px) 0 23px; background: var(--tinta); -webkit-mask: url('/v4/logo-lexa.png') left center / contain no-repeat; mask: url('/v4/logo-lexa.png') left center / contain no-repeat; }
+  .lexa .cab { margin-bottom: 0; }
+
+  /* ── Los cuatro servicios: columnas con filete arriba ── */
+  .lexa__servicios { display: grid; gap: 22px 40px; list-style: none; margin: 0; padding: 0; }
+  .lexa__servicios li { display: grid; gap: 6px; padding-top: 16px; border-top: 1px solid var(--linea-2); }
+  .lexa__servicios h3 { font-size: 17px; letter-spacing: -.01em; }
+  .lexa__servicios p { color: var(--gris); font-size: 14px; line-height: 1.55; max-width: 44ch; }
+
+  /* ── La banda de datos: el cierre, como el pie de un documento ── */
+  .lexa__datos { display: none; gap: 14px 40px; margin: clamp(30px, 4.5vh, 48px) 0 0; padding-top: clamp(20px, 3vh, 28px); border-top: 1px solid var(--linea-2); }
+  /* ⚠️ EN EL TELÉFONO LA BANDA NO VA: como tabla de dos columnas o como lista
+     de rótulos quedaba mal las dos veces. Los datos que importan (matrícula,
+     CTPCBA, veinte años, inglés y español) están en la bajada, así que no se
+     pierde nada; abajo de 900px la banda se esconde. */
+  .lexa__datos > div { display: grid; gap: 4px; }
+  .lexa__datos dt { color: var(--gris-2); }
+  .lexa__datos dd { margin: 0; font-size: 14.5px; color: var(--tinta); line-height: 1.45; }
+
+  @media (min-width: 640px) { .lexa__servicios { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 900px) {
+    .lexa__servicios { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .lexa__servicios p { font-size: 13.5px; }
+    .lexa__datos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  }
+  /* Aires medidos para que la sección entre en una pantalla de escritorio. */
+  @media (min-width: 900px) {
+    .lexa { padding-top: clamp(36px, 5.5vh, 60px); padding-bottom: clamp(32px, 5vh, 56px); }
+    .lexa .cab { margin-bottom: 0; }
+    .lexa .bajada { max-width: 74ch; }
+    .lexa__datos { margin-top: clamp(22px, 3.2vh, 34px); padding-top: clamp(18px, 2.6vh, 24px); }
+  }
+  @media (min-width: 900px) and (max-height: 800px) {
+    .lexa { padding-top: 28px; padding-bottom: 26px; }
+    .lexa .cab { margin-bottom: 0; gap: 12px; }
+    .lexa h2 { font-size: clamp(30px, 3.3vw, 46px); }
+    .lexa__servicios { gap: 18px 24px; }
+    .lexa__datos { margin-top: 18px; padding-top: 16px; }
+  }
+</style>

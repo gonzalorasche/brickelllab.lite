@@ -1,0 +1,55 @@
+---
+// ⚠️ SIN FORMULARIO. El mail es la pieza tipográfica de la sección; debajo, el
+// teléfono escrito con el logo de WhatsApp al final (el enlace abre WhatsApp:
+// es para escribir, no para llamar) y abajo los íconos de las redes.
+//
+// ⚠️ ES EL ÚNICO LUGAR DE LA WEB DONDE EL NÚMERO SE ESCRIBE: en el resto
+// WhatsApp va como botón, sin número. El de Lexa está en su sección y no se
+// escribe nunca.
+import { MAIL, WHATSAPP_URL, WHATSAPP_TEXTO, INSTAGRAM, LINKEDIN } from '../../data/v4/contacto'
+---
+<section class="contacto pantalla" id="contacto">
+  <div class="centro">
+    <div class="cab" data-entra>
+      <p class="meta rotulo">Contacto</p>
+      <h2>Contanos tu idea.</h2>
+      <p class="bajada">No hace falta que el proyecto esté definido. Contanos qué necesitás y te decimos cómo lo haríamos, en cuánto tiempo y cuánto sale.</p>
+    </div>
+    <a class="contacto__mail" href={`mailto:${MAIL}`} data-entra>{MAIL}</a>
+    <a class="contacto__tel" href={WHATSAPP_URL} target="_blank" rel="noopener" aria-label={`Escribinos por WhatsApp al ${WHATSAPP_TEXTO}`} data-entra>{WHATSAPP_TEXTO}<svg class="contacto__wa" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 14.98L2 22l5.18-1.5A9.93 9.93 0 1 0 12.04 2Zm0 18.13a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.07.9.92-3-.2-.31a8.22 8.22 0 1 1 6.84 3.74Zm4.5-6.15c-.25-.12-1.46-.72-1.69-.8-.23-.09-.39-.13-.56.12-.16.25-.64.8-.78.96-.14.17-.29.19-.53.06a6.74 6.74 0 0 1-3.37-2.94c-.25-.44.25-.41.72-1.36.08-.17.04-.31-.02-.43-.06-.13-.56-1.34-.76-1.84-.2-.48-.4-.41-.56-.42h-.48a.92.92 0 0 0-.66.31 2.78 2.78 0 0 0-.87 2.07 4.83 4.83 0 0 0 1.01 2.56 11.05 11.05 0 0 0 4.23 3.74c1.57.68 2.19.74 2.98.62.48-.07 1.46-.6 1.67-1.18.2-.58.2-1.08.14-1.18-.06-.1-.22-.16-.47-.29Z"/></svg></a>
+    <div class="contacto__pie" data-entra>
+      <div class="contacto__redes">
+        <a class="rs" href={INSTAGRAM} target="_blank" rel="noopener" aria-label="Instagram de Brickell Lab"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg></a>
+        <a class="rs" href={LINKEDIN} target="_blank" rel="noopener" aria-label="LinkedIn de Brickell Lab"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.5M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg></a>
+      </div>
+      <span class="meta contacto__donde">Buenos Aires · Argentina</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contacto { border-top: 1px solid var(--linea); }
+  .contacto__mail {
+    display: block; font-weight: 600; letter-spacing: -.045em; line-height: 1;
+    /* El tope lo pone el ancho: 24 caracteres tienen que entrar en 360 px. */
+    font-size: clamp(24px, 6.6vw, 84px); margin-left: -.03em; word-break: break-all;
+    background: var(--marca); -webkit-background-clip: text; background-clip: text; color: transparent;
+    transition: letter-spacing .3s ease;
+  }
+  @media (hover: hover) and (pointer: fine) { .contacto__mail:hover { letter-spacing: -.03em; } }
+  /* El teléfono: debajo del mail, del mismo aire tipográfico pero más chico.
+     Se escribe, pero el enlace abre WhatsApp. */
+  /* ⚠️ EL LOGO DE WHATSAPP AL FINAL, en la tinta del número (Gonzalo lo quiso
+     en negro, no en el verde de la marca): sin él el número se leía
+     como "llamanos", y es para escribir por WhatsApp (Gonzalo). */
+  .contacto__wa { width: .82em; height: .82em; margin-left: .32em; vertical-align: -.08em; fill: currentColor; flex: none; }
+  .contacto__tel { display: block; width: max-content; max-width: 100%; margin-top: clamp(10px, 1.6vh, 16px); font-size: clamp(20px, 3.2vw, 38px); font-weight: 600; letter-spacing: -.035em; line-height: 1.1; color: var(--tinta); transition: color .25s ease; }
+  @media (hover: hover) and (pointer: fine) { .contacto__tel:hover { color: var(--gris); } }
+  /* Las redes, abajo. */
+  .contacto__pie { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 22px; margin-top: clamp(26px, 4vh, 40px); }
+  .contacto__redes { display: flex; align-items: center; gap: 14px; }
+  .rs { display: inline-flex; padding: 6px; color: var(--gris); transition: color .18s ease, transform .18s ease; }
+  .rs svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .rs:hover { color: var(--tinta); transform: translateY(-1px); }
+  .contacto__donde { color: var(--gris-2); }
+</style>

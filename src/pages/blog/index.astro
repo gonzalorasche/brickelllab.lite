@@ -1,0 +1,103 @@
+---
+// ⚠️ LA PÁGINA CON TODOS LOS ARTÍCULOS. El cartel de la home trae acá. La
+// lista, el buscador y el filtro por fecha son el componente compartido
+// `ListaArticulos`, el mismo que va al pie de cada artículo.
+import V4 from '../../layouts/V4.astro'
+import Nav from '../../components/v4/Nav.astro'
+import Pie from '../../components/v4/Pie.astro'
+import Cookies from '../../components/v4/Cookies.astro'
+import ListaArticulos from '../../components/v4/ListaArticulos.astro'
+import Volver from '../../components/v4/Volver.astro'
+import { ARTICULOS } from '../../data/v4/articulos'
+import { SITIO } from '../../data/v4/contacto'
+
+const jsonld = [{
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Blog de Brickell Lab',
+  publisher: { '@id': SITIO + '/#organization' },
+  isPartOf: { '@id': SITIO + '/#website' },
+  url: SITIO + '/blog/',
+  inLanguage: 'es-AR',
+  blogPost: [...ARTICULOS].sort((a, b) => b.fecha.localeCompare(a.fecha)).map((a) => ({
+    '@type': 'BlogPosting', headline: a.titulo, description: a.bajada, datePublished: a.fecha, url: SITIO + `/blog/${a.slug}/`,
+  })),
+}]
+---
+<V4 title="Blog — Brickell Lab" description="El blog de Brickell Lab: diseño, desarrollo web, productos digitales y novedades del estudio." ruta="/blog/" jsonld={jsonld}>
+  <Nav />
+  <div id="smooth-wrapper"><div id="smooth-content">
+    <main class="indice">
+      <div class="centro">
+        <div class="cab indice__cab" data-entra>
+          <div>
+            <a class="meta indice__volver" href="/#blog">← Inicio</a>
+            <p class="meta rotulo">Blog</p>
+            <h1>Lo último del estudio.</h1>
+          </div>
+        </div>
+        {/* Siempre de a tres por fila, como en la home (Gonzalo). */}
+        <ListaArticulos id="indice-lista" titulo="Todas las notas" />
+      </div>
+    </main>
+    <Pie />
+  </div></div>
+
+  <Cookies />
+
+  <Volver href="/#blog" etiqueta="Volver al inicio" />
+
+  <script is:inline>
+    // ⚠️ GSAP SOLO EN ESCRITORIO. El scroll suave no corre en el teléfono, así
+    // que ahí ni se bajan las tres librerías (eran ~440 kB de más). Se cargan
+    // en orden y recién entonces arranca el resto.
+    (function () {
+      var arranque = function () { document.dispatchEvent(new Event('gsap:listo')) }
+      if (!matchMedia('(min-width: 820px) and (pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) { arranque(); return }
+      var urls = [
+        'https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js',
+        'https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js',
+        'https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js',
+      ]
+      var i = 0
+      var siguiente = function () {
+        if (i >= urls.length) return arranque()
+        var s = document.createElement('script')
+        s.src = urls[i++]; s.onload = siguiente; s.onerror = arranque
+        document.head.appendChild(s)
+      }
+      siguiente()
+    })()
+  </script>
+  <script is:inline>
+    alListo(function () {
+      document.getElementById('nav').classList.add('nav--tinta')
+      const escritorio = matchMedia('(min-width: 820px) and (pointer: fine)').matches, quieto = matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (escritorio && !quieto && window.gsap && window.ScrollSmoother) {
+        gsap.registerPlugin(ScrollTrigger, ScrollSmoother)
+        const smoother = window.smoother = ScrollSmoother.create({ wrapper: '#smooth-wrapper', content: '#smooth-content', smooth: 1.2, effects: false, smoothTouch: false, normalizeScroll: true })
+        document.documentElement.classList.add('smooth')
+        // Con el smoother recién creado: arriba de todo, o en el ancla si la URL la trae.
+        const ancla = location.hash && document.querySelector(location.hash)
+        // El alto real de la barra: `--barra` leída del :root podía venir vacía y quedaba NaN.
+        const irAlAncla = () => smoother.scrollTo(ancla, false, 'top ' + Math.round(document.getElementById('nav').getBoundingClientRect().height) + 'px')
+        // Se repite al `load` (y después del refresh de ScrollTrigger, que al
+        // recalcular medidas devolvía la página a cero).
+        // Igual que arriba: si ya empezaste a scrollear, no se te mueve la página.
+        if (ancla) { irAlAncla(); addEventListener('load', () => { ScrollTrigger.refresh(); requestAnimationFrame(() => setTimeout(() => { if (!window.__tocado) irAlAncla() }, 80)) }) }
+        else smoother.scrollTo(0, false)
+      }
+    })
+  </script>
+</V4>
+
+<style>
+  .indice { padding: clamp(40px, 7vh, 88px) var(--margen) clamp(56px, 9vh, 110px); }
+  .indice__cab { gap: 18px 48px; margin-bottom: clamp(30px, 5vh, 56px); }
+  .indice__volver { display: block; color: var(--gris-2); margin-bottom: 16px; }
+  .indice__volver:hover { color: var(--tinta); }
+  .indice h1 { font-size: clamp(34px, calc(22px + 3vw), 68px); max-width: 20ch; font-weight: 600; letter-spacing: -.04em; line-height: 1.02; }
+  /* En el teléfono manda la flechita flotante (ver Volver.astro). */
+  @media (max-width: 899px) { .indice__volver { display: none; } }
+  /* Sin bajada (Gonzalo la sacó): la cabecera es sólo rótulo y título. */
+</style>

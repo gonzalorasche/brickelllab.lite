@@ -1,0 +1,262 @@
+---
+// ============================================================
+// 02 · EL ESTUDIO
+// ============================================================
+//
+// QUIÉN ES BRICKELL LAB, y POR QUÉ ARRIBA HAY UN VIDEO DE UNA CIUDAD.
+//
+// ════════════════════════════════════════════════════════════
+// TEXTO, AIRE Y NADA MÁS
+// ════════════════════════════════════════════════════════════
+//
+// ⚠️ ESTA SECCIÓN SE REHIZO CINCO VECES. Vale dejar el recorrido escrito para
+// no volver a caminarlo:
+//
+//   1. TEXTO + TRES DATOS CON ÍCONO. Aburrida, y los datos repetían cosas que
+//      la prosa decía mejor dos centímetros abajo.
+//   2. + UNA BANDA DE CIUDAD EN GRIS AL PIE. Con el relato a dos columnas y el
+//      remate del titular en gris quedaba "a diario".
+//   3. LA CIUDAD A PANTALLA COMPLETA CON EL TEXTO ENCIMA. "Estamos volviendo a
+//      recargar algo que ya debería ser más sencillo" (Gonzalo).
+//   4. LA CIUDAD FUNDIÉNDOSE AL BLANCO AL PIE. Mejor, pero seguía siendo una
+//      sección de texto con una imagen al lado para que no aburra.
+//   5. ESTO. Sin foto. Texto, aire y nada más.
+//
+// Lo que cambió de verdad en el paso 5 no fue sacar la foto: fue ACORTAR EL
+// TITULAR. Mientras la frase medía tres renglones, la sección necesitaba algo
+// que la acompañara y por eso cada intento le agregaba una pieza. Con un
+// titular de cuatro palabras, lo que la sostiene es el aire.
+//
+// ⚠️ EL TITULAR ES "Diseñamos cuidando tu marca" (Gonzalo, 23/09/2026). Antes
+// era "No hacemos sitios. Diseñamos cómo una marca aparece en internet." —que
+// estaba bien escrita, y venía de la declaración que se eliminó— pero medía
+// tres renglones de setenta píxeles: en la SEGUNDA pantalla del sitio eso es un
+// párrafo, no un titular. La frase vieja quedó en `docs/descartes/`.
+//
+// ⚠️ VA TODO EN TINTA PLENA, SIN CORTE DE COLOR. El titular anterior tenía la
+// negación en negro y el resto más apagado, que era lo que le daba la pausa de
+// la voz. Con cuatro palabras no hay pausa que marcar, y ese gris fue
+// justamente lo que hizo que la sección se leyera como un diario.
+//
+// ⚠️ Y NO HAY FOTO. Las derivadas de la ciudad quedaron FUERA DEL BUILD, en
+// `docs/fotos-fuente/derivadas/`, listas por si entran en la sección de Lexa o
+// en la que vaya antes del pie. Los originales y las recetas de recorte están
+// en `docs/fotos-fuente/`.
+//
+// ⚠️ ES `dvh` Y NO `svh`, Y ESTE ERROR YA SE COMETIÓ ACÁ. `svh` es el viewport
+// CHICO —el que mide con la barra del navegador desplegada—, así que una
+// sección de `100svh` se queda CORTA en cuanto la barra se retrae y asoma la de
+// abajo. En un navegador de escritorio los dos valen lo mismo y por eso ningún
+// arnés lo vio: lo vio Gonzalo en el teléfono. `svh` sirve para que nada SALTE;
+// para que algo LLENE, el que corresponde es `dvh`.
+//
+// ⚠️ EL LOGOTIPO AL PIE DEL RELATO ES UNA FIRMA, no un logo puesto. Por eso
+// va ABAJO y no arriba: arriba sería el encabezado de una carta —y el rótulo de
+// la sección ya hace ese trabajo—; abajo del argumento es quién lo firma. Es la
+// única vez que la marca completa aparece en el cuerpo de la página: en las
+// cabeceras de sección se probó y se sacó —leerla cinco veces mientras se baja
+// no agrega nada— y en el pie de página va como corresponde.
+//
+// ⚠️ Y VA CHICA. Una firma que compite con el titular que firma deja de ser una
+// firma: ciento setenta píxeles contra un titular de setenta y seis de alto.
+//
+// ⚠️ NO HAY FOUNDER. Ni foto, ni nombre, ni cargo. El estudio habla en primera
+// persona del plural y no tiene cara.
+//
+// ⚠️ LEXA NO ESTÁ ACÁ. Va a tener sección propia antes del pie. El bloque viejo
+// está en `docs/descartes/lexa-en-el-estudio.txt`. Lo que no cambia: Lexa nunca
+// va entre las disciplinas.
+//
+// ⚠️ Y NO HAY NI UNA CIFRA, como en toda la página.
+// ============================================================
+---
+
+<section class="v2-est" id="studio">
+  <p class="v2-meta">El estudio</p>
+
+  {/* ⚠️ EL TITULAR Y EL RELATO SON UN SOLO BLOQUE, y el bloque va centrado en
+      lo que queda entre el rótulo y el pie. Separados, cada uno buscaba su
+      propio lugar y la sección se leía como tres cosas sueltas en una pantalla
+      grande; juntos y centrados, el aire queda ARRIBA y ABAJO del argumento,
+      que es donde tiene que estar. */}
+  <div class="v2-est__centro">
+    <h2 class="v2-est__titulo">Diseñamos cuidando tu marca</h2>
+
+    {/* ⚠️ EL RELATO Y LA FIRMA VAN JUNTOS EN UN BLOQUE, y no sueltos al lado
+        del titular. Es por el aire: entre el titular y lo que sigue hay un
+        hueco grande —son dos registros distintos— y entre el relato y su firma
+        uno chico, porque son la misma cosa. Con los tres al mismo nivel, la
+        firma quedaba tan lejos del texto como el titular. */}
+    <div class="v2-est__cuerpo">
+      {/* El primero es, literalmente, el pie de foto de lo que se acaba de ver
+          arriba: la ciudad de la portada es Brickell. Por eso abre. */}
+      <div class="v2-est__relato">
+        <p>
+          Brickell Lab nació en Buenos Aires inspirado por una ciudad que nunca
+          parece terminar de construirse: Brickell, Miami. La idea detrás del
+          nombre terminó convirtiéndose en una forma de trabajar.
+        </p>
+        <p>
+          Nos interesan los proyectos que todavía no están completamente
+          definidos. Las ideas que necesitan convertirse en algo concreto. Las
+          marcas que quieren dejar de parecerse a todas las demás.
+        </p>
+      </div>
+
+      {/* La firma del statement. El archivo es el logotipo negro del repo —lo
+          único que sobrevive de la web actual son los logos— y sobre papel se
+          usa tal cual, sin filtros. */}
+      <img
+        class="v2-est__firma"
+        src="/logobrickell.png"
+        alt="Brickell Lab"
+        width="1262"
+        height="234"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  </div>
+
+  {/* ⚠️ SÓLO EL LUGAR. Acá iba también "Trabajamos con proyectos de todas
+       partes", y se sacó: en un pie de sección, una aclaración al lado de un
+       dato convierte el dato en una excusa —"somos de acá, PERO"—. Que el
+       estudio sea de Buenos Aires no necesita defensa. */}
+  <p class="v2-est__pie">Buenos Aires · Argentina</p>
+</section>
+
+<style>
+  /* ══════════════════════════════════════════════════════
+     EL MARCO
+     ══════════════════════════════════════════════════════
+     ⚠️ TRES FILAS: RÓTULO, ARGUMENTO, PIE. La del medio se lleva todo lo que
+     sobre y centra su contenido, así que el aire se reparte solo en cualquier
+     pantalla en vez de salir de un `padding` elegido a ojo. En una notebook
+     quedan unos ciento cuarenta píxeles arriba y abajo del bloque; en un
+     monitor, más de trescientos. Es la misma regla en los dos casos.
+
+     ⚠️ `dvh` Y NO `svh` — ver la nota de cabecera. Es la diferencia entre una
+     sección que LLENA la pantalla y una que se queda corta en cuanto la barra
+     del navegador se retrae. */
+  .v2-est {
+    position: relative;
+    min-height: 100dvh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: clamp(40px, 7vh, 96px) var(--v2-margen) clamp(36px, 6vh, 84px);
+    background: var(--v2-papel);
+    color: var(--v2-tinta);
+  }
+  .v2-est > .v2-meta { margin: 0; }
+
+  .v2-est__centro {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    /* ⚠️ EL HUECO ENTRE EL TITULAR Y EL RELATO ES GRANDE A PROPÓSITO. Son dos
+       registros distintos —una afirmación y una historia— y pegados se leen
+       como un solo párrafo que arranca en grande. Con aire, el titular se
+       sostiene solo y el relato pasa a ser lo que lo explica. */
+    gap: clamp(28px, 5vh, 64px);
+    /* Y el bloque respira contra el rótulo y el pie, no sólo por adentro. */
+    padding: clamp(24px, 4vh, 56px) 0;
+  }
+
+  /* ⚠️ LA MISMA FÓRMULA QUE DISCIPLINAS Y PORTFOLIO: 54 px a 900 y 76 a 1520.
+     Es el cuarto lugar donde aparece; si se cambia una, se cambian las cuatro.
+
+     ⚠️ Y ACÁ NO LLEVA TOPE DE ANCHO. Lo tenía —22ch— mientras la frase medía
+     tres renglones y había que forzarle dónde cortar. Con cuatro palabras, un
+     tope sólo puede partirlas mal: a 1440 la frase entra entera en un renglón y
+     en un teléfono se parte sola, donde corresponde. */
+  .v2-est__titulo {
+    margin: 0;
+    /* Sangría óptica: ver la nota en `v2.css`. Alinea la TINTA con el margen. */
+    margin-left: calc(var(--sangria) * -1);
+    font-family: var(--v2-display);
+    font-weight: 800;
+    font-size: clamp(54px, calc(22.06px + 3.55vw), 76px);
+    line-height: 1;
+    letter-spacing: -.035em;
+  }
+
+  /* El bloque que firma: el relato y abajo el logotipo, con el hueco corto que
+     corresponde entre un texto y su firma. */
+  .v2-est__cuerpo {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 3.4vh, 40px);
+    align-items: flex-start;
+  }
+
+  /* ⚠️ LA FIRMA NO ES UN LOGO: ES DEL TAMAÑO DE LA LETRA CHICA. A ciento
+     setenta píxeles queda del ancho de dos palabras del relato, que es
+     exactamente lo que pesa una firma abajo de un texto. Más grande vuelve a
+     ser un logo puesto ahí, y entonces compite con el titular que firma. */
+  .v2-est__firma {
+    display: block;
+    width: clamp(132px, 12vw, 176px);
+    height: auto;
+  }
+
+  /* ⚠️ DOS PÁRRAFOS, UNA COLUMNA Y UN RENGLÓN QUE SE LEE. 54ch es el largo con
+     el que el ojo vuelve al principio sin perderse; a lo ancho de un monitor,
+     el mismo texto sale en renglones de ciento veinte caracteres y hay que
+     seguirlos con el dedo. El aire que queda a la derecha es aire, no hueco. */
+  .v2-est__relato {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(14px, 2.2vh, 22px);
+    max-width: 54ch;
+  }
+  .v2-est__relato p {
+    margin: 0;
+    font-size: clamp(16px, 1.15vw, 18.5px);
+    line-height: 1.65;
+    letter-spacing: -.005em;
+  }
+
+  .v2-est__pie {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .9em;
+    margin: 0;
+    font-family: var(--v2-mono);
+    font-size: clamp(10.5px, .85vw, 12.5px);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+  .v2-est__pie { color: var(--v2-tinta-70); }
+
+  /* ══════════════════════════════════════════════════════
+     PANTALLA VERTICAL
+     ══════════════════════════════════════════════════════ */
+  @media (orientation: portrait) {
+    .v2-est__titulo { font-size: clamp(34px, 9.6vw, 58px); }
+    .v2-est__relato { max-width: none; }
+  }
+
+  /* ⚠️ VERTICAL Y CORTA —un iPhone SE, 667 px de alto—. El aire de la fila del
+     medio sale de lo que sobra, y acá sobra poco: lo que baja es el titular, no
+     el relato, que es lo único que hay para leer. */
+  @media (orientation: portrait) and (max-height: 700px) {
+    .v2-est { padding-top: clamp(28px, 4vh, 44px); }
+    .v2-est__centro { gap: 22px; padding: 18px 0; }
+    .v2-est__cuerpo { gap: 18px; }
+    .v2-est__titulo { font-size: clamp(30px, 8vw, 44px); }
+    .v2-est__relato p { font-size: 15.5px; line-height: 1.55; }
+  }
+
+  /* ⚠️ APAISADO Y BAJO: hay 390 px de alto en total, así que el aire es lo
+     primero que se recorta. */
+  @media (orientation: landscape) and (max-height: 560px) {
+    .v2-est { padding: 20px var(--v2-margen) 22px; }
+    .v2-est__centro { gap: 14px; padding: 10px 0; }
+    .v2-est__cuerpo { gap: 12px; }
+    .v2-est__titulo { font-size: clamp(28px, 4vw, 40px); }
+    .v2-est__firma { width: 118px; }
+    .v2-est__relato { max-width: 68ch; gap: 8px; }
+    .v2-est__relato p { font-size: 13px; line-height: 1.5; }
+    .v2-est__pie { font-size: 10px; }
+  }
+</style>

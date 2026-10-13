@@ -1,0 +1,100 @@
+---
+// ⚠️ LA GRILLA SE ALIMENTA DE `data/v4/proyectos.ts`: sumar un proyecto es
+// sumar un objeto ahí. Cada tarjeta muestra la portada de escritorio, el hero
+// entero y apaisado también en el teléfono, y al tocarla se abre el visor:
+// un iPad apaisado en escritorio, un iPhone en vertical, con el sitio real
+// adentro. Ver Visor.astro.
+import { PROYECTOS } from '../../data/v4/proyectos'
+---
+<section class="proyectos pantalla pantalla--alta" id="proyectos">
+  <div class="centro">
+    <div class="cab proyectos__cab" data-entra>
+      <div>
+        <p class="meta rotulo">Proyectos</p>
+        <h2>Lo que construimos.</h2>
+      </div>
+    </div>
+
+    <ul class="grilla">
+      {PROYECTOS.map((p, k) => (
+        <li class="caso" data-entra="tarjeta" style={`--acento:${p.acento}`}>
+          <button class="caso__abrir" type="button" data-visor={p.slug} data-sitio={p.sitio} data-nombre={p.nombre} data-zoom={p.zoom} aria-label={`Abrir ${p.nombre} en el visor`}>
+            <span class="caso__portada">
+              <img src={`/v4/proyectos/${p.slug}.webp`} alt={`Portada del sitio de ${p.nombre}`} width="1440" height="900" loading="lazy" decoding="async" />
+              <span class="caso__ver">Abrir el sitio <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 13 13 3M5 3h8v8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </span>
+          </button>
+          <div class="caso__pie">
+            <div>
+              <h3 class="caso__nombre">{p.nombre}</h3>
+              <p class="meta caso__tipo">{p.tipo} · {p.ano}</p>
+            </div>
+            <p class="caso__resumen">{p.resumen}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .proyectos__cab { gap: 18px 48px; }
+  .grilla { display: grid; gap: clamp(28px, 4vh, 44px) clamp(20px, 2.4vw, 32px); grid-template-columns: 1fr; }
+  .caso { display: grid; gap: 16px; }
+  .caso__abrir {
+    display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; text-align: left;
+    border-radius: 18px;
+  }
+  .caso__portada {
+    position: relative; display: block; overflow: hidden; border-radius: 18px;
+    border: 1px solid var(--linea); background: var(--suave); aspect-ratio: 16 / 10;
+    box-shadow: 0 30px 60px -40px rgba(11,11,15,.35);
+    transition: transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease;
+  }
+  .caso__portada img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform .9s cubic-bezier(.16,.8,.3,1); }
+  /* Al aparecer, la portada se asienta: arranca apenas más grande. */
+  /* El asentado de la portada lo hace el sistema de movimiento, igual que
+       para todas las imagenes de la web: aca no hace falta declararlo. */
+  /* El filete del proyecto: su color, dos píxeles, en la base de la portada. */
+  .caso__portada::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--acento); }
+  .caso__ver {
+    position: absolute; right: 14px; bottom: 14px; display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 14px; border-radius: 999px; background: rgba(11,11,15,.82); color: #fff;
+    font-size: 13px; font-weight: 500; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    opacity: 0; transform: translateY(6px); transition: opacity .25s ease, transform .25s ease;
+  }
+  .caso__ver svg { width: 12px; height: 12px; }
+  @media (hover: hover) and (pointer: fine) {
+    .caso__abrir:hover .caso__portada { transform: translateY(-4px); box-shadow: 0 40px 70px -40px rgba(11,11,15,.45); }
+    .caso__abrir:hover .caso__portada img { transform: scale(1.03); }
+    .caso__abrir:hover .caso__ver { opacity: 1; transform: none; }
+  }
+  @media (pointer: coarse) { .caso__ver { opacity: 1; transform: none; } }
+  .caso__pie { display: grid; gap: 10px; padding: 0 4px; }
+  .caso__nombre { font-size: clamp(20px, 1.8vw, 24px); }
+  .caso__tipo { margin-top: 4px; color: var(--gris-2); }
+  .caso__resumen { max-width: 52ch; color: var(--gris); font-size: 15px; }
+  @media (min-width: 760px) { .grilla { grid-template-columns: repeat(2, 1fr); } }
+  /* ⚠️ LAS TARJETAS COMPARTEN FILAS (subgrid): portada, título + tipo, bajada.
+     Antes cada tarjeta se estiraba al alto de la más alta de la fila; el
+     espacio sobrante caía en la fila de la portada y el <button> centra su
+     contenido en vertical, así que la de bajada más corta (Meridiano) bajaba
+     entera. Con subgrid cada cosa arranca en la misma línea en las cuatro. */
+  @media (min-width: 760px) {
+    .caso { grid-row: span 3; grid-template-rows: subgrid; row-gap: 10px; }
+    .caso__abrir { align-self: start; margin-bottom: 6px; }
+    .caso__pie { display: contents; }
+    .caso__pie > * { padding: 0 4px; }
+  }
+  /* Escritorio y iPad apaisado: los cuatro en una fila. A dos columnas las portadas medían 620px y la sección no entraba.
+     ⚠️ ARRANCA EN 1000 Y NO EN 1200: el iPad apaisado va de 1024 a 1194 y en dos columnas cada portada medía ~500px de ancho. */
+  @media (min-width: 1000px) {
+    .grilla { grid-template-columns: repeat(4, 1fr); gap: 22px; }
+    .caso { row-gap: 8px; }
+    .caso__portada { border-radius: 14px; }
+    .caso__nombre { font-size: 18px; }
+    .caso__resumen { font-size: 13.5px; }
+    .caso__ver { right: 10px; bottom: 10px; padding: 7px 11px; font-size: 12px; }
+  }
+  /* Sin bajada (Gonzalo la sacó): la cabecera es sólo rótulo y título. */
+</style>

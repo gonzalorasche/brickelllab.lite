@@ -1,0 +1,50 @@
+---
+// La página de error: la sirve Hostinger para cualquier dirección que no
+// existe (ver `ErrorDocument` en public/.htaccess). Mismo sistema que el resto:
+// rótulo, titular y dos botones. No se indexa.
+import V4 from '../layouts/V4.astro'
+import Nav from '../components/v4/Nav.astro'
+import Pie from '../components/v4/Pie.astro'
+---
+<V4 title="Página no encontrada — Brickell Lab" ruta="/404.html" robots="noindex, follow">
+  <Nav />
+  <div id="smooth-wrapper"><div id="smooth-content">
+    <main>
+      <section class="pantalla error">
+        <div class="centro error__caja">
+          <img class="error__dibujo" src="/v4/404.webp" alt="La b de Brickell Lab, asustada: esta página no existe" width="1080" height="776" data-entra />
+          <div class="error__texto">
+          <div class="cab" data-entra>
+            <p class="meta rotulo">Error 404</p>
+            <h1>Esta página no existe.</h1>
+            <p class="bajada">Puede que la dirección haya cambiado: la web se renovó. Todo lo que buscabas está a un clic.</p>
+          </div>
+          <div class="acciones error__acciones" data-entra>
+            <a class="boton" href="/">Ir al inicio</a>
+            <a class="boton boton--claro" href="/blog/">Ver el blog</a>
+          </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <Pie />
+  </div></div>
+
+  <script is:inline>
+    // Página clara: la barra va en tinta, como en las demás internas.
+    document.getElementById('nav').classList.add('nav--tinta')
+  </script>
+</V4>
+
+<style>
+  .error h1 { font-size: var(--t-titulo); }
+  .error__acciones { display: flex; flex-wrap: wrap; gap: 12px; }
+  /* El dibujo arriba en el teléfono; al costado del texto en escritorio. */
+  .error__caja { display: grid; gap: 24px; align-items: center; }
+  /* `multiply`: el dibujo trae un fondo casi blanco que se notaba como recuadro. */
+  .error__dibujo { width: min(100%, 420px); height: auto; justify-self: center; mix-blend-mode: multiply; }
+  @media (min-width: 900px) {
+    .error__caja { grid-template-columns: 1fr 1fr; gap: clamp(40px, 5vw, 80px); }
+    .error__dibujo { order: 2; width: 100%; max-width: 520px; }
+  }
+</style>

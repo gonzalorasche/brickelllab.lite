@@ -1,0 +1,29 @@
+/* ============================================================
+   LA TARJETA DE ARTÍCULO — una sola, para las tres partes
+   ============================================================
+   La usan la sección de la home, la página de artículos y el pie de cada
+   artículo. La foto va A SANGRE arriba y a los costados de la tarjeta (sin
+   margen, apoyada en los bordes), apaisada 16:9; debajo, la fecha, el título
+   y una bajada corta. Si cambia acá, cambia en los tres lados. */
+.tarjeta {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--papel);
+  border: 1px solid var(--linea);
+  text-decoration: none;
+  color: var(--tinta);
+  transition: transform .35s cubic-bezier(.2, .7, .2, 1), box-shadow .35s ease, border-color .35s ease;
+}
+.tarjeta__foto { display: block; aspect-ratio: 16 / 9; background: var(--suave); overflow: hidden; }
+.tarjeta__foto img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s cubic-bezier(.2, .7, .2, 1); }
+.tarjeta__cuerpo { display: grid; align-content: start; gap: 8px; padding: clamp(16px, 2vw, 22px); }
+.tarjeta__fecha { color: var(--gris-2); }
+.tarjeta__titulo { font-size: 17.5px; font-weight: 600; letter-spacing: -.02em; line-height: 1.25; }
+.tarjeta__bajada { color: var(--gris); font-size: 14px; line-height: 1.55; }
+@media (hover: hover) and (pointer: fine) {
+  .tarjeta:hover { transform: translateY(-3px); box-shadow: 0 30px 60px -40px rgba(11, 11, 15, .35); border-color: var(--linea-2); }
+  .tarjeta:hover .tarjeta__foto img { transform: scale(1.04); }
+}

@@ -1,0 +1,75 @@
+---
+import Cargando from './Cargando.astro'
+// ============================================================
+// EL VISOR: UN iPAD O UN iPHONE CON EL SITIO ADENTRO
+// ============================================================
+// ⚠️ EL MARCO ES CSS, NO UNA IMAGEN: escala sin perder nitidez y se pinta
+// del color del proyecto. El sitio va en un iframe del mismo origen con el
+// tamaño REAL del aparato (1194×834 el iPad apaisado, 390×844 el iPhone) y el
+// marco entero se escala con `transform` para caber en la ventana. Así el
+// sitio se ve exactamente como se vería en ese aparato, no estirado.
+//
+// ⚠️ CUÁL SE MUESTRA lo decide la ventana, no el aparato del visitante: iPad
+// si hay 1000 px de ancho y 640 de alto, iPhone si no. Un teléfono acostado
+// (844×390) cae en iPhone: un iPad ahí quedaría a 0,4 y no se lee nada.
+//
+// ⚠️ VIVE FUERA DEL SMOOTHER (es fixed) y el JS le carga el `src` recién al
+// abrir: cuatro sitios con video cada uno no se bajan hasta que hace falta.
+// Como el iframe es del mismo origen, al cargar se le esconde la barra de
+// scroll: ningún iPad dibuja una.
+---
+<div class="visor" id="visor" role="dialog" aria-modal="true" aria-labelledby="visor-nombre" hidden>
+  <div class="visor__telon" id="visor-telon"></div>
+  <div class="visor__cab">
+    <p class="visor__nombre" id="visor-nombre"></p>
+    <button class="visor__cerrar" type="button" id="visor-cerrar" aria-label="Cerrar">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3 3 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="visor__escena" id="visor-escena">
+    <div class="aparato" id="aparato">
+      <div class="aparato__pantalla">
+        <iframe id="visor-iframe" title="Sitio del proyecto" loading="lazy"></iframe>
+        <div class="aparato__cargando" id="visor-cargando"><Cargando tam={58} etiqueta="Cargando el sitio del proyecto" /></div>
+      </div>
+      <i class="aparato__camara" aria-hidden="true"></i>
+    </div>
+  </div>
+</div>
+
+<style>
+  .visor { position: fixed; inset: 0; z-index: 80; display: grid; grid-template-rows: auto 1fr; }
+  .visor[hidden] { display: none; }
+  .visor__telon { position: absolute; inset: 0; background: rgba(11,11,15,.94); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .visor__cab { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: calc(14px + env(safe-area-inset-top)) var(--margen) 10px; color: #fff; }
+  .visor__nombre { font-weight: 500; font-size: 15px; }
+  .visor__cerrar { width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.08); color: #fff; display: grid; place-items: center; cursor: pointer; transition: background-color .2s ease; }
+  .visor__cerrar svg { width: 14px; height: 14px; }
+  .visor__cerrar:hover { background: #fff; color: var(--tinta); }
+  .visor__escena { position: relative; z-index: 1; display: grid; place-items: center; padding: 8px var(--margen) calc(16px + env(safe-area-inset-bottom)); min-height: 0; }
+
+  /* ── El aparato ── */
+  .aparato {
+    position: relative; background: #101014; box-sizing: content-box;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 40px 100px -30px rgba(0,0,0,.9), inset 0 0 0 2px #2a2a30;
+    transform-origin: center; animation: visor-entra .35s cubic-bezier(.2,.7,.2,1);
+  }
+  @keyframes visor-entra { from { opacity: 0; transform: scale(calc(var(--escala, 1) * .96)) } to { opacity: 1; transform: scale(var(--escala, 1)) } }
+  .aparato__pantalla { position: relative; width: var(--w); height: var(--h); overflow: hidden; background: #fff; }
+  /* El tamaño lo escribe el JS (ver `medir` en la home): cuando el sitio de
+     adentro necesita una pantalla más grande para que le entre el hero, el
+     iframe se agranda y se achica con transform. */
+  .aparato__pantalla iframe { width: var(--w); height: var(--h); border: 0; display: block; background: #fff; transform-origin: top left; }
+  .aparato__cargando { position: absolute; inset: 0; display: grid; place-items: center; background: #fff; transition: opacity .3s ease; }
+  .aparato--lista .aparato__cargando { opacity: 0; pointer-events: none; }
+  .aparato__camara { display: none; position: absolute; background: #050508; }
+
+  /* iPad apaisado: 1194×834, bisel 22, radio 34. */
+  .aparato--ipad { --w: 1194px; --h: 834px; padding: 22px; border-radius: 34px; }
+  .aparato--ipad .aparato__pantalla { border-radius: 14px; }
+  .aparato--ipad .aparato__camara { display: block; left: 8px; top: 50%; width: 7px; height: 7px; border-radius: 50%; transform: translateY(-50%); background: #1f1f26; box-shadow: inset 0 0 0 1.5px #0a0a0d; }
+
+  /* iPhone: 390×844, bisel 12, radio 54. Sin isla dinámica: tapaba la barra de los sitios. */
+  .aparato--iphone { --w: 390px; --h: 844px; padding: 12px; border-radius: 58px; }
+  .aparato--iphone .aparato__pantalla { border-radius: 46px; }
+</style>

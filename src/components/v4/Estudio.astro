@@ -1,0 +1,40 @@
+---
+// ⚠️ EL ESTUDIO NO TIENE CARA NI NÚMEROS: habla en plural y cuenta de dónde
+// sale el nombre. La foto es la oficina (antes era el skyline de Brickell;
+// quedó en public/v4/estudio-ciudad.webp): en escritorio va a la izquierda del
+// texto y en el teléfono, al final. Es cuadrada y el marco es 5:4 / 4:3: se
+// recorta arriba y abajo, anclada un poco abajo del centro para que entren
+// las pantallas y el escritorio.
+---
+<section class="estudio pantalla" id="estudio">
+  <div class="centro estudio__caja">
+    <figure class="estudio__foto" data-entra="medio" style="--radio-medio:18px">
+      <img src="/v4/estudio-oficina.webp" alt="La oficina de Brickell Lab: pantallas con proyectos del estudio, escritorios y plantas" width="1200" height="1200" loading="lazy" decoding="async" data-para="30" />
+      <figcaption class="meta">Brickell Lab</figcaption>
+    </figure>
+    <div class="cab" data-entra>
+      <p class="meta rotulo">El estudio</p>
+      <h2>Un nombre que es una forma de trabajar.</h2>
+      <p class="bajada">Brickell Lab nació en Buenos Aires inspirado por una ciudad que nunca parece terminar de construirse: Brickell, Miami. La idea detrás del nombre terminó convirtiéndose en una forma de trabajar.</p>
+      <p class="texto" data-entra>Nos interesan los proyectos que todavía no están completamente definidos. Las ideas que necesitan convertirse en algo concreto. Las marcas que quieren dejar de parecerse a todas las demás. Trabajamos entre diseño, tecnología y estrategia, con proyectos de distintos lugares.</p>
+      <p class="meta estudio__pie" data-entra>Buenos Aires · Argentina</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* En el teléfono la foto va al final: primero el texto, después la ciudad.
+     En escritorio vuelve a su columna, a la izquierda. */
+  .estudio__caja { display: grid; gap: clamp(28px, 5vh, 56px); align-items: center; }
+  .estudio__foto { order: 2; }
+  .estudio .cab { order: 1; }
+  .estudio .cab { margin-bottom: 0; }
+  .estudio__foto { margin: 0; position: relative; overflow: hidden; border-radius: 18px; aspect-ratio: 4 / 3; }
+  .estudio__foto img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; }
+  /* La oficina es una foto muy clara: el rótulo lleva un velo oscuro abajo
+     para leerse (sobre el skyline no hacía falta). */
+  .estudio__foto::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; background: linear-gradient(transparent, rgba(11,11,15,.45)); pointer-events: none; }
+  .estudio__foto figcaption { position: absolute; left: 14px; bottom: 12px; z-index: 1; color: rgba(255,255,255,.92); }
+  .estudio__pie { color: var(--gris-2); margin-top: 8px; }
+  @media (min-width: 900px) { .estudio__caja { grid-template-columns: 1fr 1fr; gap: clamp(40px, 5vw, 80px); } .estudio__foto { aspect-ratio: 5 / 4; order: 0; } }
+</style>

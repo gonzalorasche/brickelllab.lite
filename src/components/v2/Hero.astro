@@ -1,0 +1,887 @@
+---
+// ============================================================
+// 01 · HERO
+// ============================================================
+//
+// Tres franjas de lado a lado, sin márgenes ni esquinas:
+//
+//   1. LA FOTO — la avenida de Brickell en blanco y negro, con la barra, el
+//      titular, la bajada y el botón a proyectos encima.
+//   2. LA MARQUESINA — las disciplinas pasando.
+//
+// ⚠️ LÚMINA YA NO ESTÁ ACÁ. Tuvo una banda propia al pie, con un iPhone
+// asomando, y cada ajuste de esa banda desarmaba algo de la portada. Se mudó a
+// la sección siguiente, abajo de la declaración, donde tiene lugar.
+//   3. LA BANDA — "Creadores de lúmina" y un iPhone que asoma desde ella, se
+//      mete en la foto y es el enlace a Lúmina.
+//
+// ⚠️ LAS TRES REGLAS QUE SOSTIENEN ESTA PORTADA. Salieron de rehacerla muchas
+// veces y cada una es la corrección de un error que ya pasó:
+//
+//   · LA FOTO ES LO ÚNICO ELÁSTICO. La barra, la marquesina y la banda miden lo
+//     que miden; la foto se queda con lo que sobre. Por eso entra igual en 1920
+//     que en 360 sin arbitrar nada entre piezas.
+//   · TODO LO DE LÚMINA SALE DEL ANCHO DEL TELÉFONO (`--u`). El logo, la flecha
+//     y su círculo son fracciones de esa medida, así que la proporción entre
+//     ellos es la misma en todas las pantallas. Cuando cada uno tenía su propio
+//     `clamp`, en el teléfono la flecha quedaba chica al lado del aparato y en
+//     escritorio el logo de Lúmina llegó a medir lo mismo que el de Brickell.
+//   · EL TITULAR SE MIDE COMO EN TABLET. Es la pantalla donde mejor quedó, y de
+//     ahí salen los dos números: 7,8% del ancho y 10,5% del alto, gana el menor.
+//     Con más, en escritorio el punto final quedaba debajo del teléfono.
+//
+// ⚠️ LA FOTO ES BRICKELL Y NO ES DISEÑO HEREDADO. Salió del material que ya
+// estaba en `public/`; el brief decía no reusar nada del sitio viejo, y ésta es
+// la excepción: no es un recurso de la web anterior, es el lugar que le da el
+// nombre al estudio. Va en blanco y negro para que el único color de la portada
+// sea el degradado de la casa.
+//
+// ⚠️ LO QUE DICE ESTA PORTADA SOBRE LÚMINA NO SE INFIERE, SE PREGUNTA. Acá se
+// escribió "en producción" y no era cierto, y después tres columnas sobre qué
+// hace el producto que nadie había pedido. Lo único que la portada afirma es
+// que Brickell hizo Lúmina, y el resto lo cuenta el sitio del otro lado del
+// enlace.
+// ============================================================
+---
+
+<section class="v2-hero" id="hero">
+  <!-- El color de la banda, pintado una sola vez detrás de todo lo que no es
+       la foto. -->
+  <div class="v2-fondo" aria-hidden="true"></div>
+
+  <!-- ═══════════════ 1 · LA FOTO ═══════════════ -->
+  <div class="v2-lienzo" id="v2-lienzo">
+    <!-- ⚠️ LA CÁMARA ES LA QUE SE MUEVE, NO EL VIDEO. El paralaje escribe un
+         `transform` acá; si se lo escribiera al <video>, pelearía con el
+         `object-fit`. Y sobresale arriba y abajo justo lo que va a recorrer:
+         sin ese margen, al desplazarse deja ver el fondo. -->
+    <div class="v2-camara" aria-hidden="true">
+      <video
+        class="v2-foto"
+        poster="/v2/brickell-hero.webp"
+        autoplay loop muted playsinline preload="auto"
+        data-pelicula
+      ></video>
+    </div>
+    <!-- ⚠️ LA FUENTE LA ELIGE ESTE SCRIPT, UNA SOLA VEZ. Un <video> no
+         entiende `media` en sus <source> —eso es sólo de <picture>—, así que
+         con las dos fuentes puestas el navegador se baja la que quiere.
+
+         ⚠️ Y NO SE CAMBIA AL GIRAR, A PROPÓSITO. Llegó a hacerlo: al girar
+         buscaba el encuadre que correspondía. Se sacó porque cada giro se
+         bajaba el otro archivo —otro megabyte— y cortaba la toma para
+         recargarla. Se elige al entrar y listo: girando, el mismo video se
+         reencuadra solo con `object-fit`, que es exactamente para esto. -->
+    <script is:inline>
+      (() => {
+        const v = document.currentScript.previousElementSibling.querySelector('[data-pelicula]')
+
+        // ⚠️ HAY CASOS EN LOS QUE EL VIDEO NO SE BAJA NUNCA, y el póster se
+        // queda de fondo fijo: cuando el sistema pide menos movimiento, cuando
+        // el aparato está en ahorro de datos, y cuando la conexión es de las
+        // lentas. Son tres megas: bajárselos igual sería cobrarle la decoración
+        // a quien menos puede pagarla.
+        const red = navigator.connection || {}
+        const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches
+        const pobre = red.saveData === true || /(^|-)2g$|^slow-2g$|^3g$/.test(red.effectiveType || '')
+        if (quieto || pobre) return
+
+        // ⚠️ AV1 SI EL NAVEGADOR PUEDE, Y SI NO, H.264. Con el mismo nivel de
+        // calidad medido (SSIM 0,91) AV1 pesa un tercio menos: 2,96 MB contra
+        // 4,38. No reemplaza al otro —Safari sólo lo decodifica en aparatos
+        // nuevos— así que están los dos y cada uno se lleva el que puede.
+        const hayAv1 = v.canPlayType('video/mp4; codecs="av01.0.05M.08"') === 'probably'
+
+        const poner = () => {
+          const vert = innerHeight > innerWidth
+          const base = vert ? '/v2/brickell-hero-vertical'
+            : innerWidth < 900 ? '/v2/brickell-hero-1280' : '/v2/brickell-hero'
+          v.poster = vert ? '/v2/brickell-hero-vertical.webp' : '/v2/brickell-hero.webp'
+          v.src = base + (hayAv1 ? '.av1.mp4' : '.mp4')
+          const p = v.play()
+          if (p) p.catch(() => {})
+        }
+
+        // ⚠️ QUIETO CUANDO NO SE VE. Un video reproduciéndose atrás de tres
+        // secciones gasta CPU y batería para nadie. En un teléfono es lo que
+        // evita que la página se caliente mientras se lee el resto.
+        //
+        // ⚠️ SE OBSERVA LA SECCIÓN QUE TAPA, NO EL VIDEO. La portada es
+        // `sticky`: para el navegador nunca deja de estar en pantalla, así que
+        // observando el <video> el observador no se disparaba nunca. Es la
+        // misma trampa que ya tenía la marquesina.
+        //
+        // ⚠️ Y SE ARMA DESPUÉS, NO ACÁ. Este script corre mientras se parsea el
+        // hero: en ese instante las secciones de abajo todavía no existen y
+        // `querySelector` devolvía nulo.
+        const vigilar = () => {
+          const tapa = document.querySelector('.v2-encima')
+          if (!tapa) return
+          new IntersectionObserver(([e]) => {
+            if (!v.getAttribute('src')) return
+            if (e.isIntersecting) v.pause()
+            else { const p = v.play(); if (p) p.catch(() => {}) }
+          }, { rootMargin: '0px 0px -72% 0px' }).observe(tapa)
+        }
+
+        // ⚠️ EL VIDEO ARRANCA DESPUÉS DE QUE LA PÁGINA TERMINÓ DE CARGAR. Con el
+        // `src` puesto en el HTML competía por el ancho de banda con el póster,
+        // las fuentes y el CSS: en 4G lento el LCP de escritorio se iba a 3,02 s
+        // —el umbral son 2,5—. Esperando a `load` y a un hueco de inactividad,
+        // lo que se pinta primero no lo frena nadie y el video entra atrás, sin
+        // que se note: el póster ya está en pantalla.
+        const arrancar = () => (window.requestIdleCallback || setTimeout)(() => { poner(); vigilar() }, { timeout: 1200 })
+        if (document.readyState === 'complete') arrancar()
+        else addEventListener('load', arrancar, { once: true })
+      })()
+    </script>
+    <div class="v2-velo" aria-hidden="true"></div>
+    <div class="v2-aura" aria-hidden="true"></div>
+
+    <div class="v2-dicho">
+      <!-- ⚠️ EL LOGO ES PARTE DEL BLOQUE, NO UNA BARRA ARRIBA. Vivió en una
+           franja propia pegada al borde de arriba, con un botón "Hablemos" al
+           otro lado; los dos se fueron. Acá adentro, la marca, el titular, la
+           bajada y la barra son UNA pieza centrada en la pantalla: se mueven
+           juntas, respiran juntas y el paralaje se las lleva juntas. -->
+      <a class="v2-marca v2-marca--papel" href="/v2/" aria-label="Brickell Lab"></a>
+      <h1 class="v2-titulo-hero">
+        <span class="v2-ln"><i>Diseñamos</i></span>
+        <span class="v2-ln"><i>lo que <em>tu marca</em></i></span>
+        <span class="v2-ln"><i>todavía no tiene.</i></span>
+      </h1>
+      <p class="v2-bajada">
+        De la idea al producto funcionando.
+        <span class="v2-rubro">Estudio digital</span>
+      </p>
+
+      <!-- ⚠️ UNA FLECHA Y NADA MÁS. Acá hubo una barra que se arrastraba para
+           darle color a la ciudad, y se eliminó: "no suma en nada" (Gonzalo).
+           El color ahora entra solo con el scroll —ver el script—, así que lo
+           único que falta decir es que abajo sigue la página. Y para eso la
+           palabra "Scroll" sobra: una flecha hacia abajo que late lo dice en
+           cualquier idioma y no compite con el titular, que es lo único que
+           tiene que leerse en esta pantalla.
+
+           Se va apagando a medida que la ciudad toma color, o sea a medida que
+           uno ya empezó a bajar y la flecha dejó de hacer falta. -->
+      <p class="v2-baja" aria-hidden="true">
+        <svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 2 · LA MARQUESINA ═══════════════
+       ⚠️ DECORATIVA: NI ENLACES NI PAUSA. Fueron enlaces a la sección de
+       disciplinas y se frenaba al pasar el puntero para que se pudieran tocar;
+       las dos cosas convertían una textura en un menú que se escapaba. Ahora es
+       texto que pasa, y entera lleva `aria-hidden`: las disciplinas se cuentan
+       en su sección, un lector de pantalla no tiene por qué leerlas acá. -->
+  <div class="v2-tiras" aria-hidden="true">
+    <div class="v2-tiras__tren" id="v2-tren">
+      <span class="v2-tiras__grupo">
+        <span>Desarrollo web</span>
+        <span>Experiencias digitales</span>
+        <span>Identidad &amp; diseño</span>
+        <span>Productos digitales</span>
+        <span>Presentaciones para empresas</span>
+      </span>
+    </div>
+  </div>
+
+</section>
+
+<style>
+  /* ══════════════════════════════════════════════════════
+     EL MARCO
+     ══════════════════════════════════════════════════════
+
+     ⚠️ MÁS ALTO QUE LA VENTANA, PERO SÓLO EN PINTURA. En un iPhone, al
+     esconderse la barra de Safari la ventana crece y por debajo asomaba la
+     sección siguiente. `--cubre` es lo que mide esa barra (`lvh − svh`, cero en
+     escritorio) más un colchón: se suma al alto y se devuelve como relleno de
+     abajo. Lo que crece es el fondo.
+
+     ⚠️ Y EL ALTO SE MIDE EN `svh`, NO EN `dvh`. Es la corrección del temblequeo
+     de Safari: `dvh` cambia cuadro a cuadro mientras la barra del navegador se
+     contrae, así que la portada entera se reacomodaba EN MEDIO DEL SCROLL —con
+     el paralaje encima, se veía saltar—. `svh` es el viewport chico y no cambia
+     nunca; el crecimiento de la ventana ya lo cubre `--cubre`. Por eso con la
+     barra ya contraída se veía bien y con la barra desplegada, no: era el único
+     momento en que `dvh` estaba cambiando.
+
+     ⚠️ LAS FILAS: la foto es `minmax(0, 1fr)` —la única que cede— y las otras
+     dos, `auto`. Con la foto en `auto` la portada crecía más que la ventana. */
+  .v2-hero {
+    --cubre: calc(100lvh - 100svh + 24px);
+    /* La marca de Brickell. Vive acá porque el logo de Lúmina se controla
+       contra ella: nunca más grande que el 72%. */
+    --marca: clamp(150px, 14.5vw, 248px);
+
+    position: relative;
+    box-sizing: border-box;
+    height: calc(100svh + var(--cubre));
+    padding: 0 0 var(--cubre);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: clamp(10px, 1.8vh, 22px);
+    overflow: hidden;
+    background: #0B0713;
+    color: #fff;
+  }
+
+  /* ⚠️ EL APILADO, DE ATRÁS PARA ADELANTE, Y CADA CAPA TIENE QUE ESTAR ACÁ:
+       0 el fondo · 1 la foto · (auto) la banda · 3 la marquesina · 5 el iPhone.
+     La banda NO lleva `z-index`: con uno propio armaría su contexto de apilado y
+     encerraría al iPhone, que no podría pasarle por encima a la marquesina. */
+  .v2-fondo {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(58% 70% at 88% 100%,
+        color-mix(in srgb, var(--acento) 34%, transparent) 0%,
+        color-mix(in srgb, var(--acento) 14%, transparent) 40%,
+        transparent 74%),
+      #0E0820;
+  }
+
+  /* ══════════════════════════════════════════════════════
+     1 · LA FOTO
+     ══════════════════════════════════════════════════════ */
+  .v2-lienzo {
+    position: relative;
+    z-index: 1;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 0;
+    /* El titular se mide contra esta caja, no contra la ventana. */
+    container-type: inline-size;
+    display: grid;
+    /* Una sola fila: el bloque se centra solo, sin franja de barra que repartir. */
+    grid-template-rows: minmax(0, 1fr);
+    padding: clamp(24px, 4vh, 54px) var(--v2-margen) clamp(16px, 3vh, 44px);
+    background: #0B0713;
+
+    /* ⚠️ RECTA, SIN CURVA. Tuvo el borde de abajo recortado con una máscara en
+       curva, y se sacó: la foto termina en una línea recta de lado a lado, que
+       con la marquesina abajo alcanza para separar las franjas. Si vuelve, era
+       una máscara SVG con `preserveAspectRatio="none"` en este mismo lugar. */
+  }
+
+  /* ── La cámara y la película ────────────────────────────
+     ⚠️ LA CÁMARA SOBRESALE `--viaje` ARRIBA Y ABAJO, que es exactamente lo que
+     el paralaje la va a correr. Sin ese excedente, apenas empieza a moverse
+     aparece una franja del fondo en el borde de abajo. */
+  /* ⚠️ EL EXCEDENTE TIENE QUE SER MAYOR QUE EL RECORRIDO, Y NO ALCANZA CON QUE
+     SEAN IGUALES. El excedente es un porcentaje del LIENZO y el desplazamiento,
+     un porcentaje de la CÁMARA —que mide el lienzo más dos excedentes—. Con 14
+     y 14, el desplazamiento real era 14 × 1,28 = 17,9% contra 14% de excedente:
+     por esos cuatro puntos aparecía una franja de fondo arriba justo antes de
+     que entrara la sección siguiente. Ahora viaja 8 sobre 12 de excedente, que
+     da 9,9 contra 12: sobra margen, y de paso el movimiento es más sobrio. */
+  .v2-camara {
+    --viaje: 12%;
+    position: absolute;
+    z-index: 0;
+    inset: calc(var(--viaje) * -1) 0;
+    will-change: transform;
+  }
+  /* Anclada abajo del centro: la avenida se va al horizonte en el tercio de
+     abajo, y centrada, un teléfono vertical recortaba justo el cielo. */
+  .v2-foto {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 62%;
+    /* ⚠️ EL VIDEO ESTÁ EN COLOR Y ACÁ SE LO SACA. `--p` es la misma variable
+       que corre la perilla del botón: a 0 la ciudad está en blanco y negro, a 1
+       toma todo su color. Por eso el gesto y la imagen no pueden desfasarse,
+       son la misma medida. Codificar en color no costó nada —2,96 MB contra
+       2,94 del gris—, así que el revelado sale gratis en peso. */
+    filter: grayscale(calc(1 - var(--p, 0))) contrast(calc(1.1 - var(--p, 0) * .06)) brightness(calc(.88 + var(--p, 0) * .04));
+    /* ⚠️ SIN TRANSICIÓN, a propósito. Tenía 450 ms porque `--p` la movía una
+       barra a saltos; ahora la mueve el scroll cuadro a cuadro y una transición
+       deja la imagen medio segundo atrasada respecto de la página. */
+  }
+  /* ⚠️ INTERRUPTOR DE DIAGNÓSTICO, `?sinfiltro=1`. En Safari un `filter` sobre
+     un <video> a pantalla completa puede sacarlo del camino acelerado: el
+     aparato lo re-dibuja entero cada vez que cambia el viewport, que es
+     exactamente lo que pasa mientras la barra del navegador se contrae. Sin
+     poder probar en un iPhone de verdad, esto deja aislar la causa en el
+     teléfono de Gonzalo en diez segundos. */
+  .v2-hero[data-sinfiltro] .v2-foto {
+    filter: none;
+    transition: none;
+    background: #0B0713;
+  }
+
+  /* ⚠️ CUATRO CAPAS Y CADA UNA CON SU TRABAJO: arriba para la barra, abajo para
+     fundirse con la curva, a la izquierda de apoyo, y una mancha centrada sólo
+     detrás del titular —el cielo es lo más claro del encuadre y cae justo
+     ahí—. Oscurecer la foto entera para arreglar el medio apagaba la ciudad.
+     Medido con `marketing/_contraste.mjs`: si se toca un color, se vuelve a
+     correr. */
+  .v2-velo {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    /* ⚠️ EL VELO SE AFLOJA A MEDIDA QUE ENTRA EL COLOR. Está calculado para que
+       el titular blanco se lea sobre una ciudad en grises; con el color puesto,
+       ese mismo velo apaga justo lo que el gesto acaba de revelar. Va con la
+       misma `--p`, así que se abre al ritmo del color, y el contraste se midió
+       en los dos extremos: 9,3 con la barra al final, que sobra. */
+    opacity: calc(1 - var(--p, 0) * .3);
+    background:
+      linear-gradient(to bottom,
+        rgba(8, 4, 20, .82) 0%,
+        rgba(8, 4, 20, .34) 22%,
+        rgba(8, 4, 20, .40) 52%,
+        rgba(8, 4, 20, .62) 82%,
+        rgba(8, 4, 20, .88) 100%),
+      linear-gradient(to right,
+        rgba(8, 4, 20, .30) 0%,
+        rgba(8, 4, 20, .04) 44%,
+        transparent 72%),
+      radial-gradient(64% 50% at 50% 46%,
+        rgba(8, 4, 20, .56) 0%,
+        rgba(8, 4, 20, .26) 58%,
+        transparent 84%);
+  }
+
+  /* ── La luz ─────────────────────────────────────────────
+     ⚠️ ERA UN HAZ Y AHORA ES UN DEGRADADO. El disco gigante que seguía al
+     puntero —y que sin mouse flotaba solo como un sol— se sacó: se leía como
+     una mancha pegada encima de la ciudad y competía con el titular.
+
+     Ahora el color entra por el BORDE, no por el medio: la izquierda se queda
+     en blanco y negro puro —que es donde está la ciudad y donde apoya el
+     titular— y el color va ganando hacia la derecha y hacia arriba. El corte es
+     casi vertical, así que la foto conserva su lado sobrio y el degradado de la
+     casa aparece como luz de fondo y no como un objeto.
+
+     ⚠️ `plus-lighter` y no opacidad: suma luz en vez de lavar la imagen.
+     ⚠️ Y las paradas empiezan tarde a propósito —del 34% para la derecha—:
+     antes de eso no hay nada de color, que es lo que "se banca el blanco y
+     negro" quiere decir. */
+  .v2-aura {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    pointer-events: none;
+    mix-blend-mode: plus-lighter;
+    /* ⚠️ SE RETIRA CUANDO APARECE EL COLOR. El degradado es la única cosa con
+       color mientras la ciudad está en blanco y negro; en cuanto la ciudad toma
+       el suyo, dejan de sumarse y empiezan a taparse —el violeta sobre el agua
+       turquesa se come justo lo que el gesto acaba de revelar—. Va con la misma
+       `--p` que el filtro, así que se va al ritmo exacto en que entra el color. */
+    opacity: calc(1 - var(--p, 0));
+    background:
+      /* El calor, arriba a la derecha pero CON EL NÚCLEO ABAJO DEL BORDE. En la
+         primera versión el centro estaba en el borde de arriba y ahí vive la
+         barra: el ámbar le subía el fondo al botón "Hablemos" y su blanco
+         quedaba en 2,5 de contraste, cuando un texto chico pide 4,5. Bajando el
+         centro al 16% del alto, la franja de la barra vuelve a ser la parte
+         oscura del velo. Medido con `marketing/_contraste.mjs`. */
+      radial-gradient(74% 58% at 106% 16%,
+        color-mix(in srgb, var(--destaque) 17%, transparent) 0%,
+        rgba(255, 92, 43, .17) 26%,
+        color-mix(in srgb, var(--acento) 20%, transparent) 48%,
+        rgba(107, 15, 166, .12) 68%,
+        transparent 86%),
+      /* Y la subida de izquierda a derecha, con el corte casi vertical. */
+      linear-gradient(96deg,
+        transparent 0% 38%,
+        rgba(107, 15, 166, .09) 54%,
+        color-mix(in srgb, var(--acento) 17%, transparent) 74%,
+        rgba(255, 92, 43, .15) 90%,
+        color-mix(in srgb, var(--destaque) 15%, transparent) 100%);
+  }
+
+  /* ── La marca, arriba del titular ───────────────────── */
+  /* Pegada al titular: es su firma, no un elemento suelto. El respiro de abajo
+     es menos de la mitad del que deja el titular con la bajada. */
+  .v2-marca {
+    display: block;
+    width: var(--marca);
+    height: calc(var(--marca) * 234 / 1262);
+    margin: 0 auto clamp(26px, 5.2vh, 64px);
+    flex: none;
+  }
+
+  /* ── El titular y la bajada ─────────────────────────── */
+  /* ⚠️ El `z-index` va en el envoltorio y no en el `<h1>`. Lo tenía sólo el
+     titular, y la bajada quedó tapada por el velo: estaba en el HTML, medía
+     bien, daba contraste… y no se veía. */
+  .v2-dicho {
+    position: relative;
+    z-index: 2;
+    place-self: center;
+    text-align: center;
+    min-width: 0;
+  }
+
+  .v2-titulo-hero {
+    margin: 0;
+    font-family: var(--v2-display);
+    font-weight: 800;
+    /* ⚠️ LAS MEDIDAS DE LA TABLET. A 1112 × 834 el titular medía 87 px y es
+       donde mejor se lee la portada: 87 es el 7,8% del ancho y el 10,5% del
+       alto. Esos dos porcentajes, y gana el menor. En versales el renglón largo
+       mide 8,6 veces el cuerpo, así que al 7,8% entra siempre con aire; y el
+       tope de alto es el que en escritorio lo frena antes de llegar al iPhone. */
+    font-size: clamp(22px, min(7.8cqi, 10.5vh), 118px);
+    text-transform: uppercase;
+    /* Versales: interlineado bajo uno y apretado cerrado. Si alguna vez vuelve
+       a minúscula, hay que devolver 1.02 y -.032. */
+    line-height: .96;
+    letter-spacing: -.04em;
+  }
+  /* La ranura: sólo recorta abajo. Arriba se comería la tilde de la Ñ, y a los
+     costados el interletrado negativo le muerde la última letra. */
+  /* ⚠️ ABAJO CORTA EXACTO EN EL BORDE (el 0). Se extendía .06em más abajo para
+     no comerse nada del renglón, y por esa hendija asomaba el renglón siguiente
+     mientras esperaba su turno. En versales no hay descendentes —ninguna letra
+     baja de la línea de base— así que cortar en el borde no se come nada.
+     Arriba sí sigue sobrando, que es lo que salva la tilde de la Ñ. */
+  .v2-ln { display: block; clip-path: inset(-.3em -.2em 0 -.08em); }
+  /* ⚠️ 118% Y NO 104%. El renglón arranca corrido hacia abajo y la ranura lo
+     tapa, pero la ranura NO corta en el borde: se extiende .06em más abajo para
+     no comerse nada del renglón cuando está en su lugar. A 104% el texto quedaba
+     apenas 4% abajo —menos que esos .06em— y por esa hendija se veían asomar las
+     tildes y los acentos antes de que arrancara la animación. A 118% queda tres
+     veces más abajo que lo que la ranura deja ver, en cualquier cuerpo: las dos
+     medidas son proporcionales al tamaño de letra. */
+  .v2-ln i { display: inline-block; font-style: normal; transform: translateY(118%); }
+  /* ⚠️ EL TITULAR VA TODO EN UN PESO. Probé los renglones primero y tercero en
+     200 contra el del medio en 800 —la misma letra, cuatro veces más gruesa— y
+     se descartó: la portada ya tenía su jerarquía resuelta con el ámbar de "tu
+     marca". Si alguna vez vuelve, eran dos clases (`fino` 200 con -.02em de
+     interletrado, `grueso` 800 con -.045em). */
+  /* Lo destacado es "tu marca", en ámbar plano: sobre una ciudad en blanco y
+     negro el destaque tiene que ser lo que la foto no es, un color. */
+  .v2-ln em { font-style: normal; color: var(--destaque); }
+  :global(body.v2-listo) .v2-ln i { animation: v2-subir 1s cubic-bezier(.16, 1, .3, 1) forwards; }
+  :global(body.v2-listo) .v2-ln:nth-child(2) i { animation-delay: .08s; }
+  :global(body.v2-listo) .v2-ln:nth-child(3) i { animation-delay: .16s; }
+  @keyframes v2-subir { to { transform: translateY(0); } }
+
+  .v2-bajada {
+    margin: clamp(12px, 2.2vh, 26px) auto 0;
+    max-width: 42ch;
+    font-size: clamp(14px, min(1.75cqi, 2.1vh), 21px);
+    line-height: 1.55;
+    color: rgba(255, 255, 255, .8);
+  }
+  .v2-rubro {
+    display: block;
+    margin-top: clamp(8px, 1.2vh, 14px);
+    font-family: var(--v2-mono);
+    font-size: clamp(11px, .92vw, 14px);
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .72);
+  }
+
+  /* ⚠️ `--p` SE DECLARA EN LA SECCIÓN Y LA ESCRIBE EL SCROLL. Va de 0 a 1 y
+     de ella cuelgan tres cosas que no son parientes —el filtro del video, el
+     velo y el aura—, así que una sola variable es lo que garantiza que no se
+     desfasen. La escribía una barra que se arrastraba; ahora la escribe cuánto
+     se bajó. Ver el script del final. */
+  .v2-hero { --p: 0; }
+
+  /* ── El cartel de scroll ───────────────────────────
+     ⚠️ SE APAGA CON `--p`, o sea con el scroll: cuando la ciudad ya tomó un
+     tercio de su color, el visitante evidentemente encontró cómo bajar y el
+     cartel sobra. La cuenta lo lleva a cero en el primer 30 % del recorrido. */
+  /* ⚠️ VA CENTRADA EN LA PANTALLA, NO ALINEADA CON EL TEXTO. El bloque del
+     titular está centrado, así que un `inline-flex` adentro queda centrado
+     también —pero por herencia, y eso se rompe el día que el titular se mueva
+     a un costado—. Con `margin-inline: auto` sobre un bloque, la flecha está
+     centrada porque se lo pidieron. */
+  .v2-baja {
+    display: block;
+    width: 1.1em;
+    margin: clamp(18px, 3vh, 34px) auto 0;
+    color: rgba(255, 255, 255, .88);
+    opacity: calc(1 - var(--p, 0) * 3.4);
+    pointer-events: none;
+  }
+  .v2-baja svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 1px 10px rgba(8, 4, 20, .85));
+    /* Baja y vuelve: es la única animación de la portada y dura lo que dura un
+       parpadeo. Sin ella, una flecha quieta debajo de un texto se lee como un
+       ícono decorativo y no como una indicación. */
+    animation: v2-baja-late 2.4s cubic-bezier(.4, 0, .3, 1) infinite;
+  }
+  @keyframes v2-baja-late {
+    0%, 62%, 100% { transform: translateY(0); }
+    76% { transform: translateY(3px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .v2-baja svg { animation: none; }
+  }
+
+  /* ══════════════════════════════════════════════════════
+     2 · LA MARQUESINA
+     ══════════════════════════════════════════════════════ */
+  .v2-tiras {
+    position: relative;
+    z-index: 3;
+    margin-inline: var(--v2-margen);
+    min-width: 0;
+    overflow: hidden;
+    padding-bottom: clamp(9px, 1.6vh, 20px);
+    border-bottom: 1px solid rgba(255, 255, 255, .14);
+    /* El desvanecido de los bordes: que se lea como una tira que pasa y no como
+       texto que se corta contra el canto de una caja. */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+  }
+  .v2-tiras__tren { display: flex; width: max-content; will-change: transform; }
+  .v2-tiras__grupo {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1.4vw, 22px);
+    padding-right: clamp(10px, 1.4vw, 22px);
+  }
+  .v2-tiras__grupo > span {
+    font-family: var(--v2-mono);
+    font-size: clamp(9.5px, .78vw, 12px);
+    font-weight: 500;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .58);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  /* El punto es puntuación, no contenido: `::after` y no un elemento, que un
+     lector de pantalla anunciaría. Lo llevan todas, la última también: en una
+     tira que da la vuelta, la última empalma con la primera del clon. */
+  .v2-tiras__grupo > span::after {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    width: 4px;
+    height: 4px;
+    margin-left: clamp(10px, 1.4vw, 22px);
+    border-radius: 50%;
+    background: var(--acento);
+  }
+
+  /* ══════════════════════════════════════════════════════
+     LAS CONSULTAS DE PANTALLA
+     ══════════════════════════════════════════════════════
+     No mueven nada de lugar: cambian `--u` o esconden lo que no entra. */
+
+  /* Pantalla corta de verdad: se va la marquesina. Las disciplinas tienen su
+     sección propia y la brújula lleva hasta ella. */
+  /* ⚠️ Y LA GRILLA PIERDE LA FILA: escondida la marquesina, su fila queda vacía
+     pero el hueco entre filas se sigue sumando, y la banda terminaba ocho
+     píxeles antes del final de la pantalla. */
+  /* ⚠️ EN VERTICAL EL VELO PESA MENOS. La toma vertical es una calle a la
+     altura del suelo —gris de por sí, sin el cielo abierto que tiene la
+     horizontal—, así que el mismo velo que en escritorio deja bien la ciudad
+     acá la apaga del todo y el color no se aprecia. Baja un quince por ciento;
+     el contraste se volvió a medir en las tres pantallas verticales. */
+  @media (orientation: portrait) {
+    .v2-velo { opacity: calc(.85 - var(--p, 0) * .26); }
+
+    /* ⚠️ EL RESPALDO VA DETRÁS DEL BLOQUE, NO SOBRE LA PANTALLA ENTERA. Bajarle
+       el velo a toda la portada es lo que deja ver el color de la toma vertical,
+       y es justo lo que hace que el texto pierda apoyo. En vez de subir el velo
+       otra vez —que devolvería el problema—, el bloque se trae su propia sombra:
+       una mancha ovalada detrás suyo, ancha y muy difusa. El color sigue entero
+       en los bordes, que es donde se lo mira, y el texto apoya donde está. */
+    .v2-dicho::before {
+      content: '';
+      position: absolute;
+      inset: -14% -22%;
+      z-index: -1;
+      pointer-events: none;
+      background: radial-gradient(58% 46% at 50% 50%,
+        rgba(8, 4, 20, .64) 0%,
+        rgba(8, 4, 20, .42) 46%,
+        rgba(8, 4, 20, .16) 72%,
+        transparent 88%);
+    }
+
+    /* ⚠️ Y LA BAJADA SUBE DE TONO. Los dos renglones chicos están en blanco al
+       80% y en un rótulo al 72%: sobre el agua lisa de la toma horizontal
+       alcanza, sobre una calle con autos y veredas se diluyen. En vertical van
+       a blanco pleno, con un halo que los despega del fondo. */
+    .v2-bajada {
+      color: #fff;
+      text-shadow: 0 1px 14px rgba(8, 4, 20, .85), 0 0 4px rgba(8, 4, 20, .6);
+    }
+    .v2-rubro {
+      color: rgba(255, 255, 255, .95);
+      text-shadow: 0 1px 12px rgba(8, 4, 20, .85);
+    }
+
+    /* En vertical la flecha cae sobre una calle con autos y veredas —no sobre
+       el agua, que es lisa y oscura—, así que crece un poco y la sombra se
+       cierra. */
+    .v2-baja { width: 18px; }
+    .v2-baja svg { filter: drop-shadow(0 1px 8px rgba(8, 4, 20, .95)) drop-shadow(0 0 3px rgba(8, 4, 20, .8)); }
+  }
+
+  @media (max-height: 620px) and (orientation: portrait),
+         (orientation: landscape) and (max-height: 430px) {
+    .v2-tiras { display: none; }
+    .v2-hero { grid-template-rows: minmax(0, 1fr); }
+  }
+
+  /* Acostado: lo que escasea es el alto. Se achica el aire, no se reordena. */
+  @media (orientation: landscape) and (max-height: 560px) {
+    .v2-hero { gap: 8px; }
+    .v2-lienzo { padding: 10px var(--v2-margen) 12px; }
+    .v2-bajada { font-size: 12.5px; margin-top: 8px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v2-aura { transition: none; animation: none; }
+    .v2-ln i { transform: none; }
+  }
+</style>
+
+<script>
+  // ══════════════════════════════════════════════════════
+  // LA LUZ YA NO TIENE SCRIPT
+  // ══════════════════════════════════════════════════════
+  //
+  // Hubo acá un bucle que perseguía al puntero con el haz, y una animación en
+  // CSS que lo hacía flotar como un sol donde no hay mouse. Las dos se fueron
+  // con el haz: ahora la luz es un degradado quieto pegado al borde derecho y
+  // no hay nada que animar.
+
+  // ══════════════════════════════════════════════════════
+  // LA MARQUESINA
+  // ══════════════════════════════════════════════════════
+  //
+  // ⚠️ Bucle de verdad y no un `translateX(-50%)` de CSS: se mide el grupo, se
+  // lo clona hasta cubrir dos pantallas y se lo desplaza con módulo. El empalme
+  // cae siempre en el mismo píxel, mida lo que mida el texto.
+  // ⚠️ Se acumula el recorrido en vez de calcularlo desde el arranque: si no,
+  // después de una pausa la tira pega un salto del tamaño del tiempo frenada.
+  // ⚠️ Sólo se frena cuando la portada está tapada, para no gastar cuadros. Se
+  // observa la sección que TAPA, no la portada: la portada es `sticky` y para
+  // el navegador nunca deja de estar visible.
+  (() => {
+    const tren = document.getElementById('v2-tren')
+    const grupo = tren && tren.querySelector('.v2-tiras__grupo')
+    if (!grupo) return
+
+    let ancho = 0
+    const armar = () => {
+      tren.replaceChildren(grupo)
+      ancho = grupo.getBoundingClientRect().width
+      if (!ancho) return
+      const faltan = Math.ceil((innerWidth * 2) / ancho)
+      for (let i = 0; i < faltan; i++) tren.appendChild(grupo.cloneNode(true))
+    }
+    armar()
+    let reloj
+    addEventListener('resize', () => { clearTimeout(reloj); reloj = setTimeout(armar, 150) })
+
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const VEL = 30 // píxeles por segundo
+    let corriendo = true
+    let recorrido = 0
+    let anterior = null
+    const cuadro = (ahora) => {
+      if (anterior === null) anterior = ahora
+      const delta = ahora - anterior
+      anterior = ahora
+      if (corriendo && ancho) {
+        recorrido = (recorrido + (delta / 1000) * VEL) % ancho
+        tren.style.transform = 'translate3d(' + (-recorrido).toFixed(1) + 'px, 0, 0)'
+      }
+      requestAnimationFrame(cuadro)
+    }
+    requestAnimationFrame(cuadro)
+
+    const tira = tren.parentElement
+
+    const tapa = document.querySelector('.v2-encima')
+    const ojo = new IntersectionObserver(([e]) => { corriendo = !e.isIntersecting },
+      { rootMargin: '0px 0px -72% 0px', threshold: 0 })
+    ojo.observe(tapa || tira)
+  })();
+
+  // ══════════════════════════════════════════════════════
+  // EL INTERRUPTOR DEL TITULAR
+  // ══════════════════════════════════════════════════════
+  //
+  // ⚠️ SIN ESTO NO HAY TITULAR. Los renglones arrancan corridos para abajo y lo
+  // único que los sube es la animación que cuelga de `body.v2-listo`. Espera a
+  // las fuentes: si arranca antes, sube con la tipografía de sistema y cambia de
+  // forma a mitad de camino.
+  const encender = () => requestAnimationFrame(() => document.body.classList.add('v2-listo'));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(encender);
+  else addEventListener('load', encender);
+
+  // ══════════════════════════════════════════════════════
+  // EL PARALAJE
+  // ══════════════════════════════════════════════════════
+  //
+  // La cámara baja a un tercio de lo que sube la página y lo dicho se va un
+  // poco más rápido y se apaga: dos planos a distinta velocidad es todo lo que
+  // hace falta para que haya profundidad.
+  //
+  // ⚠️ SE LEE EL SCROLL EN EL CUADRO, NO EN EL EVENTO. El listener sólo marca
+  // que hay que dibujar; leer `scrollY` adentro del rAF evita pedirle al
+  // navegador un valor que lo obliga a recalcular en medio del scroll.
+  // ⚠️ Y se apaga cuando la portada no se ve: abajo de todo no hay nada que
+  // mover y sería gastar un cuadro por cada rueda del mouse.
+  (() => {
+    const hero = document.getElementById('hero')
+    const camara = hero && hero.querySelector('.v2-camara')
+    const dicho = hero && hero.querySelector('.v2-dicho')
+    if (!camara) return
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    // ⚠️ EN PANTALLAS TÁCTILES NO HAY PARALAJE, NI DE LA CÁMARA NI DEL TEXTO.
+    // Verificado en un iPhone de verdad: mientras la barra de Safari se contrae
+    // la ventana cambia de alto cuadro a cuadro, y cualquier capa que se
+    // desplace al mismo tiempo se ve saltar. Probamos primero sacando sólo la
+    // cámara —mejoró— y el texto seguía saltando igual, así que se va todo.
+    //
+    // ⚠️ NI SIQUIERA SE ESCUCHA EL SCROLL. No alcanza con no escribir nada en el
+    // cuadro: lo que hay que evitar es tener trabajo colgado del scroll. Sin
+    // listener, el teléfono scrollea como una página quieta, que es de lo que se
+    // trata. En escritorio no cambia nada.
+    //
+    // Se puede forzar para probar: `?parallax=1` lo prende en el teléfono y
+    // `?parallax=0` lo apaga en cualquier lado.
+    const q = new URLSearchParams(location.search)
+    if (q.get('sinfiltro') === '1') hero.setAttribute('data-sinfiltro', '')
+    const tacto = matchMedia('(pointer: coarse)').matches
+    const hayParalaje = q.get('parallax') === '1' || (q.get('parallax') !== '0' && !tacto)
+    if (!hayParalaje) return
+
+    let visible = true
+    let pidiendo = false
+
+    // ⚠️ EL ALTO SE MIDE UNA VEZ Y SE GUARDA. Leerlo en cada cuadro obliga al
+    // navegador a recalcular la página en medio del scroll, que es la mitad del
+    // temblequeo de Safari; la otra mitad era `dvh`, arreglada en la hoja de
+    // estilos.
+    let alto = 1
+    let ancho = 0
+    const medir = () => { alto = hero.offsetHeight || 1; ancho = innerWidth }
+
+    const dibujar = () => {
+      pidiendo = false
+      const t = Math.min(scrollY / alto, 1)
+      camara.style.transform = 'translate3d(0, ' + (t * 8).toFixed(2) + '%, 0)'
+      if (dicho) {
+        dicho.style.transform = 'translate3d(0, ' + (t * -46).toFixed(1) + 'px, 0)'
+        dicho.style.opacity = String(Math.max(0, 1 - t * 1.5))
+      }
+    }
+    const pedir = () => { if (!pidiendo && visible) { pidiendo = true; requestAnimationFrame(dibujar) } }
+    medir()
+    addEventListener('scroll', pedir, { passive: true })
+
+    // ⚠️ SÓLO SE VUELVE A MEDIR SI CAMBIÓ EL ANCHO. En un teléfono, esconder la
+    // barra del navegador dispara un `resize` de alto en medio del scroll: si
+    // se remide ahí, el paralaje se recalcula contra un alto distinto y pega el
+    // salto justo cuando el dedo está arrastrando. Un giro o una ventana
+    // redimensionada sí cambian el ancho, y ahí sí corresponde.
+    addEventListener('resize', () => { if (innerWidth !== ancho) { medir(); pedir() } }, { passive: true })
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) pedir() }).observe(hero)
+    dibujar()
+  })();
+
+  // ══════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════
+  // LA CIUDAD TOMA COLOR MIENTRAS TE VAS
+  // ════════════════════════════════════════════════════
+  //
+  // ⚠️ ANTES ESTO ERA UNA BARRA QUE SE ARRASTRABA. Un control de verdad, con
+  // teclado y todo, cuyo único trabajo era decidir cuánto color tenía la ciudad.
+  // Se eliminó el 23/09/2026 y vale la pena dejar escrito por qué, porque estaba
+  // bien hecha y aun así sobraba: "no suma en nada" (Gonzalo). Y es cierto —le
+  // pedía al visitante una tarea para conseguir algo que le podemos dar mientras
+  // hace lo que iba a hacer igual, que es bajar—. Un gesto que no decide nada no
+  // es interacción: es un peaje. Está entera en `docs/descartes/`.
+  //
+  // Ahora `--p` la escribe el scroll. La portada es `sticky` y la página le pasa
+  // por encima: mientras eso ocurre, la ciudad pasa de blanco y negro a color. El
+  // efecto se completa en la primera mitad del recorrido, así que se ve entero
+  // antes de que la sección de abajo la tape.
+  //
+  // ⚠️ NO HAY TRANSICIÓN EN EL FILTRO, y es lo contrario de lo que pedía la
+  // barra. Con un gesto discreto —el teclado movía de a diez— la transición era
+  // la que hacía suave cada paso; con el scroll, `--p` cambia en CADA cuadro y
+  // una transición de 450 ms deja la imagen medio segundo atrasada respecto de la
+  // página. Por eso el CSS las saca.
+  (() => {
+    const hero = document.getElementById('hero')
+    if (!hero) return
+
+    // ⚠️ CON `prefers-reduced-motion` LA CIUDAD ARRANCA A COLOR Y SE QUEDA
+    // QUIETA. La alternativa —dejarla en blanco y negro para siempre— le
+    // escondría contenido a quien pidió menos movimiento, que no es lo que pidió.
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      hero.style.setProperty('--p', '1')
+      return
+    }
+
+    // El recorrido: el color se completa a la mitad de la primera pantalla.
+    // Más largo y la ciudad nunca llega a color antes de que la tapen; más
+    // corto y el cambio se siente un parpadeo en vez de un revelado.
+    const TRAMO = .5
+
+    let alto = innerHeight
+    let ultimo = -1
+    let pidiendo = false
+
+    const pintar = () => {
+      pidiendo = false
+      const p = Math.max(0, Math.min(1, scrollY / (alto * TRAMO)))
+      // ⚠️ SÓLO SE ESCRIBE SI CAMBIÓ DE VERDAD. `filter: grayscale()` sobre un
+      // video a pantalla completa obliga al navegador a rehacer la capa; escribir
+      // el mismo valor sesenta veces por segundo lo hace igual. Con dos decimales
+      // el ojo no distingue el paso y el trabajo baja a la centésima parte.
+      const v = Math.round(p * 100) / 100
+      if (v === ultimo) return
+      ultimo = v
+      hero.style.setProperty('--p', v.toFixed(2))
+    }
+
+    const mirar = () => {
+      if (pidiendo) return
+      pidiendo = true
+      requestAnimationFrame(pintar)
+    }
+
+    // ⚠️ EL ALTO SE RELEE SÓLO CUANDO CAMBIA EL ANCHO. En un teléfono,
+    // `innerHeight` cambia todo el tiempo mientras la barra del navegador se
+    // contrae y se expande; si se lo leyera en cada cuadro, el recorrido se
+    // movría solo mientras uno scrollea y el color iría y vendría.
+    let ancho = innerWidth
+    addEventListener('resize', () => {
+      if (innerWidth === ancho) return
+      ancho = innerWidth
+      alto = innerHeight
+      ultimo = -1
+      mirar()
+    }, { passive: true })
+
+    addEventListener('scroll', mirar, { passive: true })
+    pintar()
+  })();
+</script>

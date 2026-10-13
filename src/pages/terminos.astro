@@ -1,197 +1,102 @@
 ---
-// src/pages/terminos.astro
-import Base from '../layouts/Base.astro';
-import HeaderLegal from '../components/HeaderLegal.astro';
-import Footer from '../components/Footer.astro';
+// ⚠️ LOS TÉRMINOS DE ESTA WEB (los de /terminos son los del sitio viejo: hablan
+// de planes que ya no existen —"Landing Page", "Business Pro", packaging— y de
+// un listado de servicios distinto al de esta página).
+//
+// Los servicios que se nombran acá tienen que ser LOS MISMOS que dibuja la
+// sección "Qué hacemos" (`data/v4/servicios.ts`), más Lexa.
+//
+// ⚠️ PENDIENTE: revisión de un abogado antes de publicar.
+import V4 from '../layouts/V4.astro'
+import Nav from '../components/v4/Nav.astro'
+import Pie from '../components/v4/Pie.astro'
+import Cookies from '../components/v4/Cookies.astro'
+import Volver from '../components/v4/Volver.astro'
+import { MAIL, SITIO } from '../data/v4/contacto'
+import { SERVICIOS } from '../data/v4/servicios'
+const ACTUALIZADO = '28 de septiembre de 2026'
 ---
-<Base
-  title="Términos y Condiciones | Brickell Lab"
-  description="Términos y condiciones que regulan la contratación de servicios de Brickell Lab: desarrollo web, diseño, branding, packaging y traducción."
-  canonical="https://labbrickell.com.ar/terminos"
->
-  <HeaderLegal lang="es" />
+<V4 title="Términos y condiciones — Brickell Lab" description="Condiciones que rigen la contratación de los servicios de diseño, desarrollo y traducción de Brickell Lab." ruta="/terminos/">
+  <Nav />
+  <div id="smooth-wrapper"><div id="smooth-content">
+    <main class="legal">
+      <div class="centro legal__caja">
+        <header class="legal__cab">
+          <a class="meta legal__volver" href="/">← Inicio</a>
+          <p class="meta rotulo">Legal</p>
+          <h1>Términos y condiciones</h1>
+          <p class="meta legal__fecha">Última actualización: {ACTUALIZADO}</p>
+        </header>
 
-  <main class="lg">
-    <div class="lg-in">
-      <span class="lg-eyebrow">Brickell Lab · Legal</span>
-      <h1 class="lg-title">Términos y Condiciones</h1>
-      <p class="lg-date">Última actualización: julio de 2026</p>
+        <div class="legal__cuerpo">
+          <p>Estas condiciones rigen la relación entre <strong>Brickell Lab</strong> (el Estudio) y quien lo contrata (el Cliente). Al aceptar un presupuesto, el Cliente acepta estos términos. Valen también para <strong>Lexa</strong>, el servicio de traducción de la casa. <strong>Lúmina</strong>, la plataforma de eventos, se contrata en su propio sitio y tiene sus propias condiciones.</p>
 
-      <div class="lg-body">
-        <p>
-          Los presentes Términos y Condiciones regulan la relación entre Brickell Lab (en adelante
-          "el Estudio") y sus clientes (en adelante "el Cliente") respecto a la contratación de
-          servicios de desarrollo web, diseño gráfico, branding, packaging, soluciones digitales y
-          traducción. Al contratar cualquier servicio de Brickell Lab, el Cliente acepta estos
-          términos en su totalidad.
-        </p>
+          <h2>1. Qué hacemos</h2>
+          <p>Brickell Lab presta servicios profesionales de:</p>
+          <ul>
+            {SERVICIOS.map((s) => <li><strong>{s.n}.</strong> {s.t}</li>)}
+            <li><strong>Traducción (Lexa).</strong> Traducción pública matriculada, traducción simple especializada, localización y revisión de textos en inglés y español.</li>
+          </ul>
+          <p>El alcance exacto de cada trabajo es el que se detalla en el presupuesto aceptado, no el de esta enumeración ni el del sitio.</p>
 
-        <h2>1. Servicios ofrecidos</h2>
-        <p>Brickell Lab ofrece los siguientes servicios profesionales:</p>
-        <ul>
-          <li><strong>Desarrollo web:</strong> Landing Page y Business Pro</li>
-          <li><strong>Diseño gráfico:</strong> identidad de marca, piezas para redes, folletería, presentaciones y retoque fotográfico</li>
-          <li><strong>Packaging:</strong> diseño de etiquetas y packaging para producción</li>
-          <li><strong>Soluciones digitales:</strong> desarrollo de aplicaciones web a medida</li>
-          <li><strong>Traducción (Lexa):</strong> traducciones públicas matriculadas y traducciones simples especializadas</li>
-        </ul>
-        <p>
-          Las especificaciones detalladas de cada servicio están disponibles en labbrickell.com.ar.
-          Brickell Lab se reserva el derecho de modificar o descontinuar servicios con previo aviso.
-          El producto <strong>Lúmina</strong> (plataforma de gestión de eventos) se contrata dentro
-          de su propia plataforma y se rige por los términos y condiciones publicados en ella.
-        </p>
+          <h2>2. Presupuestos</h2>
+          <p>Cada trabajo empieza con un presupuesto escrito que detalla alcance, plazo estimado, precio y forma de pago. El presupuesto tiene una validez de <strong>quince días corridos</strong> desde su envío, salvo que diga otra cosa. Un precio de referencia dado por mail o por WhatsApp no es un presupuesto.</p>
+          <p>Todo lo que no esté en el presupuesto es un trabajo adicional y se cotiza aparte antes de hacerlo.</p>
 
-        <h2>2. Proceso de contratación</h2>
-        <p>La relación comercial se inicia con una consulta por WhatsApp o email. El proceso estándar es:</p>
-        <ul>
-          <li>Consulta inicial y relevamiento de necesidades</li>
-          <li>Envío de propuesta y presupuesto detallado</li>
-          <li>Aceptación formal por parte del Cliente (escrita o por mensaje)</li>
-          <li>Pago del anticipo acordado para inicio del proyecto</li>
-          <li>Desarrollo y entrega según cronograma pactado</li>
-        </ul>
-        <p>El proyecto comienza únicamente tras la confirmación formal y el pago del anticipo correspondiente.</p>
+          <h2>3. Pagos</h2>
+          <p>Salvo acuerdo distinto, los trabajos se abonan <strong>50 % al inicio y 50 % contra entrega</strong>, antes de la publicación o de la entrega de archivos finales. Los precios se expresan en pesos argentinos; si el trabajo se cotizó en otra moneda, se factura al tipo de cambio pactado en el presupuesto. La facturación se hace conforme a la normativa vigente.</p>
+          <p>La demora en un pago habilita al Estudio a suspender el trabajo y corre el plazo de entrega en la misma medida.</p>
 
-        <h2>3. Presupuestos y precios</h2>
-        <p>
-          Los precios publicados en el sitio web son precios base orientativos en pesos argentinos
-          (ARS). El presupuesto final puede variar según la complejidad, el alcance específico y los
-          requerimientos particulares de cada proyecto. Los precios pueden ser actualizados sin previo
-          aviso en el sitio web, pero el presupuesto acordado con el Cliente se mantiene fijo durante
-          la vigencia del proyecto.
-        </p>
-        <p>Para proyectos con clientes del exterior, los precios pueden cotizarse en dólares estadounidenses (USD) según acuerdo previo.</p>
+          <h2>4. Plazos</h2>
+          <p>Los plazos se cuentan en días hábiles desde el pago inicial y desde que el Cliente entregó todo el material necesario (textos, imágenes, accesos, logos). Las demoras en la entrega de ese material corren el plazo. El Estudio avisa cualquier retraso propio apenas lo detecta.</p>
 
-        <h2>4. Condiciones de pago</h2>
-        <p>Las condiciones de pago estándar son:</p>
-        <ul>
-          <li>50% de anticipo al inicio del proyecto</li>
-          <li>50% restante contra entrega final</li>
-        </ul>
-        <p>
-          Para proyectos de mayor envergadura, puede acordarse un esquema de pagos en etapas. Los
-          medios de pago aceptados serán informados en la propuesta comercial. El incumplimiento en
-          los pagos da derecho a Brickell Lab a suspender la entrega de materiales hasta su
-          regularización.
-        </p>
+          <h2>5. Revisiones</h2>
+          <p>Cada etapa incluye <strong>dos rondas de ajustes</strong> sobre lo presentado. Se entiende por ajuste una corrección dentro del camino elegido; un cambio de rumbo —otra identidad, otra estructura, otro concepto— es un trabajo nuevo y se cotiza. Si el Cliente no responde una entrega dentro de los quince días corridos, se considera aprobada.</p>
 
-        <h2>5. Plazos de entrega</h2>
-        <p>
-          Los plazos de entrega son estimados y se acuerdan al inicio de cada proyecto. Los tiempos
-          pueden verse afectados por demoras en la entrega de materiales, contenidos o aprobaciones
-          por parte del Cliente. Brickell Lab no se responsabiliza por retrasos causados por factores
-          externos o por falta de respuesta del Cliente en los tiempos acordados.
-        </p>
+          <h2>6. Material del Cliente</h2>
+          <p>El Cliente declara tener los derechos sobre los textos, fotos, logos, fuentes y cualquier otro material que entregue, y responde por su uso. El Estudio no verifica la titularidad de ese material.</p>
 
-        <h2>6. Servicio de traducción (Lexa)</h2>
-        <p>
-          Las traducciones públicas realizadas por Lexa cuentan con matrícula de traductor público y
-          tienen validez oficial conforme a la normativa vigente. El Cliente es responsable de
-          entregar los documentos completos y legibles, y de indicar el uso o destino de la
-          traducción cuando corresponda. Brickell Lab traduce con fidelidad el contenido del documento
-          original provisto por el Cliente y no se responsabiliza por errores, omisiones o
-          adulteraciones presentes en dicho documento original. Los plazos de entrega de traducciones
-          se acuerdan en cada caso según la extensión y complejidad del material.
-        </p>
+          <h2>7. Propiedad del trabajo</h2>
+          <p>Una vez pagado el total, el Cliente recibe los derechos de uso del trabajo entregado para el fin acordado. Los archivos de proceso, los sistemas internos y el código base propio del Estudio siguen siendo del Estudio. Las licencias de terceros que el proyecto requiera —tipografías, fotos, complementos— son responsabilidad del Cliente y se informan en el presupuesto.</p>
+          <p>Salvo pedido expreso en contrario, el Estudio puede mostrar el trabajo en su portfolio y en sus redes una vez publicado.</p>
 
-        <h2>7. Revisiones y correcciones</h2>
-        <p>
-          Cada servicio incluye una cantidad de rondas de revisión especificada en la propuesta
-          comercial. Las revisiones adicionales fuera del alcance acordado serán cotizadas y
-          facturadas por separado. Se entiende por "revisión" ajustes menores sobre el concepto
-          aprobado, no cambios de dirección creativa.
-        </p>
+          <h2>8. Alojamiento, dominios y mantenimiento</h2>
+          <p>El desarrollo de un sitio no incluye el dominio ni el alojamiento, que quedan a nombre del Cliente y a su cargo, salvo que el presupuesto diga otra cosa. Tampoco incluye mantenimiento posterior: se contrata aparte. Durante los <strong>treinta días</strong> siguientes a la publicación, el Estudio corrige sin cargo los errores propios del trabajo entregado.</p>
 
-        <h2>8. Propiedad intelectual y derechos de autor</h2>
-        <p>
-          Una vez abonado el 100% del proyecto, el Cliente recibe los derechos de uso comercial sobre
-          los entregables finales acordados. Brickell Lab se reserva el derecho de incluir el trabajo
-          realizado en su portfolio y materiales de promoción, salvo acuerdo de confidencialidad
-          expreso.
-        </p>
-        <p>
-          Los archivos fuente editables (Figma, Illustrator, etc.) solo son transferidos si se
-          incluyen explícitamente en la propuesta o si son abonados como ítem adicional. Las fuentes
-          tipográficas de terceros están sujetas a sus propias licencias de uso.
-        </p>
-        <p>El código desarrollado por Brickell Lab para sitios web es propiedad del Cliente una vez abonado el 100% del proyecto.</p>
+          <h2>9. Traducciones (Lexa)</h2>
+          <p>Las traducciones públicas son realizadas por traductora pública matriculada en el CTPCBA y se entregan firmadas y selladas. El plazo y el precio dependen del documento y del tipo de legalización. La legalización ante el Colegio, la apostilla y cualquier gestión ante organismos se cotizan aparte. El Cliente es responsable de que el documento que entrega sea el correcto y esté completo.</p>
 
-        <h2>9. Materiales y contenidos del Cliente</h2>
-        <p>
-          El Cliente es responsable de proveer todos los contenidos necesarios para el proyecto
-          (textos, imágenes, logotipos, documentos, etc.) en los formatos y tiempos acordados. El
-          Cliente garantiza que dichos materiales no infringen derechos de terceros y exime a Brickell
-          Lab de toda responsabilidad al respecto.
-        </p>
+          <h2>10. Cancelaciones</h2>
+          <p>Si el Cliente cancela un trabajo empezado, abona la parte ejecutada hasta ese momento y el anticipo no se devuelve. Si el Estudio no puede continuar, devuelve la parte no trabajada del anticipo y entrega el material producido hasta la fecha.</p>
 
-        <h2>10. Cancelaciones y reembolsos</h2>
-        <p>En caso de cancelación por parte del Cliente:</p>
-        <ul>
-          <li>Si ocurre antes del inicio del trabajo: se reembolsa el 100% del anticipo</li>
-          <li>Si ocurre una vez iniciado el proyecto: el anticipo no es reembolsable y se facturará el trabajo realizado hasta la fecha</li>
-          <li>Si ocurre tras la entrega final: no corresponde reembolso</li>
-        </ul>
-        <p>
-          Brickell Lab se reserva el derecho de cancelar un proyecto por causas justificadas, en cuyo
-          caso reembolsará los montos pagados correspondientes al trabajo no realizado.
-        </p>
+          <h2>11. Responsabilidad</h2>
+          <p>El Estudio responde por el trabajo que entrega. No responde por caídas de servicios de terceros (alojamiento, dominios, redes, plataformas), por el uso que el Cliente haga del material, por modificaciones hechas por terceros después de la entrega, ni por lucro cesante. En cualquier caso, la responsabilidad total del Estudio no supera el monto efectivamente abonado por el trabajo en cuestión.</p>
 
-        <h2>11. Limitación de responsabilidad</h2>
-        <p>Brickell Lab no se responsabiliza por:</p>
-        <ul>
-          <li>Resultados comerciales o de ventas derivados del uso de los entregables</li>
-          <li>Caídas, hackeos o problemas técnicos en servicios de hosting de terceros</li>
-          <li>Cambios en algoritmos de motores de búsqueda que afecten el posicionamiento SEO</li>
-          <li>Daños indirectos, lucro cesante o pérdida de datos</li>
-        </ul>
-        <p>La responsabilidad máxima de Brickell Lab en cualquier caso no podrá exceder el monto total abonado por el proyecto en cuestión.</p>
+          <h2>12. Confidencialidad</h2>
+          <p>Todo lo que el Cliente comparte para el trabajo —documentos, datos, accesos, información de negocio— es confidencial y no se comparte con terceros fuera de lo necesario para ejecutarlo. Esta obligación sigue vigente después de terminado el proyecto.</p>
 
-        <h2>12. Confidencialidad</h2>
-        <p>
-          Brickell Lab tratará como confidencial toda información sensible del negocio del Cliente que
-          sea compartida durante el proyecto. De igual forma, el Cliente se compromete a no divulgar
-          propuestas, metodologías o documentación interna de Brickell Lab.
-        </p>
+          <h2>13. Datos personales</h2>
+          <p>El tratamiento de datos personales se rige por la <a href="/privacidad/">política de privacidad</a> de este sitio, conforme a la Ley 25.326.</p>
 
-        <h2>13. Jurisdicción y ley aplicable</h2>
-        <p>
-          Estos Términos y Condiciones se rigen por las leyes de la República Argentina. Ante
-          cualquier controversia, las partes se someten a la jurisdicción de los Tribunales Ordinarios
-          de la Ciudad Autónoma de Buenos Aires, renunciando a cualquier otro fuero que pudiera
-          corresponderles.
-        </p>
+          <h2>14. Ley y jurisdicción</h2>
+          <p>Estas condiciones se rigen por las leyes de la República Argentina. Ante cualquier controversia, las partes se someten a los tribunales ordinarios de la Ciudad Autónoma de Buenos Aires, renunciando a cualquier otro fuero.</p>
 
-        <h2>14. Modificaciones</h2>
-        <p>
-          Brickell Lab se reserva el derecho de modificar estos Términos y Condiciones en cualquier
-          momento. Las modificaciones entran en vigor desde su publicación en el sitio web. Los
-          proyectos en curso se rigen por los términos vigentes al momento de su contratación.
-        </p>
+          <h2>15. Cambios</h2>
+          <p>El Estudio puede actualizar estos términos. La versión vigente es la publicada en <strong>{SITIO.replace('https://', '')}/terminos</strong> con la fecha de arriba; los trabajos ya presupuestados se rigen por la versión vigente al momento de la aceptación.</p>
 
-        <h2>15. Contacto</h2>
-        <p>Para consultas sobre estos términos, escribinos a info@labbrickell.com.ar o contactanos por WhatsApp.</p>
+          <h2>16. Contacto</h2>
+          <p>Por cualquier duda sobre estos términos: <a href={`mailto:${MAIL}`}>{MAIL}</a>.</p>
+        </div>
       </div>
-    </div>
-  </main>
+    </main>
+    <Pie />
+  </div></div>
 
-  <Footer lang="es" />
-</Base>
+  <Cookies />
 
-<style>
-  .lg{ background:var(--surface); color:var(--text-primary); padding-top:clamp(90px,12vh,130px); }
-  .lg-in{ width:100%; max-width:760px; margin:0 auto; padding:0 var(--gutter) clamp(56px,7vw,88px); }
-  .lg-eyebrow{
-    display:inline-block; margin-bottom:14px;
-    font-size:11px; font-weight:var(--fw-semibold); letter-spacing:.16em; text-transform:uppercase;
-    color:var(--magenta);
-  }
-  .lg-title{ margin:0; font-size:clamp(32px,4.4vw,52px); font-weight:var(--fw-bold); letter-spacing:-.04em; line-height:1.05; color:var(--text-primary); }
-  .lg-date{ margin:14px 0 0; font-size:14px; color:var(--text-muted); }
-  .lg-body{ margin-top:clamp(36px,4vw,48px); }
-  .lg-body h2{ margin:clamp(32px,3.4vw,44px) 0 12px; font-size:clamp(19px,1.8vw,23px); font-weight:var(--fw-bold); letter-spacing:-.02em; color:var(--text-primary); }
-  .lg-body p{ margin:0 0 16px; font-size:15.5px; line-height:1.7; color:var(--text-secondary); }
-  .lg-body ul{ margin:0 0 16px; padding-left:22px; display:flex; flex-direction:column; gap:8px; }
-  .lg-body li{ font-size:15.5px; line-height:1.6; color:var(--text-secondary); }
-  .lg-body strong{ color:var(--text-primary); font-weight:var(--fw-semibold); }
-</style>
+  <Volver href="/" etiqueta="Volver al inicio" />
+
+  <script is:inline>
+    document.getElementById('nav').classList.add('nav--tinta')
+  </script>
+</V4>

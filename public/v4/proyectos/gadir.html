@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="es">
+<head>
+<!-- Sitio de muestra del portfolio: no se indexa. -->
+<meta name="robots" content="noindex, nofollow"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biblioteca Gadir · Cádiz</title>
+
+<!-- ============================================================
+     BIBLIOTECA GADIR — Cádiz · landing completa
+     ============================================================
+     ⚠️ LA PORTADA ESTÁ PARTIDA COMO UN LIBRO ABIERTO: la foto a toda altura en
+     una hoja, el texto sobre hueso en la otra. Es lo contrario de Meridiano y
+     de Cenit (foto total) y de Caliza (foto enmarcada). Detrás del titular,
+     MDCCLXXXII —1782, el año de fundación— en cuerpo enorme y casi
+     invisible: es la única concesión al aire "institucional", y va sin serif.
+
+     ⚠️ LO QUE SOSTIENE LA PÁGINA ES EL DIBUJO, NO EL STOCK: la línea de tiempo
+     del edificio, la ficha de catálogo con signaturas, los tres pasos del
+     carné y las cifras de la digitalización están hechos en CSS.
+
+     ⚠️ FOTOS: las cinco están (sala, libro, lectora, carta, calle). La de la
+     "fachada" es en realidad una calle del casco antiguo: sirve mejor, porque
+     el texto de al lado habla justamente de que no se llega en coche.
+
+     ⚠️ NI UNA SERIF, Y ES LA DECISIÓN MÁS DIFÍCIL DE LAS CUATRO. Una biblioteca
+     española pide una romana de manual, y por eso mismo no la lleva: la gracia
+     es que se sienta antigua SIN el atajo tipográfico. Instrument Sans —una
+     grotesca de contraste alto— hace ese trabajo; Roboto Mono, las signaturas.
+
+     ⚠️ EL LOGO venía en celeste y se tiñó al burdeos de la casa: medido contra
+     este papel, el celeste daba 3,1:1 y el burdeos 7,2:1, y el logo es de
+     línea fina. Es un logo APILADO (símbolo arriba, nombre abajo): 50/58 px.
+
+     ⚠️ Es de Cádiz y habla como en Cádiz: "aquí", "coche", "carné". Nada de
+     voseo. Sin teléfono, sin dirección, sin mail: nada que delate la maqueta.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --hueso:   #EFEAE0;
+    --hueso-2: #E6DFD2;
+    --papel:   #F8F5EF;
+    --tinta:   #1C1A17;
+    --gris:    #6B655C;
+    --gris-2:  #9A9388;
+    --linea:   #D3CABA;
+    --burdeos: #7A2230;
+    --burdeos-2: #5E1A25;
+
+    --texto: 'Instrument Sans', system-ui, sans-serif;
+    --mono:  'Roboto Mono', ui-monospace, monospace;
+
+    --margen: clamp(20px, 5vw, 64px);
+    --ancho: 1240px;
+    --barra: 71px;
+  }
+  @media (min-width: 900px) { :root { --barra: 79px; } }
+  #smooth-content { padding-top: var(--barra); overflow-x: clip; }
+  html, body { overflow-x: clip; }
+  html.smooth { scroll-behavior: auto; }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--hueso);
+    color: var(--tinta);
+    font-family: var(--texto);
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--burdeos); outline-offset: 3px; }
+  .centro { max-width: var(--ancho); margin-inline: auto; }
+
+  .sig {
+    font-family: var(--mono); font-size: 11.5px; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--gris);
+  }
+  h2 {
+    margin: 0; font-weight: 400;
+    font-size: clamp(28px, 4.2vw, 50px); line-height: 1.06; letter-spacing: -.035em;
+  }
+  h2 em { font-style: normal; color: var(--burdeos); }
+  .bajada { margin: 18px 0 0; max-width: 54ch; color: var(--gris); font-size: clamp(15.5px, 1.2vw, 18px); }
+  .cab { display: grid; gap: 14px; margin-bottom: clamp(32px, 4.5vw, 56px); }
+  .cab .sig { color: var(--burdeos); margin: 0; }
+
+  .boton {
+    display: inline-flex; align-items: center; height: 46px; padding: 0 22px;
+    background: var(--burdeos); color: var(--papel); border-radius: 1px;
+    font-size: 14px; font-weight: 500; white-space: nowrap;
+    transition: background-color .2s ease;
+  }
+  .boton:hover { background: var(--burdeos-2); }
+  .boton--linea { background: transparent; color: var(--tinta); border: 1px solid var(--tinta); }
+  .boton--linea:hover { background: var(--tinta); color: var(--papel); }
+
+  /* ── La barra ──────────────────────────────────────────── */
+  /* ⚠️ FIJA Y FUERA DEL SMOOTHER (sticky no sobrevive al transform del
+     contenido). El contenido le deja --barra arriba; se mide en la prueba. */
+  .barra {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+    padding: 10px var(--margen);
+    border-bottom: 1px solid var(--linea);
+    background: rgba(239,234,224,.86); backdrop-filter: blur(12px);
+  }
+  .barra__caja { display: flex; align-items: center; gap: 28px; }
+  .marca { display: flex; align-items: center; height: 50px; }
+  .marca img { height: 100%; width: auto; object-fit: contain; }
+  .barra nav { display: none; gap: 26px; margin-left: auto; }
+  .barra nav a { font-size: 14.5px; color: var(--gris); transition: color .2s ease; }
+  .barra nav a:hover { color: var(--burdeos); }
+  .barra__carnet { margin-left: auto; height: 38px; padding: 0 18px; font-size: 13.5px; }
+  @media (min-width: 900px) {
+    .marca { height: 58px; }
+    .barra nav { display: flex; }
+    .barra__carnet { margin-left: 0; }
+  }
+
+  /* ── El hero, partido ──────────────────────────────────── */
+  .hero { display: grid; border-bottom: 1px solid var(--linea); }
+  .hero__foto { position: relative; aspect-ratio: 4 / 3; overflow: hidden; }
+  .hero__foto img { width: 100%; height: 100%; object-fit: cover; }
+  .hero__pie {
+    position: absolute; left: 0; bottom: 0; margin: 0;
+    padding: 9px 14px; background: var(--hueso);
+    border-top: 1px solid var(--linea); border-right: 1px solid var(--linea);
+  }
+  .hero__dicho {
+    position: relative; overflow: hidden;
+    padding: clamp(40px, 7vw, 90px) var(--margen) clamp(40px, 7vw, 84px);
+    display: grid; align-content: center;
+  }
+  /* ⚠️ LA MARCA DE AGUA ES EL AÑO EN ROMANOS, Y VA CASI INVISIBLE. Es lo que
+     da el aire de institución sin recurrir a una serif. `nowrap` + `overflow:
+     hidden` en el padre: si no, en el teléfono el número genera scroll
+     horizontal. `pointer-events:none` para que no tape nada. */
+  .hero__agua {
+    position: absolute; left: -2%; top: 50%; transform: translateY(-50%);
+    font-size: clamp(90px, 7.2vw, 120px); font-weight: 700; letter-spacing: -.06em;
+    line-height: 1; color: var(--tinta); opacity: .035; white-space: nowrap;
+    pointer-events: none; user-select: none;
+  }
+  /* ⚠️ `:not(.hero__agua)` NO ES OPCIONAL. Sin él, esta regla —misma
+     especificidad, declarada después— pisa el `position:absolute` de la marca
+     de agua, que entra en el flujo con 1800px de ancho y empuja la columna
+     entera fuera de la pantalla. Se vio en la captura: "MDC" cortado y el
+     titular recortado en "cuarent". */
+  .hero__dicho > *:not(.hero__agua) { position: relative; }
+  .hero__desde { color: var(--burdeos); margin: 0 0 22px; }
+  .hero h1 {
+    margin: 0; max-width: 14ch;
+    font-weight: 400; font-size: clamp(38px, 6.8vw, 78px);
+    line-height: 1.02; letter-spacing: -.04em;
+  }
+  .hero h1 em { font-style: normal; color: var(--burdeos); }
+  .hero__bajada { margin: 22px 0 0; max-width: 46ch; color: var(--gris); font-size: clamp(15.5px, 1.25vw, 18px); }
+  .hero__acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  /* ⚠️ CUATRO CIFRAS, UNA LINEA CADA UNA, SIN CELDAS. Antes iban en una
+     grilla de celdas y dos etiquetas partian en dos renglones ("Anteriores a
+     1900", "Plazas de lectura"): las cifras quedaban a distinta altura.
+     Etiquetas cortas y `nowrap`, la cifra grande abajo, un solo filete arriba. */
+  .hero__datos {
+    margin: clamp(26px, 3.5vw, 40px) 0 0; padding: 18px 0 0; list-style: none;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px;
+    border-top: 1px solid var(--linea);
+  }
+  .hero__datos li { display: grid; gap: 6px; }
+  .hero__datos .sig { white-space: nowrap; }
+  .hero__datos b { display: block; font-family: var(--mono); font-size: clamp(20px, 1.8vw, 24px); font-weight: 500; letter-spacing: -.02em; line-height: 1; }
+  @media (min-width: 900px) {
+    .hero { grid-template-columns: 1.05fr 1fr; }
+    /* -1px: el borde inferior del hero, que si no lo empuja justo un pixel bajo el pliegue. */
+    .hero__foto { aspect-ratio: auto; min-height: calc(100svh - var(--barra) - 1px); border-right: 1px solid var(--linea); }
+    .hero__dicho { padding-top: clamp(28px, 4vh, 60px); padding-bottom: clamp(28px, 4vh, 56px); }
+    .hero__datos { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  section { padding: clamp(56px, 8vw, 110px) var(--margen); }
+
+  /* ── El catálogo ───────────────────────────────────────── */
+  /* ⚠️ UNA FICHA DE CATÁLOGO, NO TARJETAS CON FOTO. Signatura, título, qué es
+     y si se consulta en sala o se presta. Es literalmente cómo mira sus fondos
+     una biblioteca, y ninguna de las otras tres páginas tiene nada parecido. */
+  .fondos { background: var(--papel); }
+  /* ⚠️ LA FOTO MIDE LO QUE MIDE EL TEXTO. Su techo es el del rotulo y su piso
+     el de la bajada: la fila la manda la columna de texto y la foto se
+     estira (object-fit: cover) a esa altura. Antes tenia proporcion propia y
+     asomaba por arriba del titulo. */
+  .fondos__cab { display: grid; gap: clamp(22px, 3vw, 40px); align-items: stretch; margin-bottom: clamp(28px, 4vw, 44px); }
+  .fondos__foto { aspect-ratio: 3 / 2; overflow: hidden; border: 1px solid var(--linea); }
+  @media (min-width: 900px) { .fondos__foto { aspect-ratio: auto; height: 100%; min-height: 0; } }
+  /* ⚠️ LAS FILAS A SANGRE, EL TEXTO EN LA COLUMNA: la lista se sale del
+     contenedor y cada fila vuelve a meter su contenido en un .centro. */
+  .fondos__lista { margin-inline: calc(50% - 50vw); }
+  .fondo__caja { display: grid; gap: 4px 24px; grid-template-columns: 1fr; }
+  .fondos__foto img { width: 100%; height: 100%; object-fit: cover; }
+  @media (min-width: 900px) { .fondos__cab { grid-template-columns: 1.1fr 1fr; } }
+  .fondo {
+    display: block; padding: 20px var(--margen);
+    border-top: 1px solid var(--linea);
+    transition: background-color .2s ease;
+  }
+  .fondo:last-of-type { border-bottom: 1px solid var(--linea); }
+  .fondo:hover { background: var(--hueso-2); }
+  .fondo h3 { margin: 0; font-size: clamp(17.5px, 1.8vw, 21px); font-weight: 500; letter-spacing: -.02em; }
+  .fondo p { margin: 0; color: var(--gris); font-size: 14.5px; max-width: 62ch; }
+  .fondo__acceso { justify-self: start; margin-top: 6px; }
+  .fondo__acceso span {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+    padding: 4px 9px; border: 1px solid var(--linea); color: var(--gris);
+  }
+  .fondo__acceso .sala { border-color: var(--burdeos); color: var(--burdeos); }
+  @media (min-width: 880px) {
+    .fondo__caja { grid-template-columns: 150px 1fr 170px; align-items: baseline; }
+    .fondo__acceso { justify-self: end; margin-top: 0; }
+  }
+  .nota-sala {
+    margin: clamp(28px, 4vw, 40px) 0 0; padding: 18px 20px;
+    border-left: 3px solid var(--burdeos); background: var(--hueso);
+    color: var(--gris); font-size: 14.5px; max-width: 76ch;
+  }
+  .nota-sala b { color: var(--tinta); font-weight: 500; }
+
+  /* ── El edificio: línea de tiempo que se dibuja ───────── */
+  /* ⚠️ LA LINEA SE DIBUJA AL ENTRAR EN PANTALLA. Los hitos arrancan apagados
+     y desplazados; cuando la seccion entra (IntersectionObserver), la raya
+     crece de izquierda a derecha (scaleX 0→1, 1,4 s) y los seis hitos van
+     apareciendo escalonados (.16 s entre uno y otro). En el telefono la raya
+     es vertical y crece hacia abajo. Con prefers-reduced-motion, todo visible
+     de entrada. El hito del ano actual (2019) queda marcado en burdeos. */
+  .historia { background: var(--hueso); border-top: 1px solid var(--linea); }
+  .linea { position: relative; margin-top: clamp(30px, 4vw, 50px); display: grid; gap: 0; }
+  .linea__raya { position: absolute; left: 5px; top: 8px; bottom: 8px; width: 1px; background: var(--burdeos); transform: scaleY(0); transform-origin: top; transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
+  .historia--viva .linea__raya { transform: scaleY(1); }
+  .hito { position: relative; padding: 0 0 28px 30px; opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
+  .historia--viva .hito { opacity: 1; transform: none; }
+  .hito:nth-child(2) { transition-delay: .25s } .hito:nth-child(3) { transition-delay: .41s } .hito:nth-child(4) { transition-delay: .57s }
+  .hito:nth-child(5) { transition-delay: .73s } .hito:nth-child(6) { transition-delay: .89s } .hito:nth-child(7) { transition-delay: 1.05s }
+  .hito::before {
+    content: ''; position: absolute; left: 0; top: 8px; width: 11px; height: 11px;
+    border-radius: 50%; background: var(--hueso); border: 1.5px solid var(--burdeos); box-shadow: 0 0 0 4px var(--hueso); z-index: 1;
+  }
+  .hito--hoy::before { background: var(--burdeos); }
+  .hito__ano { font-family: var(--mono); font-size: clamp(22px, 2.2vw, 28px); font-weight: 500; letter-spacing: -.02em; line-height: 1; }
+  .hito b { display: block; font-weight: 500; font-size: 16px; margin-top: 10px; }
+  .hito p { margin: 5px 0 0; color: var(--gris); font-size: 14.5px; max-width: 30ch; }
+  @media (min-width: 900px) {
+    .linea { grid-template-columns: repeat(6, 1fr); }
+    .linea__raya { left: 0; right: 0; top: 5px; bottom: auto; height: 1px; width: auto; transform: scaleX(0); transform-origin: left; }
+    .historia--viva .linea__raya { transform: scaleX(1); }
+    .hito { padding: 30px 18px 0 0; transform: translateY(18px); }
+    .hito::before { left: 0; top: 0; }
+    .hito p { max-width: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .linea__raya, .hito { transition: none; }
+    .linea__raya { transform: none; } .hito { opacity: 1; transform: none; }
+  }
+
+  /* ── Cómo se usa: la foto es una de las tarjetas ───────── */
+  /* ⚠️ LA FOTO ES LA PRIMERA COLUMNA DE LA MISMA TIRA. Cuatro celdas con el
+     mismo filete: la lectora, y los tres pasos. Comparten techo y piso porque
+     son celdas de una grilla que se estira. Entra en una pantalla de
+     escritorio con padding propio. */
+  .uso { background: var(--papel); border-top: 1px solid var(--linea); padding-top: clamp(44px, 6vh, 64px); padding-bottom: clamp(44px, 6vh, 64px); }
+  .uso__cab { display: grid; gap: 14px; margin-bottom: clamp(24px, 3.5vh, 36px); }
+  .uso__cab .cab { margin-bottom: 0; }
+  .uso__cab .bajada { margin: 0; }
+  .pasos { display: grid; gap: 1px; background: var(--linea); border: 1px solid var(--linea); }
+  .uso__foto { background: var(--papel); aspect-ratio: 4 / 3; overflow: hidden; }
+  .uso__foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
+  .paso { background: var(--papel); padding: clamp(20px, 2.4vw, 28px); display: grid; gap: 8px; grid-template-rows: auto auto 1fr auto; }
+  .paso__num { font-family: var(--mono); font-size: 12px; color: var(--burdeos); letter-spacing: .12em; }
+  .paso h3 { margin: 0; font-size: clamp(19px, 1.9vw, 22px); font-weight: 500; letter-spacing: -.025em; }
+  .paso p { margin: 0; color: var(--gris); font-size: 14px; align-self: start; }
+  .paso__dato { margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--linea); display: flex; justify-content: space-between; gap: 12px; align-self: end; }
+  .paso__dato span { font-size: 13.5px; color: var(--gris); }
+  .paso__dato b { font-family: var(--mono); font-size: 13px; font-weight: 500; white-space: nowrap; }
+  .horario { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px 28px; padding-top: 14px; border-top: 1px solid var(--linea); }
+  .horario > div { display: flex; gap: 10px; align-items: baseline; }
+  .horario b { font-weight: 500; font-size: 14px; }
+  .horario span { font-family: var(--mono); font-size: 12.5px; color: var(--gris); white-space: nowrap; }
+  @media (min-width: 900px) {
+    .uso__cab { grid-template-columns: 1.05fr 1fr; align-items: start; gap: 40px; }
+    .uso__cab .bajada { padding-top: 2px; }
+    .pasos { grid-template-columns: 1.1fr 1fr 1fr 1fr; }
+    .uso__foto { aspect-ratio: auto; height: 100%; }
+  }
+  @media (min-width: 900px) and (max-height: 780px) {
+    .uso { padding-top: 34px; padding-bottom: 34px; }
+    .uso__cab { margin-bottom: 18px; }
+    .paso { padding: 16px 18px; }
+    .paso p { font-size: 13.5px; }
+  }
+
+  /* ── Lo digital: una cifra grande, sin grilla ──────────── */
+  /* ⚠️ SIN TABLA. A la izquierda, el texto y UNA cifra grande (12 %, lo que
+     va digitalizado) con una barra de progreso debajo —que es literalmente el
+     dato— y tres numeros chicos en una linea. A la derecha la carta, con un
+     pie. Las dos columnas alineadas por arriba y por abajo. */
+  .digital { background: var(--tinta); color: var(--papel); border-top: 1px solid var(--linea); }
+  .digital .sig { color: var(--gris-2); }
+  .digital .cab .sig { color: #C9A0A6; }
+  .digital h2 em { color: #E4A7AE; }
+  .digital .bajada { color: #B8B0A4; }
+  .digital__caja { display: grid; gap: clamp(30px, 4.5vw, 60px); align-items: stretch; }
+  .digital__texto { display: grid; grid-template-rows: auto 1fr auto; }
+  .digital__texto .cab { margin-bottom: 0; }
+  .digital__avance { align-self: end; margin-top: 30px; }
+  .digital__pct { display: flex; align-items: baseline; gap: 14px; }
+  .digital__pct b { font-family: var(--mono); font-size: clamp(56px, 6vw, 84px); font-weight: 500; letter-spacing: -.05em; line-height: 1; }
+  .digital__pct span { color: #B8B0A4; font-size: 14.5px; max-width: 22ch; }
+  .barra-avance { height: 4px; background: #3A3631; margin-top: 16px; overflow: hidden; }
+  .barra-avance i { display: block; height: 100%; width: 12%; background: #E4A7AE; transform-origin: left; transform: scaleX(0); transition: transform 1.2s cubic-bezier(.2,.7,.2,1) .2s; }
+  .digital--viva .barra-avance i { transform: scaleX(1); }
+  @media (prefers-reduced-motion: reduce) { .barra-avance i { transition: none; transform: none; } }
+  .digital__tres { display: flex; flex-wrap: wrap; gap: 8px 32px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #3A3631; }
+  .digital__tres div { display: flex; gap: 8px; align-items: baseline; }
+  .digital__tres b { font-family: var(--mono); font-size: 18px; font-weight: 500; }
+  .digital__tres span { color: #B8B0A4; font-size: 13px; }
+  .digital__foto { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid #3A3631; }
+  .digital__foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .digital__foto figcaption { position: absolute; left: 0; bottom: 0; margin: 0; padding: 8px 12px; background: var(--tinta); color: #B8B0A4; border-top: 1px solid #3A3631; border-right: 1px solid #3A3631; }
+  @media (min-width: 960px) {
+    .digital__caja { grid-template-columns: 1fr 1fr; }
+    .digital__foto { aspect-ratio: auto; height: 100%; }
+  }
+
+  /* ── Agenda: un calendario ─────────────────────────────── */
+  /* ⚠️ ES UN CALENDARIO DE VERDAD: abril 2026 empieza en miercoles (columna
+     3) y tiene 30 dias. Los cuatro jueves con acto se marcan y se listan al
+     lado; el resto son dias. En el telefono el calendario va arriba y los
+     actos debajo. Los dias con acto son botones que resaltan su acto. */
+  /* ⚠️ ENTRA EN UNA PANTALLA: padding propio (no los 110px de las demas),
+     cabecera a dos columnas con el rotulo y el titulo, y las dos columnas de
+     abajo del MISMO alto: el calendario manda y la lista de actos se reparte
+     en su altura (grid-auto-rows: 1fr). Los actos pierden la descripcion
+     larga en escritorio: queda titulo, hora y sala. */
+  .agenda { background: var(--hueso); border-top: 1px solid var(--linea); padding-top: clamp(44px, 6vh, 64px); padding-bottom: clamp(44px, 6vh, 64px); }
+  .agenda .cab { margin-bottom: clamp(20px, 3vh, 32px); }
+  .agenda h2 { font-size: clamp(26px, 3.4vw, 40px); }
+  .agenda__caja { display: grid; gap: clamp(28px, 4vw, 56px); align-items: stretch; }
+  .calendario { border: 1px solid var(--linea); background: var(--papel); }
+  .calendario__cab { display: flex; align-items: baseline; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--linea); }
+  .calendario__cab b { font-size: 17px; font-weight: 500; letter-spacing: -.02em; }
+  .calendario__dias { display: grid; grid-template-columns: repeat(7, 1fr); }
+  .calendario__dias > span { padding: 8px 0 6px; text-align: center; font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--gris-2); border-bottom: 1px solid var(--linea); }
+  .calendario__grilla { display: grid; grid-template-columns: repeat(7, 1fr); }
+  .dia { aspect-ratio: 1.25; display: grid; place-items: center; font-family: var(--mono); font-size: 13.5px; color: var(--gris); border-right: 1px solid var(--linea); border-bottom: 1px solid var(--linea); position: relative; }
+  .dia:nth-child(7n) { border-right: 0; }
+  .dia--vacio { background: repeating-linear-gradient(135deg, transparent 0 6px, rgba(28,26,23,.035) 6px 7px); }
+  .dia--acto { appearance: none; border-left: 0; border-top: 0; background: var(--papel); color: var(--tinta); font-weight: 500; cursor: pointer; font-family: var(--mono); font-size: 13.5px; }
+  .dia--acto::after { content: ''; position: absolute; left: 50%; bottom: 14%; width: 5px; height: 5px; border-radius: 50%; background: var(--burdeos); transform: translateX(-50%); }
+  .dia--acto:hover, .dia--acto.dia--elegido { background: var(--burdeos); color: var(--papel); }
+  .dia--acto.dia--elegido::after { background: var(--papel); }
+  .dia--cerrado { color: var(--linea); }
+  .calendario__pie { padding: 10px 18px; font-size: 12.5px; color: var(--gris); border-top: 1px solid var(--linea); display: flex; gap: 16px; }
+  .calendario__pie i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--burdeos); margin-right: 6px; }
+  .actos { display: grid; gap: 0; grid-auto-rows: 1fr; }
+  .acto { display: grid; grid-template-columns: 58px 1fr; gap: 4px 18px; padding: 14px 0; border-top: 1px solid var(--linea); align-items: start; align-content: center; transition: background-color .2s ease; }
+  .acto:last-of-type { border-bottom: 1px solid var(--linea); }
+  .acto--elegido { background: var(--papel); box-shadow: inset 3px 0 var(--burdeos); padding-left: 12px; }
+  .acto__fecha { display: grid; line-height: 1; }
+  .acto__fecha b { font-family: var(--mono); font-size: 26px; font-weight: 500; letter-spacing: -.03em; }
+  .acto__fecha span { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--burdeos); margin-top: 5px; }
+  .acto h3 { margin: 0; font-size: clamp(16.5px, 1.6vw, 19px); font-weight: 500; letter-spacing: -.02em; }
+  .acto p { margin: 3px 0 0; color: var(--gris); font-size: 14px; max-width: 52ch; }
+  .acto__meta { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .acto__meta span { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; padding: 3px 8px; border: 1px solid var(--linea); color: var(--gris); }
+  @media (min-width: 960px) {
+    .agenda__caja { grid-template-columns: 1fr 1.1fr; }
+    .acto p { display: none; }
+    .acto__meta { margin-top: 8px; }
+  }
+  @media (min-width: 960px) and (max-height: 780px) {
+    .agenda { padding-top: 34px; padding-bottom: 34px; }
+    .agenda .cab { margin-bottom: 18px; }
+    .dia { aspect-ratio: 1.5; }
+    .calendario__cab { padding: 10px 16px; }
+  }
+
+  /* ── La visita: a pantalla, la foto al alto de las reglas ─ */
+  /* ⚠️ SIN GRILLA DE CELDAS. Las cuatro reglas son parrafos numerados con un
+     filete entre si; la foto de la calle, a la izquierda, se estira al alto
+     de las cuatro. Cabecera arriba a dos columnas. Entra en una pantalla. */
+  .visita { background: var(--papel); border-top: 1px solid var(--linea); padding-top: clamp(44px, 6vh, 64px); padding-bottom: clamp(44px, 6vh, 64px); }
+  .visita__cab { display: grid; gap: 14px; margin-bottom: clamp(24px, 3.5vh, 36px); }
+  .visita__cab .cab { margin-bottom: 0; }
+  .visita__caja { display: grid; gap: clamp(24px, 3vw, 44px); align-items: stretch; }
+  .visita__foto { overflow: hidden; border: 1px solid var(--linea); aspect-ratio: 4 / 3; }
+  .visita__foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .reglas { margin: 0; padding: 0; list-style: none; display: grid; }
+  .reglas li { display: grid; grid-template-columns: 34px 1fr; gap: 2px 14px; padding: 16px 0; border-top: 1px solid var(--linea); align-content: start; }
+  .reglas li:last-child { border-bottom: 1px solid var(--linea); }
+  .reglas i { font-family: var(--mono); font-style: normal; font-size: 12px; color: var(--burdeos); letter-spacing: .1em; padding-top: 3px; grid-row: span 2; }
+  .reglas b { font-weight: 500; font-size: 15.5px; }
+  .reglas span { color: var(--gris); font-size: 14px; }
+  @media (min-width: 960px) {
+    .visita__cab { grid-template-columns: 1.1fr 1fr; align-items: start; gap: 40px; }
+    /* ⚠️ LAS REGLAS MANDAN EL ALTO Y LA FOTO SE RECORTA A ESE ALTO. Al reves
+       (foto vertical mandando, reglas en filas 1fr para llenarla) la seccion
+       media 960px y no entraba. `align-self: stretch` + `height: 0; min-height:
+       100%` hace que la foto NO aporte alto a la fila: solo la llena. */
+    .visita__caja { grid-template-columns: .7fr 1.3fr; align-items: stretch; }
+    .visita__foto { aspect-ratio: auto; height: 0; min-height: 100%; align-self: stretch; }
+    .visita__foto img { object-position: 50% 70%; }
+    .reglas { align-content: start; }
+    .visita__cab h2 { font-size: clamp(26px, 3.4vw, 40px); max-width: 24ch; }
+  }
+  @media (min-width: 960px) and (max-height: 780px) {
+    .visita { padding-top: 34px; padding-bottom: 34px; }
+    .visita__cab { margin-bottom: 18px; }
+    .reglas li { padding: 11px 0; }
+    .reglas span { font-size: 13.5px; }
+  }
+
+  /* ── El aviso de demostracion ── */
+  .aviso {
+    position: fixed; z-index: 70; left: 20px; right: 20px; bottom: calc(22px + env(safe-area-inset-bottom));
+    --tx: 0; transform: translate(var(--tx), 16px); opacity: 0; pointer-events: none;
+    padding: 13px 18px 13px 16px;
+    background: rgba(28,26,23,.92); color: var(--papel); border-radius: 3px;
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    box-shadow: 0 20px 50px -16px rgba(28,26,23,.6);
+    font-size: 14.5px; line-height: 1.45; display: flex; gap: 12px; align-items: center;
+    transition: opacity .25s ease, transform .25s cubic-bezier(.2,.7,.2,1);
+  }
+  .aviso--visible { opacity: 1; transform: translate(var(--tx), 0); }
+  .aviso i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: #E4A7AE; box-shadow: 0 0 0 4px rgba(228,167,174,.3); }
+  .aviso b { font-weight: 600; }
+  @media (min-width: 820px) { .aviso { left: 50%; right: auto; width: max-content; max-width: 560px; --tx: -50%; } }
+  @media (prefers-reduced-motion: reduce) { .aviso { transition: opacity .2s ease; transform: translate(var(--tx), 0); } }
+
+  /* ── Cierre ────────────────────────────────────────────── */
+  .cierre { background: var(--burdeos); color: var(--papel); text-align: center; }
+  .cierre .sig { color: #E4A7AE; }
+  .cierre h2 { max-width: 20ch; margin-inline: auto; }
+  .cierre .bajada { color: #EBCDD1; margin-inline: auto; }
+  .cierre .boton { background: var(--papel); color: var(--burdeos); margin-top: 30px; }
+  .cierre .boton:hover { background: #FFF; }
+
+  /* ── Pie ───────────────────────────────────────────────── */
+  footer { background: var(--hueso); border-top: 1px solid var(--linea); padding: clamp(44px, 6vw, 72px) var(--margen) clamp(28px, 4vw, 40px); }
+  .pie { display: grid; gap: clamp(30px, 4vw, 50px); }
+  .pie__marca { display: grid; gap: 14px; justify-items: start; align-content: start; }
+  .pie__marca img { height: 64px; width: auto; }
+  .pie__marca p { margin: 0; color: var(--gris); font-size: 14.5px; max-width: 34ch; }
+  .pie__cols { display: grid; gap: 28px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pie__col h4 { margin: 0 0 14px; font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--gris-2); }
+  .pie__col ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; }
+  .pie__col a { color: var(--gris); font-size: 14.5px; transition: color .2s ease; }
+  .pie__col a:hover { color: var(--burdeos); }
+  /* ⚠️ LA FIRMA DE BRICKELL LAB, SUTIL. Va a la derecha de la fila legal, en el
+     mismo gris y tamano que "Aviso legal". El isotipo es una MASCARA CSS
+     rellena con currentColor: toma el gris del pie de cada pagina y no trae
+     su propio negro. Al pasar el mouse sube al color del texto. */
+  .hecho { margin-left: auto; display: inline-flex; align-items: center; gap: 7px; color: inherit; white-space: nowrap; transition: color .2s ease; }
+  .hecho:hover { color: var(--burdeos); }
+  /* La marca entera (isotipo + wordmark) como IMAGEN, ya teñida al gris de
+     este pie: una mascara CSS no pintaba en todos los navegadores. 16px de alto. */
+  .hecho img { display: block; height: 16px; width: auto; opacity: .9; }
+  .hecho:hover img { opacity: 1; }
+  @media (max-width: 599px) { .hecho { margin-left: 0; flex-basis: 100%; } }
+  /* El cierre en escritorio: una fila, copyright · legales · hecho por (a la derecha). */
+  .pie__fin {  margin-top: clamp(30px, 4vw, 50px); padding-top: 18px; border-top: 1px solid var(--linea); display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; color: var(--gris-2); font-size: 13px; }
+  .pie__legales { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+  /* ── El pie en el teléfono (< 900px) ──────────────────────────────────
+     Las columnas de enlaces quedan como siempre (dos columnas); lo que se
+     rediseñó es el cierre, en dos escalones con su línea cada uno:
+     1. los legales en una fila y el copyright debajo, chicos;
+     2. "Hecho por brickell lab", solo, centrado, en su propio escalón. */
+  @media (max-width: 899px) {
+    .pie__fin { display: grid; gap: 8px; margin-top: 30px; padding-top: 18px; font-size: 12.5px; }
+    .pie__fin > span:first-child { order: 2; }
+    .pie__legales { order: 1; gap: 6px 16px; }
+    .hecho { order: 3; width: 100%; margin: 16px 0 0; padding: 16px 0 0; border-top: 1px solid var(--linea); justify-content: center; }
+  }
+  @media (min-width: 900px) {
+    .pie { grid-template-columns: 1fr 1.5fr; }
+    .pie__cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="barra"><div class="centro barra__caja">
+  <a class="marca" href="#"><img src="img/logo-gadir.png" alt="Biblioteca Gadir · Cádiz"></a>
+  <nav>
+    <a href="#fondos">Fondos</a>
+    <a href="#historia">El edificio</a>
+    <a href="#uso">Cómo se usa</a>
+    <a href="#agenda">Agenda</a>
+    <a href="#visita">Visitas</a>
+  </nav>
+  <a class="boton barra__carnet" href="#" data-aviso="Aquí se abriría el formulario para solicitar el carné.">Solicitar carné</a>
+</div></div>
+
+<div id="smooth-wrapper"><div id="smooth-content">
+
+<header class="hero">
+  <div class="hero__foto">
+    <img src="img/biblioteca.jpg" alt="Sala de lectura con estanterías de madera de doble altura">
+    <p class="sig hero__pie">Sala Mendizábal · planta noble</p>
+  </div>
+
+  <div class="hero__dicho">
+    <span class="hero__agua" aria-hidden="true">MDCCLXXXII</span>
+    <p class="sig hero__desde">Fundada en 1782 · Cádiz</p>
+    <h1>Doscientos cuarenta años <em>sin cerrar</em> una tarde.</h1>
+    <p class="hero__bajada">Cuarenta y un mil volúmenes sobre el Atlántico, el comercio de Indias y las Cortes. Abierta a cualquiera que pida el carné, y gratis.</p>
+    <div class="hero__acciones">
+      <a class="boton" href="#" data-aviso="Aquí se abriría el formulario para solicitar el carné.">Solicitar el carné</a>
+      <a class="boton boton--linea" href="#fondos">Ver los fondos</a>
+    </div>
+
+    <ul class="hero__datos">
+      <li><span class="sig">Volúmenes</span><b>41.280</b></li>
+      <li><span class="sig">Antes de 1900</span><b>6.914</b></li>
+      <li><span class="sig">Plazas</span><b>112</b></li>
+      <li><span class="sig">Cierra hoy</span><b>21:00</b></li>
+    </ul>
+  </div>
+</header>
+
+<!-- ── Los fondos ────────────────────────────────────────── -->
+<section class="fondos" id="fondos">
+  <div class="centro">
+    <div class="fondos__cab">
+      <div class="cab" style="margin-bottom:0">
+        <p class="sig">Fondos · selección del mes</p>
+        <h2>Lo que hay aquí <em>y no hay en otra parte</em>.</h2>
+        <p class="bajada">El catálogo entero se consulta en línea. Esta es la parte que no se puede resumir en una ficha: lo que sólo existe en esta casa.</p>
+      </div>
+      <div class="fondos__foto">
+        <img src="img/gadir-libro.jpg" alt="Un libro antiguo abierto sobre una mesa de madera, sostenido con las manos">
+      </div>
+    </div>
+
+    <div class="fondos__lista">
+    <article class="fondo"><div class="centro fondo__caja">
+      <span class="sig">GAD/MS-0041</span>
+      <div>
+        <h3>Cuadernos de la Aduana</h3>
+        <p>Registro manuscrito del movimiento del puerto entre 1789 y 1812. Nueve tomos encuadernados en pergamino.</p>
+      </div>
+      <div class="fondo__acceso"><span class="sala">Sólo en sala</span></div>
+    </div></article>
+
+    <article class="fondo"><div class="centro fondo__caja">
+      <span class="sig">GAD/CAR-0210</span>
+      <div>
+        <h3>Cartografía del Atlántico sur</h3>
+        <p>Ciento ochenta cartas náuticas grabadas, la más antigua de 1703. Digitalizadas en su totalidad.</p>
+      </div>
+      <div class="fondo__acceso"><span>Copia digital</span></div>
+    </div></article>
+
+    <article class="fondo"><div class="centro fondo__caja">
+      <span class="sig">GAD/PER-0007</span>
+      <div>
+        <h3>Prensa gaditana, 1810–1814</h3>
+        <p>La colección completa de los periódicos publicados durante el sitio, incluidos los tres que duraron un solo número.</p>
+      </div>
+      <div class="fondo__acceso"><span class="sala">Sólo en sala</span></div>
+    </div></article>
+
+    <article class="fondo"><div class="centro fondo__caja">
+      <span class="sig">GAD/LEG-1133</span>
+      <div>
+        <h3>Legado Ruiz de Alarcón</h3>
+        <p>Biblioteca personal de un armador del siglo XIX, donada entera en 1968 y conservada tal como se recibió.</p>
+      </div>
+      <div class="fondo__acceso"><span>Préstamo</span></div>
+    </div></article>
+
+    <article class="fondo"><div class="centro fondo__caja">
+      <span class="sig">GAD/MUS-0302</span>
+      <div>
+        <h3>Partituras del Teatro Cómico</h3>
+        <p>Cuatrocientas partituras manuscritas de las funciones del teatro entre 1840 y 1890, con las anotaciones de los músicos al margen.</p>
+      </div>
+      <div class="fondo__acceso"><span>Copia digital</span></div>
+    </div></article>
+    </div>
+
+    <p class="nota-sala"><b>Para consultar fondo antiguo</b> hay que pedir cita con cuarenta y ocho horas de antelación. La sala de lectura general no la necesita: se entra con el carné.</p>
+  </div>
+</section>
+
+<!-- ── El edificio ───────────────────────────────────────── -->
+<section class="historia" id="historia">
+  <div class="centro">
+    <div class="cab" style="margin-bottom:0">
+      <p class="sig">El edificio</p>
+      <h2>Una casa de comerciantes que <em>nunca dejó de ser</em> biblioteca.</h2>
+      <p class="bajada">La fundó un consulado de comerciantes para sus propios hijos. Sobrevivió a un sitio, a dos incendios y a una guerra, y en todo ese tiempo sólo cerró por obras.</p>
+    </div>
+
+    <div class="linea">
+      <i class="linea__raya" aria-hidden="true"></i>
+      <div class="hito"><span class="hito__ano">1782</span><b>La fundación</b><p>El Consulado de Cargadores compra la casa y la abre a sus socios con dos mil libros.</p></div>
+      <div class="hito"><span class="hito__ano">1812</span><b>El sitio</b><p>Durante el asedio francés la sala se usa como archivo de las Cortes. No se pierde un solo tomo.</p></div>
+      <div class="hito"><span class="hito__ano">1868</span><b>La apertura</b><p>Deja de ser privada. Cualquier vecino que sepa leer puede pedir el carné.</p></div>
+      <div class="hito"><span class="hito__ano">1936</span><b>El incendio</b><p>Se pierde el ala norte y un tercio de la prensa del siglo XIX. Lo demás se salva a mano.</p></div>
+      <div class="hito"><span class="hito__ano">1968</span><b>El legado</b><p>Llegan los diez mil volúmenes de Ruiz de Alarcón y con ellos la segunda planta de estanterías.</p></div>
+      <div class="hito hito--hoy"><span class="hito__ano">2019</span><b>Lo digital</b><p>Empieza la digitalización del fondo antiguo. Las cartas náuticas son lo primero.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Cómo se usa ───────────────────────────────────────── -->
+<section class="uso" id="uso">
+  <div class="centro">
+    <div class="uso__cab">
+      <div class="cab">
+        <p class="sig">Cómo se usa</p>
+        <h2>El carné es gratis <em>y se hace en diez minutos</em>.</h2>
+      </div>
+      <p class="bajada">No hay que ser investigador ni estudiante ni vecino de Cádiz. Hace falta un documento de identidad y una dirección donde mandar los avisos de devolución.</p>
+    </div>
+
+    <div class="pasos">
+      <div class="uso__foto">
+        <img src="img/gadir-lectora.jpg" alt="Una lectora en un sillón, con una lámpara encendida al lado">
+      </div>
+      <div class="paso">
+        <span class="paso__num">01</span>
+        <h3>El carné</h3>
+        <p>Se pide en el mostrador de la entrada con el documento. Sale al momento y no caduca mientras se use al menos una vez al año.</p>
+        <div class="paso__dato"><span>Cuesta</span><b>Nada</b></div>
+      </div>
+      <div class="paso">
+        <span class="paso__num">02</span>
+        <h3>La sala general</h3>
+        <p>Ciento doce plazas con lámpara y enchufe. Se entra sin cita, se pide el libro en el mostrador y llega a la mesa en menos de quince minutos.</p>
+        <div class="paso__dato"><span>Préstamo a casa</span><b>3 libros · 21 días</b></div>
+      </div>
+      <div class="paso">
+        <span class="paso__num">03</span>
+        <h3>El fondo antiguo</h3>
+        <p>Con cita de cuarenta y ocho horas. Se consulta en una sala aparte, con guantes y sin bolígrafo, y hay un bibliotecario al lado todo el tiempo.</p>
+        <div class="paso__dato"><span>Cita previa</span><b>48 horas</b></div>
+      </div>
+    </div>
+
+    <div class="horario">
+      <div><b>Lunes a viernes</b><span>09:00 – 21:00</span></div>
+      <div><b>Sábado</b><span>09:00 – 14:00</span></div>
+      <div><b>Fondo antiguo</b><span>mar y jue · 10:00 – 14:00</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Digitalización ────────────────────────────────────── -->
+<section class="digital" id="digital">
+  <div class="centro digital__caja">
+    <div class="digital__texto">
+      <div class="cab">
+        <p class="sig">Lo digital</p>
+        <h2>Lo que no se puede tocar, <em>se puede ver</em>.</h2>
+        <p class="bajada">El fondo antiguo se está digitalizando pieza por pieza y se sube abierto, sin registro y a resolución completa. Las cartas náuticas ya están enteras.</p>
+      </div>
+      <div></div>
+      <div class="digital__avance">
+        <div class="digital__pct"><b>12<small style="font-size:.5em">%</small></b><span>de las 6.914 piezas anteriores a 1900 ya está en línea</span></div>
+        <div class="barra-avance" role="progressbar" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100"><i></i></div>
+        <div class="digital__tres">
+          <div><b>180</b><span>cartas náuticas</span></div>
+          <div><b>600 ppp</b><span>de captura</span></div>
+          <div><b>0 €</b><span>sin registro</span></div>
+        </div>
+      </div>
+    </div>
+
+    <figure class="digital__foto" style="margin:0">
+      <img src="img/gadir-carta.jpg" alt="Una carta náutica antigua, con las líneas de rumbo, desplegada sobre una mesa">
+      <figcaption class="sig">GAD/CAR-0210 · 1703</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ── Agenda ────────────────────────────────────────────── -->
+<section class="agenda" id="agenda">
+  <div class="centro">
+    <div class="cab">
+      <p class="sig">Agenda · abril 2026</p>
+      <h2>Lo que pasa aquí <em>además de leer</em>.</h2>
+    </div>
+
+    <div class="agenda__caja">
+      <div class="calendario" aria-label="Calendario de abril de 2026">
+        <div class="calendario__cab"><b>Abril 2026</b><span class="sig">Los jueves, a la tarde</span></div>
+        <div class="calendario__dias"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+        <div class="calendario__grilla">
+        <span class="dia dia--vacio"></span>
+        <span class="dia dia--vacio"></span>
+        <span class="dia ">1</span>
+        <span class="dia ">2</span>
+        <span class="dia ">3</span>
+        <span class="dia ">4</span>
+        <span class="dia dia--cerrado">5</span>
+        <span class="dia ">6</span>
+        <span class="dia ">7</span>
+        <span class="dia ">8</span>
+        <button type="button" class="dia dia--acto" data-acto="9">9</button>
+        <span class="dia ">10</span>
+        <span class="dia ">11</span>
+        <span class="dia dia--cerrado">12</span>
+        <span class="dia ">13</span>
+        <span class="dia ">14</span>
+        <span class="dia ">15</span>
+        <button type="button" class="dia dia--acto" data-acto="16">16</button>
+        <span class="dia ">17</span>
+        <span class="dia ">18</span>
+        <span class="dia dia--cerrado">19</span>
+        <span class="dia ">20</span>
+        <span class="dia ">21</span>
+        <span class="dia ">22</span>
+        <button type="button" class="dia dia--acto" data-acto="23">23</button>
+        <span class="dia ">24</span>
+        <span class="dia ">25</span>
+        <span class="dia dia--cerrado">26</span>
+        <span class="dia ">27</span>
+        <span class="dia ">28</span>
+        <span class="dia ">29</span>
+        <button type="button" class="dia dia--acto" data-acto="30">30</button>
+        <span class="dia dia--vacio"></span>
+        <span class="dia dia--vacio"></span>
+        <span class="dia dia--vacio"></span>
+        </div>
+        <div class="calendario__pie"><span><i></i>Con acto</span><span>Domingos, cerrado</span></div>
+      </div>
+
+      <div class="actos" id="actos">
+        <article class="acto" data-dia="9">
+          <div class="acto__fecha"><b>09</b><span>jue</span></div>
+          <div>
+            <h3>Visita guiada al fondo antiguo</h3>
+            <p>Una hora por las salas que no se ven desde la general, con el conservador. Doce plazas, con carné.</p>
+          </div>
+          <div class="acto__meta"><span>18:00</span><span>Gratis · reserva</span></div>
+        </article>
+        <article class="acto" data-dia="16">
+          <div class="acto__fecha"><b>16</b><span>jue</span></div>
+          <div>
+            <h3>Las cartas del Atlántico sur</h3>
+            <p>Charla sobre la colección de cartografía y cómo se leía un mapa cuando el mapa era lo único que había.</p>
+          </div>
+          <div class="acto__meta"><span>19:00</span><span>Sala Mendizábal</span></div>
+        </article>
+        <article class="acto" data-dia="23">
+          <div class="acto__fecha"><b>23</b><span>jue</span></div>
+          <div>
+            <h3>Lectura en voz alta: la prensa del sitio</h3>
+            <p>Se leen tres periódicos de 1811 tal como salieron, con sus erratas. Dura lo que dura un periódico.</p>
+          </div>
+          <div class="acto__meta"><span>19:00</span><span>Entrada libre</span></div>
+        </article>
+        <article class="acto" data-dia="30">
+          <div class="acto__fecha"><b>30</b><span>jue</span></div>
+          <div>
+            <h3>Taller de encuadernación</h3>
+            <p>Cuatro tardes para aprender a coser un cuaderno como se cosían los de la Aduana. Se sale con el cuaderno hecho.</p>
+          </div>
+          <div class="acto__meta"><span>17:30</span><span>4 sesiones · 8 plazas</span></div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── La visita ─────────────────────────────────────────── -->
+<section class="visita" id="visita">
+  <div class="centro">
+    <div class="visita__cab">
+      <div class="cab">
+        <p class="sig">Antes de venir</p>
+        <h2>Cuatro cosas que conviene saber <em>antes de subir la escalera</em>.</h2>
+      </div>
+    </div>
+
+    <div class="visita__caja">
+      <div class="visita__foto">
+        <img src="img/gadir-calle.jpg" alt="Una calle estrecha del casco antiguo, con balcones y una puerta abierta">
+      </div>
+      <ul class="reglas">
+        <li><i>01</i><b>Está en el casco antiguo y no se llega en coche.</b><span>Las calles no dejan aparcar. Lo razonable es venir andando desde cualquier punto del centro: no hay nada a más de quince minutos.</span></li>
+        <li><i>02</i><b>Las mochilas se quedan en las taquillas.</b><span>A la sala entran el portátil, los papeles y un lápiz. Los bolígrafos, no: la tinta no sale del papel de 1800.</span></li>
+        <li><i>03</i><b>Hay ascensor hasta la planta noble.</b><span>La sala general y la de fondo antiguo son accesibles. La segunda planta de estanterías, la del legado, no lo es todavía.</span></li>
+        <li><i>04</i><b>Se puede fotografiar sin flash.</b><span>Lo que no se puede es publicar imágenes del fondo antiguo sin pedir permiso, que se da casi siempre.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── Cierre ────────────────────────────────────────────── -->
+<section class="cierre">
+  <div class="centro">
+    <p class="sig">Desde 1868, para cualquiera</p>
+    <h2 style="margin-top:18px">El carné no pide nada más que ganas de leer.</h2>
+    <p class="bajada">Se hace en el mostrador, sale al momento y no caduca. La sala está abierta hasta las nueve.</p>
+    <a class="boton" href="#" data-aviso="Aquí se abriría el formulario para solicitar el carné.">Pedir el carné</a>
+  </div>
+</section>
+
+<footer>
+  <div class="centro pie">
+    <div class="pie__marca">
+      <img src="img/logo-gadir.png" alt="Biblioteca Gadir">
+      <p>Biblioteca pública fundada en 1782 en el casco antiguo de Cádiz. Fondos sobre el Atlántico, el comercio de Indias y las Cortes.</p>
+    </div>
+    <div class="pie__cols">
+      <div class="pie__col">
+        <h4>Fondos</h4>
+        <ul>
+          <li><a href="#fondos">Selección del mes</a></li>
+          <li><a href="#">Catálogo en línea</a></li>
+          <li><a href="#">Biblioteca digital</a></li>
+          <li><a href="#">Donaciones y legados</a></li>
+        </ul>
+      </div>
+      <div class="pie__col">
+        <h4>Usar la biblioteca</h4>
+        <ul>
+          <li><a href="#uso">El carné</a></li>
+          <li><a href="#uso">Horarios</a></li>
+          <li><a href="#">Préstamo y renovaciones</a></li>
+          <li><a href="#">Investigadores</a></li>
+        </ul>
+      </div>
+      <div class="pie__col">
+        <h4>La casa</h4>
+        <ul>
+          <li><a href="#historia">Historia del edificio</a></li>
+          <li><a href="#agenda">Agenda</a></li>
+          <li><a href="#visita">Visitas guiadas</a></li>
+          <li><a href="#">Amigos de la biblioteca</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="centro pie__fin">
+    <span>© Biblioteca Gadir · Cádiz</span>
+    <span class="pie__legales"><span>Aviso legal</span><span>Privacidad</span><span>Accesibilidad</span></span>
+    <a class="hecho" href="https://labbrickell.com.ar" target="_blank" rel="noopener">Hecho por <img src="img/brickell-lab-biblioteca.png" alt="brickell lab"></a>
+  </div>
+</footer>
+
+</div></div><!-- /smooth -->
+
+<div class="aviso" id="aviso" role="status" aria-live="polite"><i></i><span id="aviso-texto"></span></div>
+
+<!-- ⚠️ SCROLLSMOOTHER (GSAP), SOLO EN ESCRITORIO. Como en Meridiano y Cenit:
+     fija la pagina y traslada el contenido, asi rueda, barra y teclado van con
+     inercia. La barra de navegacion esta fuera del wrapper y es fixed. -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+<script>
+// ── El aviso: esto es una demostracion ─────────────────────
+(function () {
+  const aviso = document.getElementById('aviso'), texto = document.getElementById('aviso-texto')
+  let reloj = null
+  window.avisar = (que) => {
+    texto.innerHTML = '<b>Es una demostración.</b> ' + que
+    aviso.classList.add('aviso--visible')
+    clearTimeout(reloj); reloj = setTimeout(() => aviso.classList.remove('aviso--visible'), 3800)
+  }
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href="#"]')
+    if (!a) return
+    e.preventDefault()
+    window.avisar(a.dataset.aviso || ('Aquí se abriría <b>' + a.textContent.trim() + '</b>.'))
+  })
+})();
+
+// ── Lo que se anima al entrar en pantalla ───────────────────
+(function () {
+  const pares = [['.historia', 'historia--viva'], ['.digital', 'digital--viva']]
+  const io = new IntersectionObserver((ents) => ents.forEach((e) => { if (e.isIntersecting) { e.target.classList.add(e.target.dataset.viva); io.unobserve(e.target) } }), { threshold: 0.35 })
+  pares.forEach(([sel, cls]) => { const el = document.querySelector(sel); if (el) { el.dataset.viva = cls; io.observe(el) } })
+})();
+
+// ── El calendario: tocar un dia resalta su acto ─────────────
+(function () {
+  const dias = [...document.querySelectorAll('.dia--acto')], actos = [...document.querySelectorAll('#actos .acto')]
+  dias.forEach((d) => d.addEventListener('click', () => {
+    const n = d.dataset.acto
+    dias.forEach((x) => x.classList.toggle('dia--elegido', x === d))
+    actos.forEach((a) => a.classList.toggle('acto--elegido', a.dataset.dia === n))
+    const acto = actos.find((a) => a.dataset.dia === n)
+    if (acto && window.matchMedia('(max-width: 959px)').matches) acto.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }))
+})();
+
+// ── El scroll suave (ScrollSmoother), solo escritorio ───────
+(function () {
+  const escritorio = window.matchMedia('(min-width: 820px) and (pointer: fine)').matches
+  const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (!escritorio || quieto || typeof gsap === 'undefined' || typeof ScrollSmoother === 'undefined') return
+  gsap.registerPlugin(ScrollTrigger, ScrollSmoother)
+  const smoother = ScrollSmoother.create({ wrapper: '#smooth-wrapper', content: '#smooth-content', smooth: 1.2, effects: false, smoothTouch: false, normalizeScroll: true })
+  window.smoother = smoother
+  document.documentElement.classList.add('smooth')
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]')
+    if (!a || a.getAttribute('href') === '#') return
+    const destino = document.querySelector(a.getAttribute('href'))
+    if (!destino) return
+    e.preventDefault()
+    smoother.scrollTo(destino, true, 'top ' + getComputedStyle(document.documentElement).getPropertyValue('--barra').trim())
+  })
+})();
+</script>
+
+</body>
+</html>

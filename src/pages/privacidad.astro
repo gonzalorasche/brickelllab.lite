@@ -1,173 +1,113 @@
 ---
-// src/pages/privacidad.astro
-import Base from '../layouts/Base.astro';
-import HeaderLegal from '../components/HeaderLegal.astro';
-import Footer from '../components/Footer.astro';
+// ⚠️ LA POLÍTICA DE PRIVACIDAD DE ESTA WEB (la de /privacidad es la del sitio
+// viejo: habla de un banner de cookies y de Google Analytics que ACÁ NO HAY).
+//
+// Lo que esta web hace de verdad, y que es lo que tiene que decir el texto:
+//   · no hay formularios: el contacto es mailto y WhatsApp;
+//   · no hay analítica ni cookies propias ni banner de cookies;
+//   · se cargan tipografías de Google Fonts y las librerías de animación de
+//     jsDelivr: esos servidores ven la IP del visitante;
+//   · los sitios de muestra del visor son copias propias, sin terceros.
+// Si algo de eso cambia (se suma analítica, un formulario), hay que volver acá.
+//
+// ⚠️ PENDIENTE: revisión de un abogado antes de publicar.
+import V4 from '../layouts/V4.astro'
+import Nav from '../components/v4/Nav.astro'
+import Pie from '../components/v4/Pie.astro'
+import Cookies from '../components/v4/Cookies.astro'
+import Volver from '../components/v4/Volver.astro'
+import { MAIL, SITIO } from '../data/v4/contacto'
+import { GA_ID } from '../data/v4/analitica'
+const ACTUALIZADO = '28 de septiembre de 2026'
 ---
-<Base
-  title="Política de Privacidad | Brickell Lab"
-  description="Política de privacidad de Brickell Lab conforme a la Ley 25.326 de Protección de Datos Personales de la República Argentina."
-  canonical="https://labbrickell.com.ar/privacidad"
->
-  <HeaderLegal lang="es" />
+<V4 title="Política de privacidad — Brickell Lab" description="Cómo trata Brickell Lab los datos personales, conforme a la Ley 25.326 de la República Argentina." ruta="/privacidad/">
+  <Nav />
+  <div id="smooth-wrapper"><div id="smooth-content">
+    <main class="legal">
+      <div class="centro legal__caja">
+        <header class="legal__cab">
+          <a class="meta legal__volver" href="/">← Inicio</a>
+          <p class="meta rotulo">Legal</p>
+          <h1>Política de privacidad</h1>
+          <p class="meta legal__fecha">Última actualización: {ACTUALIZADO}</p>
+        </header>
 
-  <main class="lg">
-    <div class="lg-in">
-      <span class="lg-eyebrow">Brickell Lab · Legal</span>
-      <h1 class="lg-title">Política de Privacidad</h1>
-      <p class="lg-date">Última actualización: julio de 2026</p>
+        <div class="legal__cuerpo">
+          <p>En Brickell Lab cuidamos los datos de quienes nos escriben. Esta política explica qué información recibimos a través de <strong>{SITIO.replace('https://', '')}</strong>, para qué la usamos y qué derechos tenés, conforme a la <strong>Ley 25.326 de Protección de Datos Personales</strong> de la República Argentina.</p>
+          <p>Brickell Lab es un estudio de diseño y desarrollo web de Buenos Aires. De la casa también salen <strong>Lúmina</strong>, la plataforma de eventos, y <strong>Lexa</strong>, el servicio de traducción. Esta política cubre este sitio, incluida la sección de Lexa; Lúmina funciona en su propio dominio, con cuenta y contraseña, y tiene su propia política.</p>
 
-      <div class="lg-body">
-        <p>
-          En Brickell Lab (en adelante, "nosotros", "nuestro" o "el Estudio"), con domicilio digital
-          en labbrickell.com.ar, nos comprometemos a proteger la privacidad de quienes visitan nuestro
-          sitio web y se comunican con nosotros. Esta Política de Privacidad describe qué información
-          recopilamos, cómo la usamos y los derechos que te asisten conforme a la Ley 25.326 de
-          Protección de Datos Personales de la República Argentina.
-        </p>
-        <p>
-          Brickell Lab es la marca madre de un ecosistema que incluye a <strong>Lúmina</strong>
-          (plataforma de gestión de eventos) y <strong>Lexa</strong> (servicio de traducción). Esta
-          política cubre el sitio labbrickell.com.ar, incluida la sección de Lexa. Lúmina, al operar
-          en su propio subdominio con inicio de sesión, cuenta con su propia política de privacidad
-          disponible en dicha plataforma.
-        </p>
+          <h2>1. Quién es responsable</h2>
+          <p>El responsable del tratamiento es Brickell Lab. Podés escribirnos en cualquier momento a <a href={`mailto:${MAIL}`}>{MAIL}</a>.</p>
 
-        <h2>1. Responsable del tratamiento</h2>
-        <p>
-          Brickell Lab es el responsable del tratamiento de los datos personales recopilados a través
-          de este sitio web. Podés contactarnos en cualquier momento escribiendo a
-          info@labbrickell.com.ar.
-        </p>
+          <h2>2. Qué datos recibimos</h2>
+          <p><strong>Este sitio no tiene formularios.</strong> No hay registro, ni suscripción, ni carrito. El contacto sale siempre del lado tuyo: al tocar el mail se abre tu programa de correo y al tocar WhatsApp se abre la conversación en tu teléfono. En los dos casos, los datos que recibimos son los que vos decidas escribir: nombre, mail o teléfono, y lo que nos cuentes del proyecto.</p>
+          <p>Para el servicio de traducción (Lexa) podés enviarnos documentos por WhatsApp o por mail. Esos documentos suelen contener datos personales —partidas, títulos, historias clínicas, contratos— y los tratamos como lo que son: material confidencial de un trabajo profesional.</p>
 
-        <h2>2. Datos que recopilamos</h2>
-        <p>Recopilamos únicamente los datos que vos nos proporcionás de forma activa al comunicarte con nosotros:</p>
-        <ul>
-          <li>Nombre y apellido</li>
-          <li>Dirección de correo electrónico</li>
-          <li>Número de teléfono (cuando contactás por WhatsApp)</li>
-          <li>Información sobre tu proyecto, consulta o los documentos que necesitás traducir</li>
-        </ul>
-        <p>
-          Este sitio no cuenta con formularios de registro: el contacto se realiza de forma directa
-          por WhatsApp o correo electrónico. Adicionalmente, si prestás tu consentimiento a través de
-          nuestro banner de cookies, podemos recopilar de forma automática datos técnicos de
-          navegación mediante Google Analytics, tales como dirección IP anonimizada, tipo de
-          dispositivo, navegador, páginas visitadas y tiempo de sesión.
-        </p>
+          <h2>3. Cookies y analítica</h2>
+          {GA_ID ? (
+            <Fragment>
+              <p>Este sitio usa <strong>Google Analytics</strong> para saber qué páginas se miran y cuánto tiempo, y así mejorarlo. <strong>No se activa hasta que lo aceptás</strong>: la primera vez que entrás aparece un cartel donde podés aceptar o rechazar, y hasta ese momento no se escribe ninguna cookie de analítica. Tu respuesta queda guardada en tu navegador y podés cambiarla cuando quieras desde el enlace <strong>Cookies</strong> del pie.</p>
+              <p>Si aceptás, Google Analytics registra datos de navegación con la <strong>dirección IP anonimizada</strong>: páginas vistas, tiempo de permanencia, tipo de dispositivo y origen de la visita. No recopila tu nombre, tu mail ni nada que te identifique, y no lo usamos para publicidad. Google LLC puede tratar esos datos fuera de la Argentina conforme a sus propias políticas. Rechazar no afecta en nada el funcionamiento del sitio.</p>
+              <p>También hay cookies técnicas mínimas: solo la que guarda tu respuesta a este cartel.</p>
+            </Fragment>
+          ) : (
+            <p><strong>Este sitio no usa cookies propias ni herramientas de analítica.</strong> No hay Google Analytics, ni píxeles de redes sociales, ni banner de cookies: no hace falta, porque no hay nada que consentir. Tampoco guardamos nada en tu navegador para seguirte entre visitas.</p>
+          )}
+          <p>Sí hay dos servicios de terceros que hacen falta para que la página se vea y se mueva como tiene que verse, y que —como cualquier pedido a un servidor— reciben tu dirección IP y los datos técnicos de tu navegador:</p>
+          <ul>
+            <li><strong>Google Fonts</strong> (Google LLC): las tipografías de la página.</li>
+            <li><strong>jsDelivr</strong> (Prospect One): la librería de animación que hace el desplazamiento suave.</li>
+            {GA_ID && <li><strong>Google Analytics</strong> (Google LLC): solo si aceptaste las cookies, según lo explicado arriba.</li>}
+          </ul>
+          <p>Ninguno de los dos recibe información que vos escribas, y no los usamos para medirte ni para publicidad.</p>
 
-        <h2>3. Tratamiento de documentos para traducción (Lexa)</h2>
-        <p>
-          Cuando contratás el servicio de traducción de Lexa, es posible que nos compartas documentos
-          personales, legales, médicos, académicos u oficiales. Estos documentos se utilizan
-          exclusivamente para realizar la traducción solicitada, se tratan de forma confidencial y no
-          se comparten con terceros ajenos al servicio. Una vez finalizado el trabajo y cumplida su
-          finalidad, los documentos se conservan solo por el tiempo razonable para atender eventuales
-          revisiones o reclamos, y luego se eliminan de forma segura.
-        </p>
+          <h2>4. Para qué usamos tus datos</h2>
+          <ul>
+            <li>Responder tu consulta y armar un presupuesto.</li>
+            <li>Llevar adelante el trabajo si nos contratás, y facturarlo.</li>
+            <li>Cumplir obligaciones legales, impositivas y contables.</li>
+          </ul>
+          <p>No vendemos ni cedemos datos personales a terceros con fines comerciales, y no enviamos publicidad a quien no la pidió.</p>
 
-        <h2>4. Finalidad del tratamiento</h2>
-        <p>Los datos personales que nos proporcionás son utilizados exclusivamente para:</p>
-        <ul>
-          <li>Responder tu consulta o presupuesto</li>
-          <li>Gestionar la relación comercial y la prestación de servicios</li>
-          <li>Realizar los trabajos de traducción solicitados (en el caso de Lexa)</li>
-          <li>Mejorar la experiencia de navegación en nuestro sitio (datos analíticos, con tu consentimiento)</li>
-        </ul>
-        <p>No utilizamos tus datos para envío de publicidad no solicitada ni los compartimos con terceros con fines comerciales.</p>
+          <h2>5. Con quién los compartimos</h2>
+          <p>Solo con quien hace falta para trabajar:</p>
+          <ul>
+            <li><strong>Servicio de correo y de alojamiento del sitio</strong>, para recibir tus mails y tener la página en línea.</li>
+            <li><strong>WhatsApp (Meta Platforms)</strong>, si elegís escribirnos por ahí: la conversación queda sujeta también a las políticas de Meta.</li>
+            {GA_ID && <li><strong>Google LLC</strong>, a través de Google Analytics, si aceptaste las cookies.</li>}
+            <li><strong>Profesionales intervinientes</strong> —por ejemplo la traductora pública de Lexa—, sujetos a secreto profesional.</li>
+            <li><strong>Organismos públicos</strong>, cuando una ley o una orden judicial lo exija.</li>
+          </ul>
 
-        <h2>5. Bases legales del tratamiento</h2>
-        <p>
-          El tratamiento de tus datos se basa en tu consentimiento explícito al comunicarte con
-          nosotros y al aceptar las cookies analíticas, y en el interés legítimo de Brickell Lab para
-          la gestión de consultas y relaciones comerciales.
-        </p>
+          <h2>6. Cuánto tiempo los guardamos</h2>
+          <p>Las consultas que no terminan en un trabajo se conservan mientras puedan seguir siendo útiles para retomar la conversación, y después se borran. La documentación de proyectos y la de facturación se conserva por los plazos que exige la ley argentina. Los documentos enviados a traducir se guardan el tiempo necesario para el trabajo y su eventual reimpresión, y se eliminan a pedido.</p>
 
-        <h2>6. Compartición de datos con terceros</h2>
-        <p>Podemos compartir tus datos con los siguientes terceros únicamente en la medida necesaria para prestar el servicio:</p>
-        <ul>
-          <li><strong>Google LLC</strong> — a través de Google Analytics y Google Search Console, para análisis de tráfico web. Google puede procesar datos fuera de Argentina conforme a sus propias políticas de privacidad.</li>
-          <li><strong>Meta Platforms (WhatsApp)</strong> — cuando iniciás una conversación a través de nuestro enlace de WhatsApp, aplican los términos y condiciones de WhatsApp.</li>
-          <li><strong>Hostinger</strong> — proveedor de alojamiento web y correo electrónico donde se almacenan los datos del sitio y las comunicaciones por email.</li>
-        </ul>
-        <p>No vendemos, alquilamos ni cedemos tus datos personales a terceros.</p>
+          <h2>7. Tus derechos</h2>
+          <p>Podés pedirnos en cualquier momento acceder a tus datos, rectificarlos, actualizarlos o suprimirlos, escribiendo a <a href={`mailto:${MAIL}`}>{MAIL}</a>. Vamos a responderte dentro de los plazos de la Ley 25.326 (diez días corridos para el acceso, cinco días hábiles para la rectificación o supresión).</p>
+          <p>La <strong>Agencia de Acceso a la Información Pública</strong>, en su carácter de órgano de control de la Ley 25.326, tiene la atribución de atender las denuncias y reclamos que se interpongan con relación al incumplimiento de las normas sobre protección de datos personales.</p>
 
-        <h2>7. Cookies</h2>
-        <p>
-          Este sitio utiliza cookies técnicas necesarias para su correcto funcionamiento y cookies
-          analíticas de Google Analytics. Al ingresar, te mostramos un banner donde podés aceptar o
-          rechazar las cookies analíticas: Google Analytics solo se activa si prestás tu
-          consentimiento. Podés cambiar tu elección en cualquier momento desde el enlace de
-          configuración de cookies en el pie del sitio, o configurando tu navegador para rechazar o
-          eliminar cookies. La desactivación de las cookies analíticas no afecta la funcionalidad del
-          sitio.
-        </p>
+          <h2>8. Seguridad</h2>
+          <p>Tomamos medidas razonables para proteger la información que nos confiás: equipos con contraseña, acceso restringido a los archivos de trabajo y envío de documentación por canales cerrados. Ningún medio es infalible, pero no compartimos material de clientes fuera de lo necesario para el trabajo.</p>
 
-        <h2>8. Tus derechos</h2>
-        <p>De acuerdo a la Ley 25.326 y sus normas reglamentarias, tenés derecho a:</p>
-        <ul>
-          <li><strong>Acceso</strong> — conocer qué datos tuyos tenemos registrados</li>
-          <li><strong>Rectificación</strong> — corregir datos inexactos o incompletos</li>
-          <li><strong>Supresión</strong> — solicitar la eliminación de tus datos</li>
-          <li><strong>Oposición</strong> — oponerte al tratamiento de tus datos</li>
-        </ul>
-        <p>
-          Para ejercer cualquiera de estos derechos, escribinos a info@labbrickell.com.ar con el
-          asunto "Derechos ARSO". Responderemos dentro de los 5 días hábiles.
-        </p>
-        <p>
-          Si considerás que tus derechos no fueron debidamente atendidos, podés presentar un reclamo
-          ante la Agencia de Acceso a la Información Pública (AAIP), autoridad de control en Argentina:
-          www.argentina.gob.ar/aaip.
-        </p>
+          <h2>9. Menores</h2>
+          <p>Este sitio no está dirigido a menores de edad y no recopilamos deliberadamente datos de menores. Si nos llega documentación de un menor dentro de un trabajo de traducción, la tratamos con el mismo secreto profesional que el resto.</p>
 
-        <h2>9. Seguridad</h2>
-        <p>
-          Implementamos medidas técnicas y organizativas razonables para proteger tus datos contra
-          acceso no autorizado, pérdida o divulgación indebida. Sin embargo, ningún sistema de
-          transmisión de datos por internet es completamente seguro.
-        </p>
+          <h2>10. Cambios</h2>
+          <p>Si esta política cambia, actualizamos la fecha de arriba y publicamos la versión nueva en esta misma dirección. Si el cambio es importante, lo avisamos a los clientes activos.</p>
 
-        <h2>10. Conservación de datos</h2>
-        <p>
-          Conservamos tus datos personales durante el tiempo necesario para cumplir con la finalidad
-          para la que fueron recopilados o mientras subsista la relación comercial. Una vez cumplida
-          la finalidad, los datos serán eliminados o anonimizados.
-        </p>
-
-        <h2>11. Cambios en esta política</h2>
-        <p>
-          Podemos actualizar esta Política de Privacidad en cualquier momento. Cualquier cambio
-          significativo será comunicado mediante la actualización de la fecha al inicio de este
-          documento. Te recomendamos revisarla periódicamente.
-        </p>
-
-        <h2>12. Contacto</h2>
-        <p>
-          Para cualquier consulta relacionada con esta política, escribinos a info@labbrickell.com.ar
-          o envianos un mensaje por WhatsApp.
-        </p>
+          <h2>11. Contacto</h2>
+          <p>Por cualquier duda sobre esta política o sobre tus datos: <a href={`mailto:${MAIL}`}>{MAIL}</a>.</p>
+        </div>
       </div>
-    </div>
-  </main>
+    </main>
+    <Pie />
+  </div></div>
 
-  <Footer lang="es" />
-</Base>
+  <Cookies />
 
-<style>
-  .lg{ background:var(--surface); color:var(--text-primary); padding-top:clamp(90px,12vh,130px); }
-  .lg-in{ width:100%; max-width:760px; margin:0 auto; padding:0 var(--gutter) clamp(56px,7vw,88px); }
-  .lg-eyebrow{
-    display:inline-block; margin-bottom:14px;
-    font-size:11px; font-weight:var(--fw-semibold); letter-spacing:.16em; text-transform:uppercase;
-    color:var(--magenta);
-  }
-  .lg-title{ margin:0; font-size:clamp(32px,4.4vw,52px); font-weight:var(--fw-bold); letter-spacing:-.04em; line-height:1.05; color:var(--text-primary); }
-  .lg-date{ margin:14px 0 0; font-size:14px; color:var(--text-muted); }
-  .lg-body{ margin-top:clamp(36px,4vw,48px); }
-  .lg-body h2{ margin:clamp(32px,3.4vw,44px) 0 12px; font-size:clamp(19px,1.8vw,23px); font-weight:var(--fw-bold); letter-spacing:-.02em; color:var(--text-primary); }
-  .lg-body p{ margin:0 0 16px; font-size:15.5px; line-height:1.7; color:var(--text-secondary); }
-  .lg-body ul{ margin:0 0 16px; padding-left:22px; display:flex; flex-direction:column; gap:8px; }
-  .lg-body li{ font-size:15.5px; line-height:1.6; color:var(--text-secondary); }
-  .lg-body strong{ color:var(--text-primary); font-weight:var(--fw-semibold); }
-</style>
+  <Volver href="/" etiqueta="Volver al inicio" />
+
+  <script is:inline>
+    document.getElementById('nav').classList.add('nav--tinta')
+  </script>
+</V4>

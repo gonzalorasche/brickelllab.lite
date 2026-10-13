@@ -1,0 +1,79 @@
+---
+// ⚠️ EL CARTEL DE COOKIES, Y LA CARGA DE GOOGLE ANALYTICS DETRÁS.
+//
+// Solo existe si `GA_ID` tiene valor (ver `data/v4/analitica.ts`): sin
+// identificador, este componente no dibuja nada y la web no escribe ninguna
+// cookie. Con identificador:
+//   · el cartel aparece una sola vez, hasta que se elige;
+//   · "Aceptar" carga gtag con la IP anonimizada y guarda la respuesta;
+//   · "Rechazar" no carga nada;
+//   · el enlace "Cookies" del pie vuelve a abrirlo para cambiar la elección.
+//
+// Va FUERA del contenedor del smoother, como todo lo que es `fixed`.
+import { GA_ID, CLAVE_COOKIES } from '../../data/v4/analitica'
+const activo = Boolean(GA_ID)
+---
+{activo && (
+  <div class="cookies" id="cookies" role="dialog" aria-label="Aviso de cookies" hidden>
+    <div class="cookies__caja">
+      <p class="cookies__texto">Usamos cookies de Google Analytics para saber qué se mira de la web y mejorarla. Sin tu permiso no se activan. Más detalle en la <a href="/privacidad/">política de privacidad</a>.</p>
+      <div class="cookies__botones">
+        <button class="boton boton--claro" type="button" data-cookies="no">Rechazar</button>
+        <button class="boton" type="button" data-cookies="si">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ GA_ID, CLAVE_COOKIES }}>
+    (function () {
+      var cartel = document.getElementById('cookies')
+      if (!cartel) return
+      var cargarGA = function () {
+        if (window.__ga) return
+        window.__ga = true
+        var s = document.createElement('script')
+        s.async = true
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID
+        document.head.appendChild(s)
+        window.dataLayer = window.dataLayer || []
+        window.gtag = function () { window.dataLayer.push(arguments) }
+        window.gtag('js', new Date())
+        window.gtag('config', GA_ID, { anonymize_ip: true })
+      }
+      var leer = function () { try { return localStorage.getItem(CLAVE_COOKIES) } catch (e) { return null } }
+      var guardar = function (v) { try { localStorage.setItem(CLAVE_COOKIES, v) } catch (e) {} }
+      var mostrar = function () { cartel.hidden = false; requestAnimationFrame(function () { cartel.classList.add('cookies--visible') }) }
+      var esconder = function () { cartel.classList.remove('cookies--visible'); setTimeout(function () { cartel.hidden = true }, 350) }
+
+      cartel.querySelectorAll('[data-cookies]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var si = b.dataset.cookies === 'si'
+          guardar(si ? 'si' : 'no')
+          esconder()
+          if (si) cargarGA()
+        })
+      })
+      // Desde el pie se puede volver a decidir.
+      window.abrirCookies = mostrar
+
+      var elegido = leer()
+      if (elegido === 'si') cargarGA()
+      else if (elegido !== 'no') setTimeout(mostrar, 1200)
+    })()
+  </script>
+
+  <style>
+    .cookies { position: fixed; z-index: 90; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; padding: 0 var(--margen) calc(16px + env(safe-area-inset-bottom)); pointer-events: none; }
+    .cookies__caja { pointer-events: auto; width: 100%; max-width: 720px; display: flex; align-items: center; flex-wrap: wrap; gap: 14px 24px; padding: 18px 22px; border-radius: 18px; background: var(--tinta); color: #fff; box-shadow: 0 30px 70px -40px rgba(11,11,15,.7); transform: translateY(120%); opacity: 0; transition: transform .45s cubic-bezier(.16,.8,.3,1), opacity .35s ease; }
+    .cookies--visible .cookies__caja { transform: none; opacity: 1; }
+    .cookies__texto { flex: 1; min-width: 240px; margin: 0; font-size: 13.5px; line-height: 1.55; color: rgba(255,255,255,.78); }
+    .cookies__texto a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+    .cookies__botones { display: flex; gap: 10px; flex: none; }
+    .cookies .boton { min-height: 40px; padding: 0 18px; font-size: 14px; }
+    .cookies .boton--claro { background: transparent; color: #fff; border-color: rgba(255,255,255,.4); }
+    .cookies .boton:not(.boton--claro) { background: #fff; color: var(--tinta); border-color: #fff; }
+    @media (hover: hover) and (pointer: fine) { .cookies .boton--claro:hover { background: rgba(255,255,255,.12); border-color: #fff; } }
+    @media (max-width: 560px) { .cookies__caja { flex-direction: column; align-items: stretch; } .cookies__botones .boton { flex: 1; } }
+    @media (prefers-reduced-motion: reduce) { .cookies__caja { transition: none; } }
+  </style>
+)}

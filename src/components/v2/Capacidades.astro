@@ -1,0 +1,365 @@
+---
+// ============================================================
+// 04 · DISCIPLINAS
+// ============================================================
+//
+// LAS CINCO COSAS QUE HACE EL ESTUDIO. No un listado de servicios: cada una es
+// un oficio completo y se trabaja entera, de la idea al código.
+//
+// ⚠️ REDISEÑADA. Eran seis tarjetas blancas con borde en una grilla de tres por
+// dos, y la sexta era el llamado; al tocarlas giraban para mostrar qué incluye
+// cada una (la versión vieja está en
+// `docs/descartes/disciplinas-tarjetas-que-giran.txt`). Se rehízo por tres
+// razones, y las tres son de la página y no de la sección:
+//
+//   · UNA GRILLA DE TARJETAS BLANCAS ES DE CUALQUIER SITIO. La página que
+//     estamos armando no tiene ni una: la portada es un lienzo a sangre, la
+//     declaración una frase sobre tinta y el método un objeto apoyado. Seis
+//     cajas con borde de un píxel no pertenecen a esa familia.
+//   · NO ENTRABA. Cada fila medía lo que su tarjeta más larga, así que la
+//     sección siempre quedaba cortada por la mitad de la segunda fila.
+//   · EL GIRO ESCONDÍA LO MEJOR. Lo que incluye cada oficio es lo concreto —lo
+//     único que contesta "¿y esto qué es?"— y estaba del lado de atrás.
+//
+// LO QUE ES AHORA: una carta de oficios sobre tinta. Cinco renglones grandes,
+// separados por un filete, cada uno con su nombre, su texto y lo que incluye a
+// la vista. Sin nada que girar y sin nada escondido.
+//
+// ⚠️ LA SECCIÓN ES OSCURA Y ESO ES DEL RITMO DE LA PÁGINA, no un gusto: viene
+// después del método, que es papel, y antes de proyectos, que también. Dos
+// claras seguidas se leen como una sola pantalla larga.
+//
+// ⚠️ EL TITULAR VA EN CAJA BAJA. La única mayúscula sostenida de la página es la
+// de la portada.
+// ============================================================
+
+const DISCIPLINAS = [
+  {
+    nombre: 'Desarrollo web',
+    texto: 'Sitios corporativos, landing pages y experiencias web desarrolladas desde cero. Diseñamos la arquitectura, la interfaz y la tecnología para que cada proyecto sea rápido, escalable y fácil de encontrar.',
+    incluye: ['Web corporativa', 'Landing pages', 'Sitios institucionales', 'SEO técnico y GEO', 'Performance'],
+  },
+  {
+    nombre: 'Experiencias digitales',
+    texto: 'No todo proyecto necesita ser una web tradicional. Diseñamos experiencias interactivas que combinan contenido, movimiento, interacción y tecnología para convertir una visita en algo memorable.',
+    incluye: ['UX/UI', 'Interacciones', 'Motion', 'Experiencias especiales', 'Micrositios'],
+  },
+  {
+    nombre: 'Identidad & diseño',
+    texto: 'Una identidad no termina en un logo. Desarrollamos sistemas visuales capaces de vivir en una web, una presentación, una campaña, un packaging o una pantalla.',
+    incluye: ['Branding', 'Identidad visual', 'Dirección de arte', 'Diseño gráfico', 'Packaging'],
+  },
+  {
+    nombre: 'Productos digitales',
+    texto: 'Cuando una web deja de ser solamente una web, empieza el producto. Diseñamos y desarrollamos plataformas y aplicaciones web con lógica, usuarios, datos y funcionalidades reales.',
+    incluye: ['Plataformas', 'Dashboards', 'Sistemas internos', 'Aplicaciones web', 'MVPs'],
+  },
+  {
+    nombre: 'Presentaciones digitales',
+    texto: 'Una presentación no es un PDF con el logo arriba. Armamos las piezas con las que una empresa se muestra adentro y afuera: el relato, la jerarquía de la información y una estética que sostiene la marca.',
+    incluye: ['Pitch decks', 'Presentaciones comerciales', 'Reportes', 'Onepagers', 'Plantillas de marca'],
+  },
+];
+---
+
+<section class="v2-cap" id="services">
+  <header class="v2-cap__top">
+    <p class="v2-meta">Qué hacemos</p>
+  </header>
+
+  <div class="v2-cap__entrada">
+    <!-- ⚠️ SIN BAJADA, A PROPÓSITO. Tuvo dos y ninguna hacía falta: el rótulo de
+         arriba ya dice "qué hacemos" y abajo hay cinco renglones que lo explican
+         mejor que cualquier frase. Una bajada acá era decir tres veces lo mismo
+         antes de mostrarlo. -->
+    <h2 class="v2-cap__titulo">Disciplinas</h2>
+  </div>
+
+  <!-- ⚠️ UNA LISTA, NO UNA GRILLA. Cinco renglones se leen en orden y de un
+       vistazo; seis cajas hay que recorrerlas. Y el renglón es lo que deja poner
+       el nombre, el texto y lo que incluye uno al lado del otro sin que nada se
+       esconda. -->
+  <ol class="v2-cap__lista">
+    {DISCIPLINAS.map((d, i) => (
+      <li class="ofi">
+        <h3 class="ofi__nombre">{d.nombre}</h3>
+        <p class="ofi__texto">{d.texto}</p>
+        <!-- ⚠️ UNA LÍNEA, NO FICHAS. Cada ficha con su borde era un bloque, y
+             cinco bloques por renglón por cinco renglones hacían veinticinco
+             cajitas: la sección se leía apelmazada. Separadas por un punto son
+             una sola línea de especificación —el mismo recurso que la marquesina
+             de la portada— y el renglón vuelve a respirar. -->
+        <p class="ofi__incluye">
+          {d.incluye.map((x, k) => (
+            <Fragment>{k > 0 && <i aria-hidden="true">·</i>}<span>{x}</span></Fragment>
+          ))}
+        </p>
+      </li>
+    ))}
+  </ol>
+
+  <!-- El llamado deja de ser una tarjeta más: es el cierre de la carta, con los
+       dos caminos para escribir. -->
+  <div class="v2-cap__cierre">
+    <p class="v2-cap__pregunta">¿Lo que necesitás no entra en ninguna categoría? Escribinos.</p>
+    <div class="v2-cap__vias">
+      <a class="via" href="mailto:info@labbrickell.com.ar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.2 6.6h17.6v10.8H3.2z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m3.6 7.2 8.4 6 8.4-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        info@labbrickell.com.ar
+      </a>
+      <a class="via" href="https://wa.me/5491124609038" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 11.6a8.2 8.2 0 0 1-12.1 7.2L3.8 20l1.3-4.2A8.2 8.2 0 1 1 20.2 11.6Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9.2 8.6c.3-.1.6 0 .8.3l.8 1.3c.1.3.1.6-.1.8l-.4.5c-.1.2-.2.4 0 .7a5.4 5.4 0 0 0 2.5 2.2c.3.1.5 0 .7-.2l.5-.5c.2-.2.5-.2.8-.1l1.3.7c.3.2.4.5.3.8a2.1 2.1 0 0 1-2.4 1.3 8 8 0 0 1-5.4-5.4 2.1 2.1 0 0 1 .6-2.4Z" fill="currentColor"/></svg>
+        WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ══════════════════════════════════════════════════════
+     EL MARCO
+     ══════════════════════════════════════════════════════
+     Tinta, con la misma luz de la casa entrando por una esquina que usa la
+     declaración. Ver la nota de la cabecera sobre por qué es oscura. */
+  .v2-cap {
+    position: relative;
+    padding: clamp(44px, 8vh, 108px) var(--v2-margen) clamp(48px, 9vh, 120px);
+    background:
+      radial-gradient(52% 44% at 100% 0%, color-mix(in srgb, var(--acento) 20%, transparent), transparent 70%),
+      radial-gradient(46% 40% at 0% 100%, rgba(107, 15, 166, .22), transparent 70%),
+      var(--v2-tinta);
+    color: var(--v2-papel);
+  }
+  .v2-cap__top { display: flex; align-items: center; justify-content: space-between; }
+  .v2-cap__top .v2-meta { margin: 0; color: rgba(255, 255, 255, .6); }
+
+  .v2-cap__entrada {
+    display: grid;
+    gap: clamp(8px, 1.4vh, 16px);
+    margin-top: clamp(30px, 5vh, 64px);
+    max-width: 52ch;
+  }
+  /* ⚠️ LAS MEDIDAS DE ESTA SECCIÓN EMPALMAN CON LAS DE LA COLUMNA ÚNICA, Y ESO
+     ES LO QUE SE ROMPÍA. Acá había `clamp(30px, 5vw, 76px)`, una rampa pensada
+     para 1440 en adelante: a 901 px daba 45 px, mientras el bloque de abajo de
+     900 venía de 54. O sea que ensanchar la ventana DOS PÍXELES achicaba el
+     titular de 54 a 45, el nombre de 30 a 19 y el texto de 16 a 13,5 —todo el
+     rango de tableta apaisada y notebook chica se veía como una maqueta
+     encogida—. La rampa ahora ARRANCA donde termina la otra: 54 px a 900 y 76 a
+     1520, con la cuenta escrita en el `calc` para que se pueda volver a hacer.
+     Misma idea en `.ofi__nombre` y `.ofi__texto`. */
+  .v2-cap__titulo {
+    margin: 0 0 0 calc(var(--sangria) * -1);
+    font-family: var(--v2-display);
+    font-weight: 800;
+    font-size: clamp(54px, calc(22.06px + 3.55vw), 76px);
+    line-height: 1;
+    letter-spacing: -.035em;
+  }
+  .v2-cap__bajada {
+    margin: 0;
+    font-size: clamp(14px, 1.1vw, 18px);
+    line-height: 1.55;
+    color: rgba(255, 255, 255, .72);
+  }
+
+  /* ══════════════════════════════════════════════════════
+     LA CARTA DE OFICIOS
+     ══════════════════════════════════════════════════════
+     ⚠️ TRES COLUMNAS POR RENGLÓN: el nombre, el texto y lo que incluye. Es la
+     forma de tener las tres cosas a la vista sin que el renglón se haga alto, y
+     de que las cinco se puedan comparar de un vistazo —que es lo que uno hace
+     con una carta—. El filete de arriba es todo el dibujo que necesita. */
+  /* ⚠️ LOS CINCO RENGLONES MIDEN LO MISMO. Por defecto cada uno medía lo que su
+     propio contenido, y con textos de dos, tres y cuatro líneas los filetes
+     quedaban a distancias distintas: la lista se veía desprolija justo en las
+     pantallas grandes, que es donde se ve entera. Con `1fr` el alto lo fija el
+     renglón más largo y los otros lo acompañan. */
+  .v2-cap__lista {
+    list-style: none;
+    margin: clamp(30px, 5vh, 62px) 0 0;
+    padding: 0;
+    display: grid;
+    grid-auto-rows: 1fr;
+  }
+
+  /* ⚠️ EN ESCRITORIO EL RENGLÓN VA AL CORTE Y EL TEXTO NO. Lo que se enciende
+     al pasar el puntero es la FILA ENTERA, y una fila que termina en el margen
+     deja dos franjas muertas a los costados: el realce se lee como una caja
+     flotando y no como el renglón de una carta. La lista se sale del margen de
+     la sección con un margen negativo del mismo valor —así llega a los bordes de
+     la pantalla sin desbordar nada— y cada fila se lo devuelve como padding, de
+     manera que el nombre, el texto y las fichas quedan EXACTAMENTE donde estaban.
+     Lo que crece es el fondo y el filete, no la caja de tipografía.
+
+     Va de 901 para arriba, que es justo donde vive el hover y donde empieza la
+     lista de dos columnas. */
+  @media (min-width: 901px) {
+    .v2-cap__lista { margin-inline: calc(var(--v2-margen) * -1); }
+    .ofi { padding-inline: var(--v2-margen); }
+  }
+  .ofi {
+    display: grid;
+    grid-template-columns: minmax(0, .85fr) minmax(0, 1.5fr);
+    gap: clamp(14px, 1.6vh, 22px) clamp(20px, 4vw, 72px);
+    /* ⚠️ CENTRADO VERTICAL: con las tres cosas arriba, los renglones cortos
+       dejaban un hueco al pie y se leía como una tabla mal armada. */
+    align-content: center;
+    /* ⚠️ `padding-block` Y NO `padding`. La forma corta pone también el lateral
+       en 0, y como este bloque va DESPUÉS del de la fila al corte —y una media
+       query no suma especificidad— le pisaba el padding que le devuelve el
+       margen: la fila llegaba al borde y el nombre también, pegado al vidrio. */
+    padding-block: clamp(20px, 3vh, 38px);
+    border-top: 1px solid rgba(255, 255, 255, .16);
+  }
+  /* El nombre ocupa su columna entera; el texto y la línea de lo que incluye van
+     uno debajo del otro en la de al lado. */
+  .ofi__nombre { grid-row: span 2; align-self: center; }
+  .ofi:last-child { border-bottom: 1px solid rgba(255, 255, 255, .16); }
+
+  /* ⚠️ EL NOMBRE ES LO QUE SE MIRA, así que es lo único grande. Que sea grande
+     también es lo que hace que la lista se lea como un índice y no como una
+     tabla. */
+  .ofi__nombre {
+    margin: 0;
+    font-family: var(--v2-display);
+    font-weight: 800;
+    /* 30 px a 900 —lo que trae la columna única— y 34 a 1920. */
+    font-size: clamp(30px, calc(26.47px + .392vw), 34px);
+    line-height: 1.02;
+    letter-spacing: -.03em;
+  }
+  .ofi__texto {
+    margin: 0;
+    max-width: 62ch;
+    /* 16 px a 900 y 16,5 de 1700 para arriba. Venía de 13,5 en todo el rango
+       medio: al lado de un nombre de 30 px se leía como una nota al pie. */
+    font-size: clamp(16px, calc(15.44px + .0625vw), 16.5px);
+    line-height: 1.7;
+    color: rgba(255, 255, 255, .7);
+  }
+
+  /* Lo que incluye, a la vista y en fichas. Antes vivía del lado de atrás de la
+     tarjeta: es lo más concreto que tiene la sección y no puede estar
+     escondido. */
+  .ofi__incluye {
+    margin: 0;
+    font-family: var(--v2-mono);
+    font-size: clamp(10px, .74vw, 12px);
+    line-height: 2;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .58);
+  }
+  .ofi__incluye i { font-style: normal; margin: 0 .7em; color: var(--acento); }
+
+  /* ⚠️ EL RENGLÓN SE ENCIENDE AL PASAR EL PUNTERO, y es lo único que se mueve:
+     un filete de acento a la izquierda y el nombre en blanco pleno. Sin hover no
+     se pierde nada —todo está a la vista— así que en un teléfono no falta. */
+  @media (hover: hover) and (pointer: fine) {
+    .ofi { transition: background-color .3s ease; }
+    .ofi:hover { background: rgba(255, 255, 255, .03); }
+    .ofi:hover .ofi__texto { color: rgba(255, 255, 255, .88); }
+    .ofi:hover .ofi__incluye { color: rgba(255, 255, 255, .8); }
+  }
+
+  /* ── El cierre ─────────────────────────────────────────
+     El llamado era la sexta tarjeta de la grilla y quedaba como un oficio más.
+     Acá es lo que es: el renglón con el que termina la carta.
+
+     ⚠️ DOS CAMINOS, NO UNO. El mail es el de siempre; el WhatsApp es el número
+     de la empresa. Van con su ícono porque a esa altura de la página el visitante
+     está eligiendo POR DÓNDE escribir, y el ícono se reconoce antes que la
+     palabra. */
+  .v2-cap__cierre {
+    display: grid;
+    gap: clamp(14px, 2vh, 24px);
+    margin: clamp(26px, 4.4vh, 52px) 0 0;
+    justify-items: start;
+  }
+  .v2-cap__pregunta {
+    margin: 0;
+    max-width: 30ch;
+    font-family: var(--v2-display);
+    font-weight: 700;
+    font-size: clamp(18px, 1.9vw, 30px);
+    line-height: 1.12;
+    letter-spacing: -.02em;
+  }
+  .v2-cap__vias { display: flex; flex-wrap: wrap; gap: clamp(10px, 1.4vw, 18px); }
+  .via {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    height: clamp(40px, 4.6vh, 48px);
+    padding: 0 clamp(14px, 1.4vw, 20px);
+    border: 1px solid rgba(255, 255, 255, .26);
+    border-radius: 999px;
+    font-family: var(--v2-texto);
+    font-size: clamp(13px, 1vw, 15.5px);
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    transition: background-color .28s ease-out, border-color .28s ease-out;
+  }
+  .via svg { width: 1.2em; height: 1.2em; flex: none; color: var(--destaque); }
+  .via:hover { background: rgba(255, 255, 255, .1); border-color: rgba(255, 255, 255, .5); }
+
+  /* ══════════════════════════════════════════════════════
+     PANTALLAS ANGOSTAS
+     ══════════════════════════════════════════════════════
+     ⚠️ EL RENGLÓN SE APILA, NO SE APRIETA. Tres columnas en 390 px dan tres
+     columnas de nada; apilado, el renglón sigue siendo un renglón —nombre,
+     texto, fichas— y se lee igual de corrido. */
+  @media (max-width: 900px) {
+    .ofi {
+      grid-template-columns: minmax(0, 1fr);
+      gap: clamp(8px, 1.4vh, 14px);
+      padding-block: clamp(18px, 2.6vh, 28px);
+    }
+    .ofi__nombre { grid-row: auto; }
+    /* En una columna el alto parejo no sirve de nada: se scrollea igual y forzar
+       alturas deja huecos. */
+    .v2-cap__lista { grid-auto-rows: auto; }
+    .ofi__nombre { font-size: clamp(20px, 5.4vw, 30px); }
+    .ofi__texto { font-size: clamp(13.5px, 3.6vw, 16px); }
+    .v2-cap__entrada { max-width: none; }
+    .v2-cap__titulo { font-size: clamp(30px, 8.6vw, 54px); }
+    .v2-cap__pregunta { max-width: none; font-size: clamp(18px, 5vw, 26px); }
+  }
+
+  /* ⚠️ UN CAMINO POR RENGLÓN, PERO SÓLO EN TELÉFONO. Lado a lado en 390 px el
+     mail —que es largo— se come el ancho y deja al WhatsApp de botoncito. De 640
+     para arriba entran holgados en un renglón y apilarlos deja media pantalla
+     vacía a la derecha: por eso esto NO vive en el bloque de 900, que también
+     agarra tabletas.
+
+     ⚠️ Y APILADAS NO SE ESTIRAN. Con `align-items: stretch` las dos píldoras
+     toman el ancho entero y se leen como dos botones de formulario: el cierre
+     deja de ser el remate de una carta y se convierte en una pantalla de alta.
+     Cada una mide lo que dice, alineadas al mismo margen izquierdo que la
+     pregunta. */
+  @media (max-width: 640px) {
+    .v2-cap__vias { width: 100%; flex-direction: column; align-items: flex-start; }
+  }
+
+  /* ⚠️ APAISADO Y BAJO: lo mismo, pero sin que el nombre se lleve media pantalla.
+     ⚠️ Y ACA LA JERARQUÍA ESTABA DADA VUELTA. El nombre caía a 17 px mientras el
+     texto se quedaba en los 16 del bloque de teléfono: el título de cada oficio
+     era MÁS CHICO que su propia descripción, y la pregunta del cierre —a 30— la
+     más grande de toda la lista. En un teléfono acostado lo que escasea es el
+     alto, así que baja el TEXTO, no el nombre. */
+  @media (orientation: landscape) and (max-height: 560px) {
+    .v2-cap { padding: clamp(28px, 6vh, 48px) var(--v2-margen) clamp(30px, 7vh, 54px); }
+    .v2-cap__titulo { font-size: clamp(26px, 3.6vw, 40px); }
+    /* ⚠️ `padding-block` Y NO `padding`. Con la forma corta este bloque —que
+       también agarra una ventana ancha y baja, tipo 1280 × 520— borraba el
+       padding lateral que le devuelve el margen a la fila sangrada, y el texto
+       se iba contra el borde de la pantalla. */
+    .ofi { padding-block: 14px; }
+    .ofi__nombre { font-size: clamp(21px, 2.6vw, 26px); }
+    .ofi__texto { font-size: 14px; line-height: 1.6; }
+    .ofi__incluye { line-height: 1.8; }
+    .v2-cap__pregunta { font-size: clamp(17px, 2.2vw, 22px); }
+  }
+</style>

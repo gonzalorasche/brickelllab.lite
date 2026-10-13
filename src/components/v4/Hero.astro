@@ -1,0 +1,390 @@
+---
+// ⚠️ EL HERO ES ESTE: claro, con el LANYARD colgado. (Hubo una versión con
+// video de la ciudad; Gonzalo la descartó el 28/9/2026 — quedó en
+// docs/descartes/Hero.video.astro y los mp4 en docs/descartes/hero-video/.)
+// Cuelga del hero un LANYARD con el logo de Brickell Lab — como el de reactbits.dev/components/lanyard, pero
+// hecho en canvas 2D con una soga de Verlet, sin three.js: la cinta con el
+// degradé de la marca y "BRICKELL LAB" repetido, la credencial blanca con el
+// logo de un lado y una foto de la ciudad en blanco y negro del otro (gira sobre su eje cuando
+// se la arrastra y vuelve sola al frente, así el logo es lo que más se ve),
+// que se balancea y se puede agarrar (con el mouse o con el dedo). Cuelga en
+// la mitad derecha, en el hueco entre el titular y la base de los botones. En
+// el teléfono vertical cuelga chico del borde superior derecho y el texto se
+// apoya abajo, dejándole el tercio de arriba; en pantallas muy bajas (< 700px)
+// no hay lugar y no se muestra.
+//
+// En el teléfono, además: el segundo botón es el ícono de WhatsApp (al lado de
+// "Ver proyectos", no debajo) y abajo del todo corre una MARQUESINA infinita
+// con los cinco servicios, movida por JS (rAF) desde `data/v4/servicios.ts`,
+// la misma lista que dibuja la sección "Qué hacemos".
+import { WHATSAPP_URL } from '../../data/v4/contacto'
+import { SERVICIOS } from '../../data/v4/servicios'
+//
+// La física corre a paso fijo (1/120 s, con acumulador de tiempo real), así se
+// ve igual a 60 y a 120 Hz y no tiembla si un cuadro se atrasa. Gravedad y
+// rozamiento en unidades por segundo; el arrastre no clava el punto en el
+// dedo sino que lo acerca con un resorte, por eso es suave.
+//
+---
+<section class="hero" id="inicio" aria-label="Portada" data-claro>
+  <canvas class="hero__lanyard" id="lanyard" aria-hidden="true"></canvas>
+
+  <div class="centro hero__dicho">
+    <p class="meta hero__meta" data-entra><span class="hero__meta-sep" aria-hidden="true"></span><span>Estudio de diseño<br class="tel"> y desarrollo web</span></p>
+    <!-- Los cortes son explícitos: <br class="esc"> arma las tres líneas de
+         escritorio ("Diseñamos lo / que tu marca / todavía no tiene."), y
+         <br class="tel"> las cinco del teléfono ("Diseñamos / lo que tu /
+         marca / todavía / no tiene."), donde el texto va en una columna a la
+         izquierda y la credencial cuelga a la derecha sin taparse. -->
+    <h1 data-entra>Diseñamos<br class="tel"> lo<br class="esc"> que tu<br class="tel"> marca<br class="esc"><br class="tel"> <span class="hero__color">todavía<br class="tel"> no tiene.</span></h1>
+    <div class="hero__base">
+      <p class="hero__bajada" data-entra>Sitios, plataformas y productos digitales, de la idea al código. Diseño y desarrollo en el mismo lugar.</p>
+      <div class="acciones hero__acciones" data-entra>
+        <a class="boton" href="#proyectos">Ver proyectos</a>
+        <a class="boton boton--claro esc-boton" href="#contacto">Hablemos de tu proyecto</a>
+        <a class="boton boton--claro hero__wa" href={WHATSAPP_URL} target="_blank" rel="noopener" aria-label="Hablemos de tu proyecto por WhatsApp">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2.01a9.9 9.9 0 0 0-8.43 15.1L2.05 22l5.02-1.52a9.9 9.9 0 1 0 4.97-18.47zm0 1.8a8.1 8.1 0 1 1-4.16 15.06l-.3-.18-2.98.9.92-2.9-.2-.31A8.1 8.1 0 0 1 12.04 3.8zm4.6 10.28c-.25-.12-1.46-.72-1.69-.8-.22-.08-.39-.12-.55.13-.16.25-.63.8-.77.96-.14.16-.28.18-.53.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.15.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.13-.55-1.33-.76-1.82-.2-.47-.4-.41-.55-.42h-.47c-.16 0-.42.06-.64.31-.22.25-.85.83-.85 2.03s.87 2.35.99 2.51c.12.16 1.71 2.61 4.15 3.66.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.45-.59 1.65-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.47-.28z" fill="currentColor"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="marquesina" id="marquesina" aria-hidden="true">
+    <div class="marquesina__pista" id="marquesina-pista">
+      {SERVICIOS.map((x) => (
+        <span class="marquesina__item"><i></i>{x.n}</span>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  // ── El lanyard: soga de Verlet + credencial, en canvas ─────────────────
+  (function () {
+    const cv = document.getElementById('lanyard')
+    if (!cv) return
+    const hero = cv.closest('.hero')
+    // Sin lugar: teléfono bajo (SE) o cualquier pantalla acostada de menos de
+    // 500 de alto. Se esconde en vez de borrarse, porque al rotar puede volver
+    // a haber lugar; y `telefono` se recalcula en cada armado (al rotar cambia).
+    const cabe = () => {
+      if (matchMedia('(max-height: 359px)').matches) return false                                  // no entra ni chica
+      if (matchMedia('(orientation: portrait)').matches) return !matchMedia('(max-width: 759px) and (max-height: 699px)').matches
+      return true                                                                                  // acostado: entra, pero chica
+    }
+    let telefono = matchMedia('(max-width: 759px)').matches
+    cv.style.display = cabe() ? '' : 'none'
+    const barra = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--barra')) || 64
+    const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches
+    const ctx = cv.getContext('2d')
+    const logo = new Image(); logo.src = '/v4/logo-brickell.png'
+    const foto = new Image(); foto.src = '/v4/credencial-dorso.jpg'
+
+    const N = 16                       // segmentos de la soga
+    let W, H, seg, CW, CH, esc, anchor, pts, old, drag = null, t = 0, visible = true, vivo = false
+    let giro = 0, giroV = 0            // el giro de la credencial sobre su eje (0 = de frente)
+
+    const armar = () => {
+      telefono = matchMedia('(max-width: 759px)').matches
+      const dpr = Math.min(2, devicePixelRatio || 1)
+      W = hero.clientWidth; H = hero.clientHeight
+      cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px'
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      const margenDer = parseFloat(getComputedStyle(hero).paddingRight) || 0
+      const hr = hero.getBoundingClientRect()
+      let largo
+      // Teléfono acostado: hay poco alto, así que va chica y con soga corta,
+      // colgada en el margen derecho que le deja el texto.
+      const acostado = matchMedia('(orientation: landscape)').matches && H < 520
+      if (acostado) {
+        esc = .34; CW = 200 * esc; CH = 300 * esc
+        anchor = { x: W - margenDer - CW / 2 - 2, y: barra() - 10 }
+        largo = Math.max(40, Math.min(90, H - anchor.y - CH - 16))
+      } else if (telefono) {
+        // Teléfono: cuelga desde arriba de la barra, pegada al borde derecho
+        // del contenedor; la soga aparece desvanecida debajo de la barra (ver
+        // el borrado al final de dibujar), así no se ve de dónde nace. El texto va en una columna a la izquierda (rótulo y
+        // titular cortados con <br class="tel">), así que la credencial solo
+        // tiene que terminar por encima de la base (bajada + botones).
+        esc = .5; CW = 200 * esc; CH = 300 * esc
+        anchor = { x: W - margenDer - CW / 2 - 2, y: barra() - 12 }
+        const base = hero.querySelector('.hero__base'), techo = base ? base.getBoundingClientRect().top - hr.top - 24 : H * .6
+        largo = Math.max(64, Math.min(230, techo - anchor.y - CH))
+      } else {
+        // Escritorio y tablet: cuelga hasta el hueco entre el titular y la
+        // base (24px por encima del filete). Si la pantalla es baja (tablet
+        // apaisada), la credencial se achica hasta que entre con soga.
+        esc = Math.max(.55, Math.min(1, H / 900))
+        CW = 200 * esc; CH = 300 * esc
+        const base = hero.querySelector('.hero__base')
+        const techo = base ? base.getBoundingClientRect().top - hr.top - 24 : H * .7
+        if (techo - CH < 90) { CH = Math.max(150, techo - 90); CW = CH * 2 / 3; esc = CH / 300 }
+        largo = Math.max(90, Math.min(H * .34, techo - CH))
+        anchor = { x: Math.min(W * .76, W - margenDer - CW / 2 - 30), y: -8 }
+      }
+      seg = largo / N
+      // Arranca colgado hacia un costado, para que baje balanceándose.
+      pts = []; old = []
+      for (let i = 0; i <= N; i++) { const k = i / N; const p = { x: anchor.x + k * largo * .32, y: anchor.y + k * largo * .95 }; pts.push(p); old.push({ ...p }) }
+      const T = pts[N]; const B = { x: T.x + CH * .5, y: T.y + CH * .86 }; pts.push(B); old.push({ ...B })
+    }
+
+    const DT = 1 / 120                 // paso fijo de la física
+    const paso = () => {
+      t += DT
+      const g = 1500 * DT * DT           // px/s² → px por paso
+      const amort = Math.pow(.45, DT)    // rozamiento del aire: conserva el 45% de la velocidad por segundo (se aquieta en unos segundos)
+      // Sin viento: se bambolea al cargar y después solo si la tocan.
+      for (let i = 1; i < pts.length; i++) {
+        const p = pts[i], o = old[i]
+        const vx = (p.x - o.x) * amort, vy = (p.y - o.y) * amort
+        o.x = p.x; o.y = p.y
+        p.x += vx; p.y += vy + g
+      }
+      // El arrastre: el punto de cuelgue se acerca al dedo con un resorte (no se clava).
+      if (drag) { const p = pts[N]; p.x += (drag.x - p.x) * .28; p.y += (drag.y - p.y) * .28 }
+      // El giro sobre el eje: lo empuja la velocidad horizontal, un resorte lo devuelve al frente.
+      // Poco empuje, resorte firme, mucho freno y tope a media vuelta: se
+      // ladea y muestra el dorso solo si se la sacude, nunca da vueltas.
+      // El empuje sale de la velocidad horizontal en px/s (a 800 px/s el
+      // resorte equilibra en ~45°), con la velocidad de giro acotada.
+      const vps = (pts[N].x - old[N].x) / DT
+      giroV += vps * .00002 - giro * .02; giroV *= .96
+      giroV = Math.max(-.025, Math.min(.025, giroV)); giro += giroV
+      const tope = Math.PI * .6; if (giro > tope) { giro = tope; giroV = 0 } if (giro < -tope) { giro = -tope; giroV = 0 }
+      for (let k = 0; k < 10; k++) {
+        pts[0].x = anchor.x; pts[0].y = anchor.y
+        for (let i = 0; i < N; i++) tirar(pts[i], pts[i + 1], seg, i === 0 ? 0 : .5, i + 1 === N ? .25 : .5)
+        tirar(pts[N], pts[N + 1], CH, .5, .5)
+      }
+    }
+    const tirar = (a, b, largo, wa, wb) => {
+      const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1, dif = (d - largo) / d
+      a.x += dx * dif * wa; a.y += dy * dif * wa; b.x -= dx * dif * wb; b.y -= dy * dif * wb
+    }
+
+    const esquinas = () => {
+      const T = pts[N], B = pts[N + 1], ux = (B.x - T.x) / CH, uy = (B.y - T.y) / CH, nx = -uy, ny = ux
+      return { T, B, ux, uy, nx, ny, ang: Math.atan2(uy, ux) - Math.PI / 2 }
+    }
+    const enCredencial = (x, y) => {
+      const { T, ux, uy, nx, ny } = esquinas(); const dx = x - T.x, dy = y - T.y
+      const a = dx * ux + dy * uy, b = dx * nx + dy * ny
+      return a >= -10 && a <= CH + 10 && Math.abs(b) <= CW / 2 + 10
+    }
+
+    const dibujar = () => {
+      ctx.clearRect(0, 0, W, H)
+      const { T, ang } = esquinas()
+      // La cinta: sombra, banda con el degradé, costura y el nombre repetido.
+      const ancho = 22 * esc
+      const camino = () => { ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for (let i = 1; i <= N; i++) { const p = pts[i], q = pts[i - 1]; ctx.quadraticCurveTo(q.x, q.y, (q.x + p.x) / 2, (q.y + p.y) / 2) } ctx.lineTo(T.x, T.y) }
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round'
+      camino(); ctx.lineWidth = ancho + 2; ctx.strokeStyle = 'rgba(11,11,15,.10)'; ctx.stroke()
+      const grad = ctx.createLinearGradient(anchor.x, anchor.y, T.x, T.y); grad.addColorStop(0, '#FF2E8F'); grad.addColorStop(.55, '#B23CFF'); grad.addColorStop(1, '#7C4DFF')
+      camino(); ctx.lineWidth = ancho; ctx.strokeStyle = grad; ctx.stroke()
+      camino(); ctx.lineWidth = 1; ctx.setLineDash([3 * esc, 4 * esc]); ctx.strokeStyle = 'rgba(255,255,255,.45)'; ctx.stroke(); ctx.setLineDash([])
+      // "BRICKELL LAB" a lo largo de la cinta (rotado con cada segmento, se lee siguiendo la cinta), cada tanto.
+      ctx.font = `600 ${8.5 * esc}px "Geist Mono", ui-monospace, monospace`; ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      let acum = 0, prox = 26 * esc
+      for (let i = 0; i < N; i++) {
+        const a = pts[i], b = pts[i + 1], L = Math.hypot(b.x - a.x, b.y - a.y), an = Math.atan2(b.y - a.y, b.x - a.x)
+        while (prox <= acum + L) { const k = (prox - acum) / L; ctx.save(); ctx.translate(a.x + (b.x - a.x) * k, a.y + (b.y - a.y) * k); ctx.rotate(an); ctx.fillText('BRICKELL LAB', 0, 0); ctx.restore(); prox += 78 * esc }
+        acum += L
+      }
+      // La soga nace de la nada: se borra el canvas con un degradé en los
+      // 70px que siguen a la barra (destination-out: no pinta, quita alfa).
+      const b0 = barra() - 2, bg = ctx.createLinearGradient(0, b0, 0, b0 + 70); bg.addColorStop(0, 'rgba(0,0,0,1)'); bg.addColorStop(1, 'rgba(0,0,0,0)')
+      ctx.save(); ctx.globalCompositeOperation = 'destination-out'; ctx.fillStyle = bg; ctx.fillRect(0, 0, W, b0 + 70); ctx.restore()
+      // La credencial: colgada del último punto, rota con su propio péndulo.
+      ctx.save(); ctx.translate(T.x, T.y); ctx.rotate(ang)
+      // El giro sobre el eje vertical: la credencial se angosta y, pasada la
+      // mitad de vuelta, muestra el dorso (la foto) espejado.
+      const cos = Math.cos(giro), dorso = cos < 0
+      ctx.scale(Math.max(.06, Math.abs(cos)), 1)
+      const r = 16 * esc, x0 = -CW / 2, y0 = -6 * esc
+      ctx.shadowColor = 'rgba(11,11,15,.28)'; ctx.shadowBlur = 44 * esc; ctx.shadowOffsetY = 22 * esc
+      ctx.fillStyle = '#fff'; caja(x0, y0, CW, CH, r); ctx.fill()
+      ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0
+      if (dorso) {
+        // El dorso: la foto de Brickell a sangre, con una franja abajo con el nombre.
+        if (foto.complete && foto.naturalWidth) { ctx.save(); caja(x0, y0, CW, CH, r); ctx.clip(); ctx.drawImage(foto, x0, y0, CW, CH); ctx.fillStyle = 'rgba(11,11,15,.55)'; ctx.fillRect(x0, y0 + CH - 46 * esc, CW, 46 * esc); ctx.restore() }
+        ctx.fillStyle = 'rgba(255,255,255,.92)'; ctx.font = `600 ${8 * esc}px "Geist Mono", ui-monospace, monospace`; ctx.fillText('BRICKELL LAB', 0, y0 + CH - 30 * esc)
+        ctx.fillStyle = 'rgba(255,255,255,.6)'; ctx.font = `500 ${7 * esc}px "Geist Mono", ui-monospace, monospace`; ctx.fillText('labbrickell.com.ar', 0, y0 + CH - 16 * esc)
+      } else {
+        // El frente: el logo y los textos.
+        if (logo.complete && logo.naturalWidth) { const lw = CW * .68, lh = lw * 234 / 1312; ctx.drawImage(logo, -lw / 2, y0 + CH * .40 - lh / 2, lw, lh) }
+        ctx.fillStyle = '#5E606B'; ctx.font = `500 ${8 * esc}px "Geist Mono", ui-monospace, monospace`
+        ctx.fillText('ESTUDIO DE DISEÑO', 0, y0 + CH * .60); ctx.fillText('Y DESARROLLO WEB', 0, y0 + CH * .60 + 13 * esc)
+        ctx.fillStyle = '#9A9CA6'; ctx.font = `500 ${7 * esc}px "Geist Mono", ui-monospace, monospace`; ctx.fillText('labbrickell.com.ar', 0, y0 + CH * .86)
+        const g2 = ctx.createLinearGradient(x0, 0, x0 + CW, 0); g2.addColorStop(0, '#FF2E8F'); g2.addColorStop(.55, '#B23CFF'); g2.addColorStop(1, '#7C4DFF')
+        ctx.fillStyle = g2; ctx.fillRect(x0 + 18 * esc, y0 + CH - 14 * esc, CW - 36 * esc, 2 * esc)
+      }
+      ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(11,11,15,.10)'; caja(x0, y0, CW, CH, r); ctx.stroke()
+      // La ranura y el clip metálico, por encima de las dos caras.
+      ctx.fillStyle = dorso ? 'rgba(255,255,255,.35)' : '#E4E4EA'; caja(-18 * esc, y0 + 14 * esc, 36 * esc, 7 * esc, 3.5 * esc); ctx.fill()
+      ctx.fillStyle = '#2B2B33'; caja(-13 * esc, -16 * esc, 26 * esc, 24 * esc, 5 * esc); ctx.fill()
+      ctx.fillStyle = '#4A4A55'; caja(-9 * esc, -12 * esc, 18 * esc, 4 * esc, 2 * esc); ctx.fill()
+      ctx.restore()
+    }
+    const caja = (x, y, w, h, r) => { ctx.beginPath(); ctx.roundRect(x, y, w, h, r) }
+
+    // Cuando se aquieta (un cuarto de segundo sin que nada se mueva más de
+    // 0,06 px por paso, unos 7 px/s) se duerme: la física para y queda clavada hasta que
+    // la toquen. Así nunca se mueve sola.
+    let congelado = false, previo = 0, resto = 0, dormida = false, quietos = 0
+    const energia = () => { let m = 0; for (let i = 1; i < pts.length; i++) m = Math.max(m, Math.abs(pts[i].x - old[i].x), Math.abs(pts[i].y - old[i].y)); return m }
+    const cuadro = (ahora) => {
+      if (!visible) { vivo = false; return }
+      const dt = previo ? Math.min(.1, (ahora - previo) / 1000) : DT; previo = ahora
+      if (!congelado && !dormida) {
+        resto += dt; let n = 0
+        while (resto >= DT && n < 8) { paso(); resto -= DT; n++; if (!drag && energia() < .06 && Math.abs(giroV) < .001) { if (++quietos > 30) { dormida = true; giro = 0; break } } else quietos = 0 }
+      }
+      dibujar(); requestAnimationFrame(cuadro)
+    }
+    const arrancar = () => { if (vivo || quieto) return; vivo = true; previo = 0; requestAnimationFrame(cuadro) }
+
+    // El mouse: agarrar la credencial y arrastrarla. El canvas no recibe
+    // eventos (pointer-events: none, para no tapar el texto): escucha el hero.
+    const local = (e) => { const r = hero.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top } }
+    hero.addEventListener('pointermove', (e) => {
+      const p = local(e)
+      if (drag) { drag.x = p.x - drag.dx; drag.y = p.y - drag.dy; return }
+      hero.style.cursor = enCredencial(p.x, p.y) ? 'grab' : ''
+    })
+    hero.addEventListener('pointerdown', (e) => {
+      const p = local(e); if (!enCredencial(p.x, p.y) || quieto) return
+      e.preventDefault(); drag = { x: pts[N].x, y: pts[N].y, dx: p.x - pts[N].x, dy: p.y - pts[N].y }; dormida = false; quietos = 0; resto = 0
+      hero.setPointerCapture(e.pointerId); hero.style.cursor = 'grabbing'
+    })
+    hero.addEventListener('touchstart', (e) => { const p = local(e.touches[0]); if (enCredencial(p.x, p.y)) e.preventDefault() }, { passive: false })
+    const soltar = () => { drag = null; hero.style.cursor = '' }
+    hero.addEventListener('pointerup', soltar); hero.addEventListener('pointercancel', soltar)
+
+    armar()
+    if (quieto) { for (let i = 0; i < 900; i++) paso(); dibujar(); logo.onload = dibujar; return }
+    new IntersectionObserver((es) => es.forEach((e) => { visible = e.isIntersecting; if (visible) arrancar() })).observe(hero)
+    let reloj, anchoPrevio = innerWidth
+    addEventListener('resize', () => {
+      clearTimeout(reloj)
+      reloj = setTimeout(() => {
+        const ok = cabe()
+        cv.style.display = ok ? '' : 'none'
+        // Solo se rearma si cambió el ancho (en iOS el alto cambia al scrollear,
+        // con las barras de Safari, y no hay que volver a bambolear la credencial).
+        if (ok && innerWidth !== anchoPrevio) { anchoPrevio = innerWidth; armar(); dormida = false; quietos = 0 }
+        if (ok) arrancar()
+      }, 120)
+    })
+    // Para las pruebas: girar la credencial a mano y congelar la física.
+    window.__lanyard = { credencial: esquinas, punto: () => pts[N], giro: () => giro, fijarGiro: (g) => { giro = g; giroV = 0 }, congelar: (si) => { congelado = si } }
+  })()
+</script>
+
+<script is:inline>
+  // ── La marquesina del hero (teléfono): infinita, movida por JS ──────────
+  // Se duplica la lista hasta pasar dos veces el ancho de la pantalla y se
+  // corre con rAF; cuando avanzó el largo de UNA vuelta, vuelve a sumarlo:
+  // el salto cae siempre en un punto idéntico, así que no se ve.
+  (function () {
+    const caja = document.getElementById('marquesina'), pista = document.getElementById('marquesina-pista')
+    if (!caja || !pista) return
+    const base = [...pista.children].map((n) => n.cloneNode(true))
+    const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches
+    const V = 26                       // px por segundo
+    let vuelta = 0, x = 0, previo = 0, visible = true, vivo = false
+    // ⚠️ SI LA MARQUESINA ESTÁ ESCONDIDA (teléfono acostado) scrollWidth da 0:
+    // sin el corte de abajo, el bucle que clona la lista no terminaba nunca y
+    // la página se congelaba al rotar. Devuelve false y no se arma nada.
+    const armar = () => {
+      pista.style.transform = ''; x = 0
+      pista.replaceChildren(...base.map((n) => n.cloneNode(true)))
+      vuelta = pista.scrollWidth
+      if (!vuelta) return false
+      for (let i = 0; i < 20 && pista.scrollWidth < vuelta + innerWidth * 2; i++) pista.append(...base.map((n) => n.cloneNode(true)))
+      return true
+    }
+    const cuadro = (ahora) => {
+      if (!visible || !vuelta) { vivo = false; return }
+      const dt = previo ? Math.min(.1, (ahora - previo) / 1000) : 0; previo = ahora
+      x -= V * dt
+      if (x <= -vuelta) x += vuelta
+      pista.style.transform = 'translate3d(' + x.toFixed(2) + 'px,0,0)'
+      requestAnimationFrame(cuadro)
+    }
+    const arrancar = () => { if (vivo || quieto || !vuelta) return; vivo = true; previo = 0; requestAnimationFrame(cuadro) }
+    const acomodar = () => { if (armar()) arrancar() }
+    acomodar()
+    new IntersectionObserver((es) => es.forEach((e) => { visible = e.isIntersecting; if (visible) arrancar() })).observe(caja)
+    let reloj, ancho = innerWidth
+    addEventListener('resize', () => { clearTimeout(reloj); reloj = setTimeout(() => { if (innerWidth !== ancho || !vuelta) { ancho = innerWidth; acomodar() } }, 150) })
+  })()
+</script>
+
+<style>
+  .hero {
+    position: relative; overflow: hidden; background: var(--papel); color: var(--tinta);
+    /* La barra es fija y el hero pasa por debajo: arranca en 0 y mide la pantalla entera. */
+    min-height: 100svh; margin-top: calc(-1 * var(--barra)); padding: var(--barra) var(--margen) 0;
+    display: grid; align-content: end;
+  }
+  /* Una luz de la marca muy tenue en la esquina, para que el blanco no sea plano. */
+  .hero::before { content: ''; position: absolute; inset: -20% -10% auto auto; width: 70vw; height: 70vh; pointer-events: none;
+    background: radial-gradient(closest-side, rgba(178,60,255,.14), rgba(255,46,143,.06) 55%, rgba(255,255,255,0) 100%); }
+  .hero__lanyard { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+  /* Telefono vertical: la pantalla entera aunque Safari esconda sus barras
+     (lvh), y el bloque de texto centrado en el alto. */
+  .tel { display: none; }
+  @media (max-width: 819px) and (orientation: portrait) {
+    .tel { display: inline; } .esc { display: none; }
+    .hero { min-height: 100lvh; align-content: center; }
+    /* La columna del texto: le deja a la derecha el ancho de la credencial (100px) más aire. */
+    .hero .hero__meta, .hero .hero__dicho h1 { max-width: calc(100% - 112px); }
+    /* El rótulo en dos renglones y, DEBAJO, el guion de la marca como separación con el titular. */
+    .hero .hero__meta { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+    .hero .hero__meta-sep { order: 2; }
+    /* `.hero .hero__dicho`: más específico que la regla base, que viene después en la hoja. */
+    .hero .hero__dicho { padding-top: calc(var(--barra) + 24px); padding-bottom: clamp(88px, 13svh, 120px); }
+    .hero .hero__dicho h1 { font-size: clamp(34px, 10.4vw, 52px); font-weight: 700; }
+    .hero .hero__meta { margin-bottom: 18px; }
+    .hero .hero__base { margin-top: 22px; padding-top: 16px; gap: 16px; }
+    .hero .hero__bajada { font-size: 15px; }
+  }
+  /* ⚠️ EL TEXTO VA AL CONTENEDOR (.centro), como la barra: el margen lateral lo
+     pone la sección, no este bloque. */
+  .hero__dicho { position: relative; z-index: 1; width: 100%; padding: clamp(72px, 10vh, 120px) 0 clamp(52px, 8vh, 88px); }
+  .hero__meta { display: flex; align-items: center; gap: 12px; color: var(--gris); margin-bottom: clamp(22px, 3.4vh, 36px); }
+  .hero__meta-sep { display: inline-block; width: 28px; height: 1.5px; background: var(--marca); }
+  /* El titular: el tamaño lo pone el ancho (tres líneas en escritorio), tracking cerrado, interlineado de display. */
+  .hero h1 { font-size: clamp(42px, 7.6vw, 122px); line-height: .94; letter-spacing: -.045em; }
+  .hero__color { background: linear-gradient(90deg, #FF4FA3, #BA55FF 55%, #8C6BFF); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  /* La base: un filete a lo ancho y, sobre él, la bajada a la izquierda y los botones a la derecha. */
+  .hero__base { display: grid; gap: 22px; margin-top: clamp(28px, 4.2vh, 44px); padding-top: clamp(20px, 3vh, 28px); border-top: 1px solid var(--linea); }
+  /* El botón de WhatsApp es solo del teléfono; el de texto, solo de escritorio. */
+  .hero__wa { display: none; }
+  .hero__wa svg { width: 22px; height: 22px; }
+  @media (max-width: 759px) {
+    .esc-boton { display: none; }
+    .hero__wa { display: inline-flex; width: 50px; padding: 0; flex: none; }
+  }
+
+  /* ── La marquesina: al pie del hero, de borde a borde y solo en el teléfono ── */
+  /* Despegada del piso: el inset de seguridad más un colchón, para que no
+     quede debajo de la barra flotante de Safari ni pegada al borde. */
+  .marquesina { display: none; position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + clamp(20px, 5svh, 44px)); z-index: 1; overflow: hidden; padding: 12px 0; border-top: 1px solid var(--linea); -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .marquesina__pista { display: flex; align-items: center; width: max-content; will-change: transform; }
+  .marquesina__item { display: inline-flex; align-items: center; gap: 12px; padding-right: 12px; font-family: var(--mono); font-size: 11.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--gris); white-space: nowrap; }
+  .marquesina__item i { display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--marca); flex: none; }
+  @media (max-width: 759px) and (orientation: portrait) { .marquesina { display: block; } }
+
+  .hero__acciones { align-self: center; }
+  .hero__bajada { max-width: 44ch; color: var(--gris); font-size: var(--t-bajada); line-height: 1.5; }
+  /* Telefono acostado: 390 de alto para la portada entera, y la columna del
+     texto le deja el margen derecho a la credencial. */
+  @media (max-width: 899px) and (max-height: 520px) { .hero .hero__dicho { padding-right: 92px; } }
+  @media (max-height: 500px) { .hero__dicho { padding-top: 16px; padding-bottom: 18px; } .hero h1 { font-size: clamp(26px, 4.4vw, 40px); } .hero__base { margin-top: 12px; padding-top: 12px; gap: 12px; } .hero__bajada { font-size: 14px; max-width: 60ch; } .hero__meta { margin-bottom: 10px; } .hero .boton { min-height: 40px; } }
+  @media (min-width: 900px) {
+    .hero__base { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 40px; }
+  }
+</style>

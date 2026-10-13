@@ -1,0 +1,222 @@
+---
+// ============================================================
+// LA BRÚJULA — toda la navegación de la página
+// ============================================================
+//
+// No hay barra. Hay dos piezas, y ninguna se apoya sobre el contenido:
+//
+//   · LA LÍNEA — dos píxeles arriba de todo que se llenan con el scroll, en
+//     todos los tamaños. Contesta "cuánto falta" y nada más.
+//   · LA LENGÜETA — treinta píxeles de canto en el borde derecho con el número
+//     y el nombre de la sección en la que estás, escritos de abajo hacia
+//     arriba. Al tocarla sale una tarjeta con el índice. Sólo en escritorio.
+//
+// ⚠️ ES EL PATRÓN DE LÚMINA CON DIBUJO PROPIO. Allá la lengüeta dice una
+// palabra fija; acá dice DÓNDE ESTÁS, así que además de manija es orientación.
+// Si la navegación del estudio fuera idéntica a la de su producto, el estudio
+// se leería como una extensión del producto — que es lo que esta web viene a
+// desmentir.
+//
+// ⚠️ EL PANEL VA DE ARRIBA A ABAJO, y se cierra tocando afuera o con Escape.
+// Empezó siendo una tarjeta del tamaño de su contenido —así es en Lúmina— y
+// Gonzalo lo pidió de alto completo. El alto va en `dvh`: ver la nota en la
+// hoja de estilos, porque `svh` lo deja corto cuando Safari contrae su barra.
+//
+// ⚠️ Y LA LENGÜETA ES HIJA DE LA TARJETA, no un botón suelto al lado. Cuelga de
+// su borde izquierdo y sobresale hacia afuera: con la tarjeta guardada —corrida
+// entera fuera de la ventana— lo único que asoma es ella, y al abrirse VIAJA
+// CON ELLA. Un botón aparte necesitaría sincronizar dos posiciones y dos
+// animaciones para fingir exactamente esto.
+// ============================================================
+
+// ⚠️ EN CASTELLANO, como toda la página. El brief los tenía en inglés —Work,
+// Services, Studio— y es la convención de muchos estudios, pero si el texto
+// habla en castellano y los rótulos en inglés, el inglés se lee como adorno.
+// ⚠️ EL ORDEN ES EL DE LA PÁGINA, no una lista de favoritos: una brújula que
+// ordena distinto a lo que se scrollea desorienta en vez de ubicar. "Método" se
+// fue con su sección —ver la nota de `pages/v2/index.astro`— y "Proyectos" pasó
+// a llamarse como su titular, Portfolio.
+const INDICE = [
+  { id: 'studio', nombre: 'El estudio' },
+  { id: 'services', nombre: 'Qué hacemos' },
+  { id: 'seo', nombre: 'SEO + GEO' },
+  { id: 'contact', nombre: 'Contacto' },
+];
+---
+
+<div class="v2-linea-scroll" aria-hidden="true"><span id="v2-progreso"></span></div>
+
+<div class="v2-brujula" id="v2-brujula" data-abierta="no">
+  <button class="v2-lengueta" id="v2-lengueta" type="button" aria-expanded="false" aria-controls="v2-panel">
+    <span id="v2-donde">01 — Hero</span>
+  </button>
+  <nav class="v2-panel" id="v2-panel" aria-label="Índice de la página">
+    <p class="v2-meta">Índice</p>
+    <ul>
+      {INDICE.map((s) => (
+        <li><a href={`#${s.id}`}>{s.nombre}</a></li>
+      ))}
+    </ul>
+    <a class="v2-panel__mail" href="mailto:info@labbrickell.com.ar">info@labbrickell.com.ar</a>
+    <div class="v2-panel__redes">
+      <a href="https://instagram.com/brickell.lab" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.linkedin.com/company/brickell-lab" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </nav>
+</div>
+
+<style>
+  /* La lengüeta vive colgada del borde izquierdo del panel, así que el conjunto
+     se mueve como una sola pieza. */
+  /* ⚠️ EL PANEL VA DE ARRIBA A ABAJO. Era una tarjeta del tamaño de su
+     contenido —así está en Lúmina, y allá tiene sentido porque la página es
+     casi toda parallax y una columna entera tapaba media escena—. Acá Gonzalo
+     lo pidió de alto completo: al abrirse ocupa el borde derecho entero y la
+     lengüeta viaja con él, colgada de su canto. */
+  /* ⚠️ `dvh`, NO `svh`. Son dos unidades distintas y acá la regla va al revés
+     que en las secciones: `svh` es el viewport CHICO —el que queda cuando Safari
+     muestra su barra—, así que en cuanto la barra se contrae la ventana crece y
+     el panel se queda corto, flotando sin llegar al borde de abajo. `dvh` sigue
+     al viewport real cuadro a cuadro, que es lo que tiene que hacer cualquier
+     cosa apoyada ENCIMA de la página. (En las secciones es al revés: ahí va
+     `svh`, para que la página no salte cuando la barra aparece y desaparece.) */
+  .v2-brujula {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100dvh;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    transform: translateX(calc(100% - 38px));
+    transition: transform .5s cubic-bezier(.2, .7, .3, 1);
+  }
+  .v2-brujula[data-abierta='si'] { transform: translateX(0); }
+
+  .v2-brujula .v2-lengueta {
+    position: static;
+    opacity: 1;
+    transform: none;
+    flex: none;
+    align-self: center;
+  }
+
+  .v2-panel {
+    width: clamp(280px, 24vw, 360px);
+    height: 100%;
+    padding: clamp(28px, 4vh, 54px) clamp(24px, 2vw, 40px);
+    background: var(--v2-tinta);
+    color: var(--v2-papel);
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .v2-panel .v2-meta { color: rgba(242, 240, 234, .45); margin: 0 0 26px; }
+  /* El índice se lleva el aire: los links arriba, el contacto abajo de todo. */
+  .v2-panel ul { list-style: none; margin: 0 0 auto; padding: 0; }
+  .v2-panel li + li { margin-top: 4px; }
+  .v2-panel a {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 11px 0;
+    color: var(--v2-papel);
+    text-decoration: none;
+    font-size: clamp(19px, 1.6vw, 26px);
+    font-weight: 500;
+    letter-spacing: -.01em;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .v2-panel a:hover { color: var(--acento); }
+  }
+  .v2-panel a.v2-tocado { color: var(--acento); }
+  .v2-panel a { transition: color .15s ease-out; }
+  .v2-panel__mail {
+    display: block;
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(242, 240, 234, .16);
+    font-size: 14px;
+    color: rgba(242, 240, 234, .8);
+    text-decoration: none;
+  }
+  .v2-panel__redes { display: flex; gap: 16px; margin-top: 12px; }
+  .v2-panel__redes a {
+    font-family: var(--v2-mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: rgba(242, 240, 234, .5);
+    text-decoration: none;
+    padding: 0;
+  }
+
+  @media (max-width: 900px) {
+    .v2-brujula { display: none; }
+  }
+</style>
+
+<script>
+  const progreso = document.getElementById('v2-progreso');
+  const brujula = document.getElementById('v2-brujula');
+  const lengueta = document.getElementById('v2-lengueta');
+  const donde = document.getElementById('v2-donde');
+  const secciones = [...document.querySelectorAll('[data-seccion]')];
+
+  // La lengüeta aparece pasado el hero: en la portada no hay de dónde volver.
+  let visible = false;
+
+  const pintar = () => {
+    const alto = document.documentElement.scrollHeight - innerHeight;
+    const p = alto > 0 ? scrollY / alto : 0;
+    if (progreso) progreso.style.width = (p * 100).toFixed(2) + '%';
+
+    const pasoElHero = scrollY > innerHeight * .8;
+    if (pasoElHero !== visible) {
+      visible = pasoElHero;
+      brujula?.style.setProperty('opacity', visible ? '1' : '0');
+      brujula?.style.setProperty('pointer-events', visible ? 'auto' : 'none');
+      if (!visible) mover(false);
+    }
+
+    // En qué sección estamos: la última cuyo borde superior ya pasó el tercio
+    // de la ventana. Es lo mismo que uno diría mirando la pantalla.
+    let actual = secciones[0];
+    for (const s of secciones) {
+      if (s.getBoundingClientRect().top <= innerHeight / 3) actual = s;
+    }
+    if (actual && donde) donde.textContent = actual.dataset.seccion || '';
+  };
+
+  // Abrir y cerrar. El estado vive en un atributo y el CSS hace el resto.
+  const mover = (abrir) => {
+    if (!brujula) return;
+    brujula.dataset.abierta = abrir ? 'si' : 'no';
+    lengueta?.setAttribute('aria-expanded', String(abrir));
+  };
+
+  lengueta?.addEventListener('click', () => mover(brujula?.dataset.abierta !== 'si'));
+
+  // ⚠️ SE CIERRA TOCANDO AFUERA. Un panel que sólo cierra con su propio botón
+  // obliga a volver a buscarlo: tocar la página es el gesto que todo el mundo
+  // hace primero. Va en `pointerdown` —sirve para el mouse y para el dedo, y
+  // dispara al apoyar, no al soltar— y sólo si el toque cayó fuera del conjunto.
+  addEventListener('pointerdown', (e) => {
+    if (brujula?.dataset.abierta !== 'si') return;
+    if (!brujula.contains(e.target)) mover(false);
+  });
+
+  // Y con Escape, que es lo que espera quien navega con teclado.
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && brujula?.dataset.abierta === 'si') { mover(false); lengueta?.focus(); }
+  });
+
+  // Al elegir una sección del índice también se guarda: ya cumplió su trabajo.
+  brujula?.querySelectorAll('.v2-panel a[href^="#"]').forEach((a) => {
+    a.addEventListener('click', () => mover(false));
+  });
+
+  addEventListener('scroll', pintar, { passive: true });
+  addEventListener('resize', pintar);
+  pintar();
+</script>

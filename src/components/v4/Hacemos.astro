@@ -1,0 +1,128 @@
+---
+// ⚠️ "QUÉ HACEMOS", LA VERSIÓN QUE ELIGIÓ GONZALO (28/09/2026). La anterior
+// (cinco filas con lavado de color) está en docs/descartes/hacemos-cinco-filas.astro.txt.
+// Tres servicios, sin numerar, cada uno con su iPad y su iPhone con trabajo
+// real: Desarrollo web (Vesna), Productos digitales (Lúmina) e Identidad y
+// diseño (Bloom Bud, armado como aviso: el HTML de las dos pantallas está en
+// docs/identidad/aviso). Experiencias digitales y Presentaciones digitales
+// se sacaron (Gonzalo, 28/09/2026).
+//
+// ⚠️ LOS TEXTOS CORTOS VIVEN ACÁ, no en data/v4/servicios.ts: esa lista la
+// sigue usando la marquesina del hero con sus nombres.
+//
+// Los dos destacados se muestran IGUAL: un iPad atrás y un iPhone adelante,
+// mitad adentro y mitad afuera, con el mismo trabajo en los dos formatos
+// (Desarrollo web: el sitio de Vesna; Productos digitales: el dashboard de
+// Lúmina de un evento real). En el teléfono, igual, sin tarjeta.
+//
+// ⚠️ LOS APARATOS SE MIDEN EN `cqh` DEL ESCENARIO, así escalan juntos:
+// iPad 11" apaisado (pantalla 2360×1640) y iPhone 15 (pantalla 1179×2556).
+// El escenario es 16:9 y su alto tiene techo según la pantalla.
+// La captura de escritorio es 16:10 y el iPad es más alto: se recorta un poco
+// por la IZQUIERDA (anclada a la derecha), porque la derecha es el carrito,
+// que es lo que la captura muestra.
+const DESTACADOS = [
+  { n: 'Desarrollo web', t: 'Sitios y landings desde cero, sin plantillas: rápidos, a medida y fáciles de encontrar.', esc: '/v4/hacemos/vesna-escritorio.webp', tel: '/v4/hacemos/vesna-telefono.webp', alt: 'Sitio de Vesna', ancla: 'right top' },
+  { n: 'Productos digitales', t: 'Plataformas con usuarios y datos reales: paneles, sistemas internos y MVPs.', esc: '/v4/hacemos/lumina-dashboard-escritorio.webp', tel: '/v4/hacemos/lumina-dashboard-telefono.webp', alt: 'Panel de Lúmina', ancla: 'left top' },
+  { n: 'Identidad y diseño', t: 'Un sistema visual que vive igual en una web, un packaging o una pantalla.', esc: '/v4/hacemos/bloombud-escritorio.webp', tel: '/v4/hacemos/bloombud-telefono.webp', alt: 'Aviso de Bloom Bud', ancla: 'center' },
+]
+---
+<section class="hm" id="hacemos">
+  <div class="centro">
+    <div class="cab" data-entra>
+      <p class="meta rotulo">Qué hacemos</p>
+      <h2>De la idea al código.</h2>
+    </div>
+
+    <div class="hm__destacados">
+      {DESTACADOS.map((f) => (
+        <article class="hm__dest" data-entra="tarjeta">
+          <div class="hm__info">
+            <h3 class="hm__nombre">{f.n}</h3>
+            <p class="hm__texto">{f.t}</p>
+          </div>
+          <div class="hm__escena" style={`--ancla:${f.ancla}`}>
+            <img class="hm__plana" src={f.esc} alt={`${f.alt} en escritorio`} loading="lazy" />
+            <div class="hm__tablet" aria-hidden="true"><div class="hm__tablet-pantalla"><img src={f.esc} alt="" loading="lazy" /></div></div>
+            <div class="hm__tel" aria-hidden="true"><div class="hm__tel-pantalla"><img src={f.tel} alt="" loading="lazy" /></div><i class="hm__isla"></i></div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .hm { padding: clamp(36px, 5.5vh, 60px) var(--margen) clamp(32px, 5vh, 56px); }
+  .hm .cab { margin-bottom: clamp(24px, 4vh, 40px); }
+
+  /* ── LOS DOS DESTACADOS ──
+     Título, bajada y debajo el iPad y el iPhone, sin tarjeta ni fondo. En el
+     teléfono uno abajo del otro; en escritorio, los dos lado a lado.
+
+     ⚠️ LOS APARATOS SE MIDEN EN `cqh` DEL ESCENARIO, en los dos tamaños.
+     El grupo mide 155cqh de ancho y va centrado; el iPad (136,6) arranca a
+     12cqh del borde de arriba; el centro del iPhone (37,3 de ancho) cae justo
+     en el borde derecho del iPad. El iPhone termina en 113,7cqh: sobresale
+     13,7cqh — esa es la `--sobra`. */
+  .hm { --sobra: .14; }
+  .hm__destacados { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; }
+  .hm__dest { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .hm__info { display: grid; gap: 10px; align-content: center; padding: 0 0 18px; }
+  .hm__nombre { margin-top: 0; font-size: clamp(26px, 2.4vw, 34px); font-weight: 600; letter-spacing: -.035em; line-height: 1.08; }
+  .hm__nombre--chico { margin-top: 0; font-size: 21px; letter-spacing: -.02em; }
+  /* ⚠️ SIN VIUDAS: `text-wrap: balance` reparte los renglones parejos para
+     que nunca quede una palabra sola abajo (Gonzalo las odia). La bajada de
+     los destacados además tiene un límite de ancho (~el del título), así
+     corta en dos renglones parejos. */
+  .hm__texto { color: var(--gris); font-size: 15.5px; line-height: 1.5; max-width: 52ch; text-wrap: balance; }
+  .hm__dest .hm__texto { max-width: 29em; }
+
+
+  /* ── El escenario ── En el teléfono es 16:9 del ancho, sin fondo, y deja
+     abajo el lugar de lo que sobresale (14% del alto = 7,9% del ancho). */
+  /* En el teléfono el grupo va de borde a borde del contenedor: el escenario
+     tiene la proporción exacta del grupo (156,3 de ancho por 100 de alto,
+     contando el anillo de los dos aparatos) y abajo deja el lugar de lo que
+     sobresale (14% del alto = 9% del ancho). */
+  .hm__escena { position: relative; width: 100%; aspect-ratio: 156.3 / 100; container-type: size; margin-bottom: calc(9% + 6px); }
+  .hm__tablet { position: absolute; left: .53cqh; top: 12cqh; width: 136.6cqh; padding: 2.56cqh; border-radius: 6.4cqh; background: #16161b; box-shadow: 0 0 0 .53cqh #3a3a44, 0 6.4cqh 12.8cqh -4.27cqh rgba(11,11,15,.35); }
+  .hm__tablet-pantalla { position: relative; aspect-ratio: 2360 / 1640; overflow: hidden; border-radius: 3.84cqh; background: #fff; }
+  .hm__tablet-pantalla img, .hm__tel-pantalla img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  /* Vesna se ancla a la derecha (el carrito); el panel, a la izquierda. */
+  .hm__tablet-pantalla img { object-position: var(--ancla, left top); }
+  .hm__tel { position: absolute; left: calc(.53cqh + 136.6cqh - 18.65cqh); top: 35.6cqh; width: 37.3cqh; padding: 1.2cqh; border-radius: 6.19cqh; background: #0b0b0f; box-shadow: 0 0 0 .53cqh #4a4a55, 0 6.4cqh 10.7cqh -3.2cqh rgba(11,11,15,.45); }
+  .hm__tel-pantalla { position: relative; aspect-ratio: 1179 / 2556; overflow: hidden; border-radius: 5.04cqh; background: #fff; }
+  .hm__tel-pantalla img { object-position: top; }
+  .hm__isla { position: absolute; top: 2.24cqh; left: 50%; width: 10cqh; height: 3cqh; border-radius: 99px; background: #000; transform: translateX(-50%); }
+  .hm__plana { display: none; }
+
+  /* ── Escritorio y tablet apaisada ──
+     Lo mismo que en el teléfono, en DOS COLUMNAS, y todo cuelga de los mismos
+     dos bordes: el título, la bajada y los aparatos arrancan en el mismo
+     borde izquierdo de su columna, y las otras tres van en filas a lo ancho
+     con el nombre en la columna 1 y el texto en la 2 (subgrid), la anatomía
+     de filas del resto del sitio.
+     ⚠️ EL ALTO DEL ESCENARIO (`--h`) SALE DE LA PANTALLA, con piso y techo,
+     así la sección entra entera; abajo deja el lugar de lo que sobresale
+     (14% del alto) más un aire. */
+  @media (min-width: 1000px) {
+    /* `--h` lo más grande posible: lo que deja libre la pantalla (medido:
+       628 px de todo lo demás hasta 1399 de ancho, 610 desde 1400, donde los
+       textos entran en menos renglones) y nunca más ancho que la columna
+       (el grupo de aparatos mide 1,555 × `--h`). */
+    .hm { --col-gap: clamp(28px, 3vw, 56px); --col: calc(min(100vw - 2 * var(--margen), var(--ancho)) / 3 - var(--col-gap) - 4px); --h: clamp(150px, calc((100svh - 470px) / 1.14), min(350px, calc(var(--col) / 1.56))); }
+    /* Tres columnas separadas por un filete gris fino: cada una lleva la
+       mitad del aire a cada lado del filete. */
+    .hm__destacados { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; }
+    .hm__dest { padding: 0 calc(var(--col-gap) / 2); }
+    .hm__dest:first-child { padding-left: 0; }
+    .hm__dest:last-child { padding-right: 0; }
+    .hm__dest + .hm__dest { border-left: 1px solid var(--linea); }
+    .hm__escena { aspect-ratio: auto; height: var(--h); margin-bottom: calc(var(--h) * .14 + 20px); }
+        }
+  @media (min-width: 1400px) {
+    .hm { --h: clamp(150px, calc((100svh - 460px) / 1.14), min(370px, calc(var(--col) / 1.56))); }
+  }
+</style>

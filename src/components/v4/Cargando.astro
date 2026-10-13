@@ -1,0 +1,74 @@
+---
+// ⚠️ EL ÚNICO "CARGANDO" DE LA WEB, Y ES LA MARCA LLENÁNDOSE.
+//
+// La b de Brickell Lab aparece apagada y se llena de abajo hacia arriba,
+// como un vaso. Al llegar arriba el nivel vuelve a bajar y empieza de nuevo.
+// Reemplazó al anillo que giraba, que es el "cargando" de cualquier sitio y
+// no dice nada de quién es la página.
+//
+// Si mañana hay otra espera en cualquier lado —una galería, un formulario,
+// una pantalla de admin—, va ESTE componente y no un anillo nuevo. Ese es
+// todo el motivo de que sea un componente y no cuatro líneas adentro del
+// visor.
+//
+// El dibujo sale del isotipo de `public/v2/marca.svg`: tres polígonos y
+// `currentColor`, así que toma el color del texto que lo rodea y sirve
+// igual sobre papel que sobre tinta. Está escrito acá adentro a propósito:
+// un `<img>` tiene que bajarse, y lo primero que se ve en una espera no
+// puede depender de otra espera.
+interface Props {
+  /** Alto de la marca en píxeles. El ancho sale solo. */
+  tam?: number
+  /** Lo que escucha un lector de pantalla mientras dura. */
+  etiqueta?: string
+}
+const { tam = 40, etiqueta = 'Cargando' } = Astro.props
+
+// El dibujo va una sola vez acá y se usa dos veces abajo: la copia apagada
+// y la que se llena. Si se escribiera dos veces, tarde o temprano una de
+// las dos queda vieja.
+const MARCA = `<polygon points="11.49 19.9 16.79 22.72 16.79 17.43 11.81 14.8 11.82 4.28 6.86 1.64 6.85 17.44 11.49 19.9 11.49 19.9"/><polygon points="26.78 20.04 16.79 25.34 6.8 20.04 6.8 25.04 16.79 30.36 26.78 25.04 26.78 20.04"/><polygon points="26.76 14.71 16.79 9.41 16.79 14.74 26.76 20.04 26.76 14.71"/>`
+---
+
+<span class="cargab" role="status" aria-label={etiqueta} style={`--cargab: ${tam}px`}>
+  <svg class="cargab__b cargab__hueca" viewBox="6.8 1.64 19.98 28.72" aria-hidden="true" set:html={MARCA} />
+  <svg class="cargab__b cargab__llena" viewBox="6.8 1.64 19.98 28.72" aria-hidden="true" set:html={MARCA} />
+</span>
+
+<style>
+  /* 19.98 / 28.72 es la proporción del isotipo. Se escribe acá para que el
+     que la use pase un solo número y no dos que se puedan contradecir. */
+  .cargab {
+    position: relative; display: block;
+    height: var(--cargab, 40px);
+    width: calc(var(--cargab, 40px) * 0.6958);
+    color: var(--tinta);
+  }
+  .cargab__b { position: absolute; inset: 0; display: block; width: 100%; height: 100%; fill: currentColor; }
+
+  /* La marca apagada: se ve siempre, para que la espera tenga forma desde
+     el primer cuadro y no sea un hueco en blanco. */
+  .cargab__hueca { opacity: .15; }
+
+  /* ⚠️ EL NIVEL VA EN `clip-path`, no en el alto de una caja: recortar no
+     deforma el dibujo. Con un alto animado la b se aplastaría mientras
+     sube, que es justo lo que se quiere evitar.
+     `inset(N% 0 0 0)` tapa el N% de arriba, así que lo que queda a la
+     vista es la parte de abajo: N=100 está vacía y N=0 está llena. */
+  .cargab__llena {
+    clip-path: inset(100% 0 0 0);
+    animation: cargab-nivel 1.9s cubic-bezier(.62, 0, .38, 1) infinite;
+  }
+  @keyframes cargab-nivel {
+    0%, 5%     { clip-path: inset(100% 0 0 0); }   /* vacía */
+    48%, 62%   { clip-path: inset(0 0 0 0); }      /* llena, y se queda un momento */
+    95%, 100%  { clip-path: inset(100% 0 0 0); }   /* el nivel baja y vuelve a empezar */
+  }
+
+  /* Quien pidió no ver movimiento ve la marca entera y quieta: sigue
+     diciendo que algo está pasando, sin que nada se mueva. */
+  @media (prefers-reduced-motion: reduce) {
+    .cargab__llena { animation: none; clip-path: none; opacity: .55; }
+    .cargab__hueca { opacity: 0; }
+  }
+</style>
