@@ -30,7 +30,11 @@ export function GET() {
 
 ## Productos propios
 
-- [Lúmina](${LUMINA_URL}/): plataforma de gestión de eventos para casamientos y fiestas de quince. Invitación digital con confirmación de asistencia por invitado, lista de invitados, plano del salón y mesas, transporte, cronograma, tareas y chat con los invitados. Pago único por evento, sin suscripción.
+- [Lúmina](${LUMINA_URL}/): invitaciones digitales y software de organización de eventos para casamientos y fiestas de quince. Invitación web con el nombre de cada invitado y confirmación de asistencia online; del lado del organizador, lista de invitados, plano del salón y mesas, transporte, cronograma, tareas y chat. Pago único por evento, sin suscripción.
+  - [Invitaciones para casamientos](${LUMINA_URL}/casamientos)
+  - [Invitaciones para fiestas de quince](${LUMINA_URL}/quince)
+  - [Save the date gratis](${LUMINA_URL}/save-the-date): creador gratuito de save the dates, sin registro.
+  - [Catálogo de plantillas](${LUMINA_URL}/plantillas): los diseños, probables con datos de ejemplo.
 - [Lexa](${SITIO}/#lexa): traducción de inglés y español con matrícula de traductora pública (CTPCBA): documentos personales, legales, médicos y técnicos.
 
 ## Portfolio

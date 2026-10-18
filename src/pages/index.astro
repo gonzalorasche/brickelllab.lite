@@ -22,7 +22,7 @@ import Articulos from '../components/v4/Articulos.astro'
 import Contacto from '../components/v4/Contacto.astro'
 import Pie from '../components/v4/Pie.astro'
 import Cookies from '../components/v4/Cookies.astro'
-import { SITIO, MAIL, LUMINA_URL } from '../data/v4/contacto'
+import { SITIO, MAIL, LUMINA_URL , LUMINA_INSTAGRAM, LUMINA_TIKTOK, LUMINA_FACEBOOK } from '../data/v4/contacto'
 
 // ⚠️ UN SOLO GRAFO, Y LOS `@id` NO SE TOCAN. `#organization` es el que usaba la
 // web anterior y el que declara Lúmina en su propio sitio (lumina/src/lib/seo/
@@ -63,16 +63,39 @@ const jsonld = {
       owns: { '@id': LUMINA_ID },
       subOrganization: { '@id': SITIO + '/#lexa' },
     },
+    /* ⚠️ EL MISMO NODO QUE DECLARA EL SUBDOMINIO (rutas.ts de Lúmina): mismo
+       `@id`, mismo tipo y la MISMA featureList palabra por palabra. Dos sitios
+       describiendo igual a la misma entidad es lo que un buscador lee como
+       consenso — y es el refuerzo que el dominio principal le pasa al
+       subdominio. Si cambia allá, cambia acá. */
     {
-      '@type': 'WebApplication',
+      '@type': 'SoftwareApplication',
       '@id': LUMINA_ID,
       name: 'Lúmina',
       url: LUMINA_URL + '/',
       applicationCategory: 'BusinessApplication',
+      applicationSubCategory: 'Event management',
       operatingSystem: 'Web',
-      description: 'Plataforma de gestión de eventos: invitación digital y panel para casamientos y fiestas de quince.',
+      description:
+        'Invitaciones digitales y software de organización de eventos para casamientos y fiestas de quince: ' +
+        'cada invitado recibe su invitación web con su nombre y confirma asistencia online; quien organiza ve ' +
+        'todo en un panel — invitados, mesas, transporte, cronograma. Pago único por evento, sin suscripción.',
+      keywords:
+        'invitaciones digitales, invitación de casamiento, invitación de 15, invitación web, ' +
+        'software de organización de eventos, confirmación de asistencia online, RSVP, Argentina',
+      featureList: [
+        'Invitación web personalizada con el nombre de cada invitado',
+        'Confirmación de asistencia online con menú y restricciones alimentarias',
+        'Lista de invitados con confirmaciones en tiempo real',
+        'Armado de mesas con plano del salón',
+        'Gestión de transporte para invitados',
+        'Cronograma del día y lista de tareas',
+        'Chat en vivo entre invitados y organizadores',
+        'Save the date gratuito',
+      ],
       inLanguage: 'es-AR',
       parentOrganization: { '@id': ORG },
+      sameAs: [LUMINA_INSTAGRAM, LUMINA_TIKTOK, LUMINA_FACEBOOK],
       subjectOf: { '@type': 'WebPage', url: SITIO + '/#lumina' },
     },
     {
