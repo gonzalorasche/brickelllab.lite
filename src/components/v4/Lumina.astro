@@ -17,8 +17,11 @@
 // solo.
 //
 // En el teléfono vertical el dibujo no va: en su lugar la portada del sitio de
-// Lúmina apaisada, igual que las tarjetas de Proyectos. El link a Lúmina es
-// solo el botón; las redes van al lado, como íconos.
+// Lúmina apaisada, igual que las tarjetas de Proyectos. Los links a Lúmina
+// son el botón Y las tres frases de la bajada (casamientos / fiestas de
+// quince / invitación digital → sus páginas del subdominio): el ancla con
+// palabras clave es el empuje SEO que el dominio principal le pasa al
+// subdominio. Las redes van al lado, como íconos.
 //
 // ⚠️ NO DICE CÓMO ESTÁ CONSTRUIDA (stack, proveedores, planes): Gonzalo no
 // quiere que se sepa. El reel solo se reproduce mientras está a la vista.
@@ -38,7 +41,7 @@ const HACE = ['Invitación digital con RSVP', 'Lista de invitados y confirmacion
         <figure class="lumina__portada">
           <img src="/v4/lumina-portada.webp" alt="Portada del sitio de Lúmina" width="1440" height="900" loading="lazy" decoding="async" />
         </figure>
-        <p class="bajada">Una plataforma para casamientos y fiestas de quince: la invitación digital que reciben los invitados y el panel desde el que se organiza todo. La pensamos, la diseñamos y la construimos nosotros.</p>
+        <p class="bajada">Una plataforma para <a href={LUMINA_URL + '/casamientos'} target="_blank" rel="noopener">casamientos</a> y <a href={LUMINA_URL + '/quince'} target="_blank" rel="noopener">fiestas de quince</a>: la <a href={LUMINA_URL + '/plantillas'} target="_blank" rel="noopener">invitación digital</a> que reciben los invitados y el panel desde el que se organiza todo. La pensamos, la diseñamos y la construimos nosotros.</p>
       </div>
 
       <!-- El logo va acá: después de la bajada y antes del filete de "Qué hace". -->
@@ -97,6 +100,9 @@ const HACE = ['Invitación digital con RSVP', 'Lista de invitados y confirmacion
   .lumina__aurora .velo { position: absolute; inset: 0; background: radial-gradient(78% 100% at 0% 45%, rgba(15,12,28,.94) 0%, rgba(15,12,28,.64) 38%, transparent 74%); }
   .lumina > * { position: relative; }
   .lumina .rotulo { color: rgba(255,255,255,.55); }
+  /* Los links de la bajada: mismo color del texto, subrayado apenas marcado. */
+  .lumina .bajada a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(255,255,255,.35); transition: text-decoration-color .15s; }
+  .lumina .bajada a:hover { text-decoration-color: #fff; }
   .lumina h2 { color: #fff; }
   .lumina .bajada { color: rgba(255,255,255,.7); max-width: 46ch; }
   .lumina .boton { background: #fff; color: var(--tinta); border-color: #fff; }
